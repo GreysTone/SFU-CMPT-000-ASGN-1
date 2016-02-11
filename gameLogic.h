@@ -50,7 +50,7 @@ namespace GT_gameLogic {
 
   // random generator
   extern std::default_random_engine generator;
-  extern std::uniform_int_distribution<int> distribution(0,6);
+  extern std::uniform_int_distribution<int> dist;
 
 //-------------------------------------------------------------------------------------------------------------------
 

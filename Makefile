@@ -25,7 +25,7 @@ CC= g++
 # The flags that will be used to compile the object file.
 # If you want to debug your program,
 # you can add '-g' on the following line
-CFLAGS= -O3 -g -Wall -pedantic -DGL_GLEXT_PROTOTYPE -pg
+CFLAGS= -O3 -g -Wall -pedantic -DGL_GLEXT_PROTOTYPE -pg -std=c++11
 
 # The name of the final executable
 EXECUTABLE= FruitTetris
@@ -37,7 +37,7 @@ EXECUTABLE= FruitTetris
 LDFLAGS = -lGL -lglut -lGLEW -lXext -lX11 -lm
 
 # If you have other library files in a different directory add them here
-INCLUDEFLAG= -I. -I$(INCLUDEDIR) -Iinclude/
+INCLUDEFLAG= -I. -I$(INCLUDEDIR) -Iincludeext
 LIBFLAG= -L$(LIBDIR)
 
 # Don't touch this one if you don't know what you're doing
