@@ -8,7 +8,12 @@
 #define __CHECKERROR_H__
 
 #include <stdio.h>
-#include <GL/gl.h>
+
+#ifdef __APPLE__  // include Mac OS X verions of headers
+	#include <OpenGL/gl.h>
+#else // non-Mac OS X operating systems
+	#include <GL/gl.h>
+#endif  // __APPLE__
 
 //----------------------------------------------------------------------------
 
