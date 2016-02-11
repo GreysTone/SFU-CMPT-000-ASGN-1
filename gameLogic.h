@@ -6,6 +6,7 @@
 #define ASSIGNMENT1_GAMELOGIC_H
 
 #include "include/Angel.h"
+#include <random>
 
 namespace GT_gameLogic {
 
@@ -13,17 +14,12 @@ namespace GT_gameLogic {
   extern int ysize;
 
   // colors
-  extern vec4 purple;
-  extern vec4 red;
-  extern vec4 yellow;
-  extern vec4 green;
-  extern vec4 orange;
-  extern vec4 white;
-  extern vec4 black;
+  extern vec4 palette[7];
+  enum gtColor {purple = 0, red, yellow, green, orange, white, black};
 
   // current tile
   extern vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
-  extern vec2 tilepos;// = vec2(5, 19); // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
+  extern vec2 tilepos; // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
 
   // An array storing all possible orientations of all possible tiles
   // The 'tile' array will always be some element [i][j] of this array (an array of vec2)
@@ -41,16 +37,20 @@ namespace GT_gameLogic {
   extern vec4 boardcolours[1200];
 
   // location of vertex attributes in the shader program
-  extern GLuint vPosition;
-  extern GLuint vColor;
+  extern GLint vPosition;
+  extern GLint vColor;
 
   // locations of uniform variables in shader program
-  extern GLuint locxsize;
-  extern GLuint locysize;
+  extern GLint locxsize;
+  extern GLint locysize;
 
   // VAO and VBO
   extern GLuint vaoIDs[3]; // One VAO for each object: the grid, the board, the current piece
   extern GLuint vboIDs[6]; // Two Vertex Buffer Objects for each VAO (specifying vertex positions and colours, respectively)
+
+  // random generator
+  extern std::default_random_engine generator;
+  extern std::uniform_int_distribution<int> distribution(0,6);
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ namespace GT_gameLogic {
 
 
   // Called at the start of play and every time a tile is placed
-  void newtile();
+  void newTile();
 
   void initGrid();
 
@@ -95,7 +95,7 @@ namespace GT_gameLogic {
 
 
   // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
-  void updatetile();
+  void updateTile();
 
 
   void timer(void);

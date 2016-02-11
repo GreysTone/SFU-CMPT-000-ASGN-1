@@ -42,7 +42,7 @@ void init()
 	locysize = glGetUniformLocation(program, "ysize");
 
 	// Game initialization
-	newtile(); // create new next tile
+	newTile(); // create new next tile
 
 	// set to default
 	glBindVertexArray(0);
@@ -71,9 +71,10 @@ int main(int argc, char **argv)
 	glutReshapeFunc(reshape);
 	glutSpecialFunc(special);
 	glutKeyboardFunc(keyboard);
-//	glutTimerFunc(800,)
+	// TODO:	glutTimerFunc(800,)
 	glutIdleFunc(idle);
 
-	glutMainLoop(); // Start main loop
+	// Start main loop
+	glutMainLoop();
 	return 0;
 }

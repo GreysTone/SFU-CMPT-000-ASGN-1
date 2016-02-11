@@ -11,13 +11,15 @@ namespace GT_gameLogic {
   int ysize = 720;
 
   // color
-  vec4 purple = vec4(1.0, 0.0, 1.0, 1.0);
-  vec4 red    = vec4(1.0, 0.0, 0.0, 1.0);
-  vec4 yellow = vec4(0.0, 1.0, 1.0, 1.0);
-  vec4 green  = vec4(0.0, 1.0, 0.0, 1.0);
-  vec4 orange = vec4(1.0, 0.5, 0.0, 1.0);
-  vec4 white  = vec4(1.0, 1.0, 1.0, 1.0);
-  vec4 black  = vec4(0.0, 0.0, 0.0, 1.0);
+  vec4 palette[7] = {
+      vec4(1.0, 0.0, 1.0, 1.0),
+      vec4(1.0, 0.0, 0.0, 1.0),
+      vec4(0.0, 1.0, 1.0, 1.0),
+      vec4(0.0, 1.0, 0.0, 1.0),
+      vec4(1.0, 0.5, 0.0, 1.0),
+      vec4(1.0, 1.0, 1.0, 1.0),
+      vec4(0.0, 0.0, 0.0, 1.0)
+  };
 
   // current tile
   vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
@@ -55,17 +57,20 @@ namespace GT_gameLogic {
   vec4 boardcolours[1200];
 
   // location of vertex attributes in the shader program
-  GLuint vPosition;
-  GLuint vColor;
+  GLint vPosition;
+  GLint vColor;
 
   // locations of uniform variables in shader program
-  GLuint locxsize;
-  GLuint locysize;
+  GLint locxsize;
+  GLint locysize;
 
   // VAO and VBO
   GLuint vaoIDs[3]; // One VAO for each object: the grid, the board, the current piece
   GLuint vboIDs[6]; // Two Vertex Buffer Objects for each VAO (specifying vertex positions and colours, respectively)
 
+  // random generator
+  std::default_random_engine generator;
+  std::uniform_int_distribution<int> distribution(0,6);
 
 //-------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------
@@ -107,7 +112,8 @@ namespace GT_gameLogic {
 //-------------------------------------------------------------------------------------------------------------------
 
   // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
-  void updatetile()
+  void
+  updateTile()
   {
     // Bind the VBO containing current tile vertex positions
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
@@ -138,15 +144,16 @@ namespace GT_gameLogic {
 
 //-------------------------------------------------------------------------------------------------------------------
 
-// Called at the start of play and every time a tile is placed
-  void newtile()
+  // Called at the start of play and every time a tile is placed
+  void
+  newTile()
   {
     tilepos = vec2(5 , 19); // Put the tile at the top of the board
 
     // Update the geometry VBO of current tile
     for (int i = 0; i < 4; i++)
       tile[i] = allRotationsLShape[0][i]; // Get the 4 pieces of the new tile
-    updatetile();
+    updateTile();
 
     // Update the color VBO of current tile
     vec4 newcolours[24];
@@ -179,7 +186,7 @@ namespace GT_gameLogic {
     }
     // Make all grid lines white
     for (int i = 0; i < 64; i++)
-      gridcolours[i] = GT_gameLogic::white;
+      gridcolours[i] = white;
 
 
     // *** set up buffer objects
@@ -199,7 +206,6 @@ namespace GT_gameLogic {
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(vColor); // Enable the attribute
   }
-
 
   void initBoard()
   {
@@ -249,7 +255,7 @@ namespace GT_gameLogic {
     glEnableVertexAttribArray(vColor);
   }
 
-// No geometry for current tile initially
+  // No geometry for current tile initially
   void initCurrentTile()
   {
     glBindVertexArray(vaoIDs[2]);
