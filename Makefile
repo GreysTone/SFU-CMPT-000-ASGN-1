@@ -25,7 +25,7 @@ CC= g++
 # The flags that will be used to compile the object file.
 # If you want to debug your program,
 # you can add '-g' on the following line
-CFLAGS= -O3 -g -Wall -pedantic -DGL_GLEXT_PROTOTYPE -pg -std=c++11
+CFLAGS= -O3 -g -Wall -pedantic -DGL_GLEXT_PROTOTYPE -pg
 
 # The name of the final executable
 EXECUTABLE= FruitTetris

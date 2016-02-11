@@ -6,7 +6,9 @@
 #define ASSIGNMENT1_GAMELOGIC_H
 
 #include "include/Angel.h"
-#include <random>
+//#include <random>
+#include <stdlib.h>
+#include <time.h>
 
 namespace GT_gameLogic {
 
@@ -49,8 +51,8 @@ namespace GT_gameLogic {
   extern GLuint vboIDs[6]; // Two Vertex Buffer Objects for each VAO (specifying vertex positions and colours, respectively)
 
   // random generator
-  extern std::default_random_engine generator;
-  extern std::uniform_int_distribution<int> dist;
+//  extern std::default_random_engine generator;
+//  extern std::uniform_int_distribution<int> dist;
 
 //-------------------------------------------------------------------------------------------------------------------
 

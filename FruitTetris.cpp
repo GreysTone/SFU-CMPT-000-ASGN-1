@@ -65,6 +65,7 @@ int main(int argc, char **argv)
 	}
 
 	init();
+  srand (time(NULL)); // initialize random seed
 
 	// Callback functions
 	glutDisplayFunc(display);

@@ -69,8 +69,9 @@ namespace GT_gameLogic {
   GLuint vboIDs[6]; // Two Vertex Buffer Objects for each VAO (specifying vertex positions and colours, respectively)
 
   // random generator
-  std::default_random_engine generator;
-  std::uniform_int_distribution<int> dist(0,6);
+//  std::default_random_engine generator;
+//  std::uniform_int_distribution<int> dist(0,4);
+
 //-------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -156,8 +157,13 @@ namespace GT_gameLogic {
 
     // Update the color VBO of current tile
     vec4 newcolours[24];
-    for (int i = 0; i < 24; i++)
-      newcolours[i] = orange; // You should randomlize the color
+    for (int i = 0; i < 24; i += 6) {
+      // vec4 tiled = palette[dist(generator)]; // randomize the color
+      vec4 tiled = palette[rand() % 5]; // randomize the color
+      for (int j = 0; j < 6; j++)
+        newcolours[i + j] = tiled;
+    }
+
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newcolours), newcolours); // Put the colour data in the VBO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -185,7 +191,7 @@ namespace GT_gameLogic {
     }
     // Make all grid lines white
     for (int i = 0; i < 64; i++)
-      gridcolours[i] = white;
+      gridcolours[i] = palette[white];
 
 
     // *** set up buffer objects
@@ -211,7 +217,7 @@ namespace GT_gameLogic {
     // *** Generate the geometric data
     vec4 boardpoints[1200];
     for (int i = 0; i < 1200; i++)
-      boardcolours[i] = black; // Let the empty cells on the board be black
+      boardcolours[i] = palette[black]; // Let the empty cells on the board be black
     // Each cell is a square (2 triangles with 6 vertices)
     for (int i = 0; i < 20; i++){
       for (int j = 0; j < 10; j++)
