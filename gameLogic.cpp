@@ -9,6 +9,7 @@ namespace GT_gameLogic {
   // current tile
   vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
   vec2 tilepos = vec2(5, 19); // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
+  gtColor tiledColor[4];
   gtShape tileShape = sI;
   int tileModule = 0;
 
@@ -194,9 +195,12 @@ namespace GT_gameLogic {
 
     // Update the color VBO of current tile
     vec4 newcolours[24];
+    int flag = 0;
     for (int i = 0; i < 24; i += 6) {
       // vec4 tiled = palette[dist(generator)]; // randomize the color
-      vec4 tiled = palette[rand() % 5]; // randomize the color
+      tiledColor[flag] = (gtColor)(rand() % 5);
+      vec4 tiled = palette[tiledColor[flag]]; // randomize the color
+      flag++;
       for (int j = 0; j < 6; j++)
         newcolours[i + j] = tiled;
     }
@@ -266,29 +270,23 @@ namespace GT_gameLogic {
   // Given (x,y), tries to move the tile x squares to the right and y squares down
   // Returns true if the tile was successfully moved, or false if there was some issue
   bool
-  movetile(vec2 direction) {
+  moveTile(vec2 direction) {
+    // calculate the range of the tile
+    GLfloat xmax = tile[0].x;
+    GLfloat xmin = tile[0].x;
+    GLfloat ymin = tile[0].y;
+    for (int i = 1; i < 4; i++) {
+      if (tile[i].x > xmax) xmax = tile[i].x;
+      if (tile[i].x < xmin) xmin = tile[i].x;
+      if (tile[i].y < ymin) ymin = tile[i].y;
+    }
     int shifty = (int)direction.y;
-#ifdef _GT_DEBUG_
-    std::cout << "shifty - " << shifty << std::endl;
-#endif
     switch (shifty) {
       case 0: { // Horizontal movement
         int shiftx = (int)direction.x;
-#ifdef _GT_DEBUG_
-        std::cout << "shiftx - " << shiftx << std::endl;
-#endif
-        // calculate the range of the tile
-        GLfloat xmax = tile[0].x;
-        GLfloat xmin = tile[0].x;
-        for (int i = 1; i < 4; i++) {
-          if (tile[i].x > xmax) xmax = tile[i].x;
-          if (tile[i].x < xmin) xmin = tile[i].x;
-        }
         switch (shiftx) {
           case -1: { // Left
-            std::cout << "xo:" << tilepos.x << "\n";
             if (tilepos.x + xmin > 0) tilepos.x--; // adjust position
-            std::cout << "xo:" << tilepos.x << "\n";
             break;
           }
           case 1: { // Right
@@ -296,17 +294,59 @@ namespace GT_gameLogic {
             break;
           }
         }
-        updateTile();
-
-        glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
         break;
       }
-      case -1: { // Down
+      case -1: // Down
+      case -2: { // Timer Drop
+#ifdef _GT_DEBUG_
+        if(shifty == -2) std::cout << "timer tigger in movtile(vec2)\n";
+#endif
+        if(!collisionDetect()) { // Can move downward
+#ifdef _GT_DEBUG_
+          std::cout << "no collision, moving downward...\n";
+#endif
+          tilepos.y--; // adjust position
+        } else { // Collision
+#ifdef _GT_DEBUG_
+          std::cout << "[!!!]collision detected!\n";
+#endif
+          // Solid tile (update board occupation & color)
+          for(int i = 0; i < 4; i++) {
+            int offsetX = (int)tilepos.x + (int)tile[i].x;
+            int offsetY = (int)tilepos.y + (int)tile[i].y;
+            board[offsetX][offsetY] = true;
+            // Two points are reused
+            vec4 offsetColor = palette[tiledColor[i]];
+            boardcolours[6*(10*offsetX + offsetY)    ] = offsetColor;
+            boardcolours[6*(10*offsetX + offsetY) + 1] = offsetColor;
+            boardcolours[6*(10*offsetX + offsetY) + 2] = offsetColor;
+            boardcolours[6*(10*offsetX + offsetY) + 3] = offsetColor;
+            boardcolours[6*(10*offsetX + offsetY) + 4] = offsetColor;
+            boardcolours[6*(10*offsetX + offsetY) + 5] = offsetColor;
+          }
+          // Remove tri-part
+          for(int i = 0; i < 4; i++) {
+            int offsetX = (int) tilepos.x + (int) tile[i].x;
+            int offsetY = (int) tilepos.y + (int) tile[i].y;
+            vec4 offsetColor = palette[tiledColor[i]];
+            removeTriTile(offsetX, offsetY, offsetColor);
+          }
+          // Remove full row
+          // Check Game Over
+          // Render Board
+
+          // New tile
+          newTile();
+        }
         break;
       }
     }
-    return false;
+
+    updateTile();
+
+    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    return true;
   }
 
   // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
@@ -342,24 +382,160 @@ namespace GT_gameLogic {
 
 //-------------------------------------------------------------------------------------------------------------------
 
+  // Checks if the current tile is collide with the bottom or the stack of tiles
+  bool
+  collisionDetect() {
+    for(int i = 0; i < 4; i++) {
+      int nxtPosX = (int)tilepos.x + (int)tile[i].x;
+      int nxtPosY = (int)tilepos.y + (int)tile[i].y - 1;
+#ifdef _GT_DEBUG_
+      std::cout << "detecting nxtX:" << nxtPosX << " - nxtY:" << nxtPosY << ".\n";
+#endif
+      if(board[nxtPosX][nxtPosY] || nxtPosY < 0) return true;
+    }
+    return false;
+  }
+
+  // Checks if it is possible to remove some tri-parts
+  bool removingMatrix[10][20];
+  bool removingEmpty;
+
+  void
+  removeTriTile(int x, int y, vec4 color) {
+    if(board[x][y]) {
+      for(int i = 0; i < 10; i++)
+        for(int j = 0; j < 20; j++)
+          removingMatrix[i][j] = false;
+      removingEmpty = true;
+      searchMatrix(x, y, gtDirection::UL, color);
+      searchMatrix(x, y, gtDirection::UP, color);
+      searchMatrix(x, y, gtDirection::UR, color);
+      searchMatrix(x, y, gtDirection::LE, color);
+      searchMatrix(x, y, gtDirection::RI, color);
+      searchMatrix(x, y, gtDirection::DL, color);
+      searchMatrix(x, y, gtDirection::DO, color);
+      searchMatrix(x, y, gtDirection::DR, color);
+      if(!removingEmpty) removingMatrix[x][y] = true;
+      // Remove Tiles (update board occupation & color)
+      //TODO: Removing
+      // Downward
+    } else {
+      return ;
+    }
+  }
+
+  void
+  searchMatrix(int x, int y, gtDirection direction, vec4 color) {
+    if(!board[x][y]) return;
+    switch (direction) {
+      case gtDirection::UL: {
+        if(x - 1 > 0 && y + 1 < 20 && boardcolours[6*(10*(x-1)+(y+1))] == color) {
+          removingMatrix[x-1][y+1] = true;
+          removingEmpty = false;
+          searchMatrix(x-1, y+1, direction, color);
+        } else {
+          return ;
+        }
+        break;
+      }
+      case gtDirection::UP: {
+        if(y + 1 < 20 && boardcolours[6*(10*(x)+(y+1))] == color) {
+          removingMatrix[x][y+1] = true;
+          removingEmpty = false;
+          searchMatrix(x, y+1, direction, color);
+        } else {
+          return ;
+        }
+        break;
+      }
+      case gtDirection::UR: {
+        if(x + 1 < 10 && y + 1 < 20 && boardcolours[6*(10*(x+1)+(y+1))] == color) {
+          removingMatrix[x+1][y+1] = true;
+          removingEmpty = false;
+          searchMatrix(x+1, y+1, direction, color);
+        } else {
+          return ;
+        }
+        break;
+      }
+      case gtDirection::LE: {
+        if(x - 1 > 0 && boardcolours[6*(10*(x-1)+(y))] == color) {
+          removingMatrix[x-1][y] = true;
+          removingEmpty = false;
+          searchMatrix(x-1, y, direction, color);
+        } else {
+          return ;
+        }
+        break;
+      }
+      case gtDirection::RI: {
+        if(x + 1 < 10 &&  boardcolours[6*(10*(x+1)+(y))] == color) {
+          removingMatrix[x+1][y] = true;
+          removingEmpty = false;
+          searchMatrix(x+1, y, direction, color);
+        } else {
+          return ;
+        }
+        break;
+      }
+      case gtDirection::DL: {
+        if(x - 1 > 0 && y - 1 > 0 && boardcolours[6*(10*(x-1)+(y-1))] == color) {
+          removingMatrix[x-1][y-1] = true;
+          removingEmpty = false;
+          searchMatrix(x-1, y-1, direction, color);
+        } else {
+          return ;
+        }
+        break;
+      }
+      case gtDirection::DO: {
+        if(y - 1 > 0 && boardcolours[6*(10*(x)+(y-1))] == color) {
+          removingMatrix[x][y-1] = true;
+          removingEmpty = false;
+          searchMatrix(x, y-1, direction, color);
+        } else {
+          return ;
+        }
+        break;
+      }
+      case gtDirection::DR: {
+        if(x + 1 < 10 && y - 1 > 0 && boardcolours[6*(10*(x+1)+(y-1))] == color) {
+          removingMatrix[x+1][y-1] = true;
+          removingEmpty = false;
+          searchMatrix(x+1, y-1, direction, color);
+        } else {
+          return ;
+        }
+        break;
+      }
+    }
+  }
+
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
   void
-  checkfullrow(int row) {
+  checkFullRow(int row) {
 
   }
 
   // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
   void
-  settile() {
+  setTile() {
 
   }
 
 //-------------------------------------------------------------------------------------------------------------------
 
   void
-  timer() {
+  timerDrop(int data) {
+    //reset timer
+    glutTimerFunc(800, timerDrop, 0);
 
+#ifdef _GT_DEBUG_
+    std::cout << "timerDrop triggered - " << data << "\n";
+#endif
+    moveTile(vec2(0, -2));
+    glutPostRedisplay();
   }
 
   // Starts the game over - empties the board, creates new tiles, resets line counters

@@ -68,7 +68,7 @@ special(int key, int x, int y) {
 #ifdef _GT_DEBUG_
       std::cout << "[LEFT Arrow] Pressed.\n";
 #endif
-      movetile(vec2(-1,0));
+      moveTile(vec2(-1, 0));
       break;
     case 101: // Up Arrow (Rotate Tile)
 #ifdef _GT_DEBUG_
@@ -80,13 +80,13 @@ special(int key, int x, int y) {
 #ifdef _GT_DEBUG_
       std::cout << "[RIGHT Arrow] Pressed.\n";
 #endif
-      movetile(vec2(1,0));
+      moveTile(vec2(1, 0));
       break;
     case 103: // Down Arrow
 #ifdef _GT_DEBUG_
       std::cout << "[DOWN Arrow] Pressed.\n";
 #endif
-      movetile(vec2(0,-1));
+      moveTile(vec2(0, -1));
       break;
   }
 }
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
   glutKeyboardFunc(keyboard);
 	glutDisplayFunc(display);
 
-	// TODO:	glutTimerFunc(800,)
+	glutTimerFunc(800, timerDrop, 0);
 	glutIdleFunc(idle);
 
 	// Start main loop

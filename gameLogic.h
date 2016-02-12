@@ -12,6 +12,8 @@
 #include <time.h>
 #include <iostream>
 
+#define _GT_DEBUG_
+
 using namespace GT_gameSetting;
 
 namespace GT_gameLogic {
@@ -19,10 +21,13 @@ namespace GT_gameLogic {
   // current tile
   extern vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
   extern vec2 tilepos; // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
+  extern gtColor tiledColor[4];
 
   enum gtShape {sI = 0, sS, sL, sT};
   extern gtShape tileShape;
   extern int tileModule;
+
+  enum gtDirection {UL = 0, UP, UR, LE, RI, DL, DO, DR};
 
   //board[x][y] represents whether the cell (x,y) is occupied
   extern bool board[10][20];
@@ -58,20 +63,26 @@ namespace GT_gameLogic {
   void rotate();
   // Given (x,y), tries to move the tile x squares to the right and y squares down
   // Returns true if the tile was successfully moved, or false if there was some issue
-  bool movetile(vec2 direction);
+  bool moveTile(vec2 direction);
   // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
   void updateTile();
 
 
+  // Checks if the current tile is collide with the bottom or the stack of tiles
+  bool collisionDetect();
+  // Checks if it is possible to remove some tri-parts
+  void removeTriTile(int x, int y, vec4 color);
+  void searchMatrix(int x, int y, gtDirection direction, vec4 color);
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
-  void checkfullrow(int row);
+  void checkFullRow(int row);
 
   // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
-  void settile();
+  void setTile();
 
 
-  void timer();
+  void timerDrop(int data);
+  bool isGameOver();
   // Starts the game over - empties the board, creates new tiles, resets line counters
   void restart();
 }
