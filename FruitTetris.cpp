@@ -13,14 +13,16 @@ Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
 
 */
 
+#include <iostream>
 #include "include/Angel.h"
 #include "gameLogic.h"
 
-using namespace std;
 using namespace GT_gameLogic;
 
-void init()
-{
+#define _GT_DEBUG_
+
+void
+init() {
 	// Load shaders and use the shader program
 	GLuint program = InitShader("vshader.glsl", "fshader.glsl");
 	glUseProgram(program);
@@ -49,6 +51,91 @@ void init()
 	glClearColor(0, 0, 0, 0);
 }
 
+// Reshape callback will simply change xsize and ysize variables, which are passed to the vertex shader
+// to keep the game the same from stretching if the window is stretched
+void
+reshape(GLsizei w, GLsizei h) {
+  xsize = w;
+  ysize = h;
+  glViewport(0, 0, w, h);
+}
+
+// Handle arrow key keypresses
+void
+special(int key, int x, int y) {
+  switch (key) {
+    case 100: // Left Arrow
+#ifdef _GT_DEBUG_
+      std::cout << "[LEFT Arrow] Pressed.\n";
+#endif
+      movetile(vec2(-1,0));
+      break;
+    case 101: // Up Arrow (Rotate Tile)
+#ifdef _GT_DEBUG_
+      std::cout << "[UP Arrow] Pressed.\n";
+#endif
+      rotate();
+      break;
+    case 102: // Right Arrow
+#ifdef _GT_DEBUG_
+      std::cout << "[RIGHT Arrow] Pressed.\n";
+#endif
+      movetile(vec2(1,0));
+      break;
+    case 103: // Down Arrow
+#ifdef _GT_DEBUG_
+      std::cout << "[DOWN Arrow] Pressed.\n";
+#endif
+      movetile(vec2(0,-1));
+      break;
+  }
+}
+
+// Handles standard keypresses
+void
+keyboard(unsigned char key, int x, int y) {
+  switch(key)
+  {
+    case 033: // Both escape key and 'q' cause the game to exit
+      exit(EXIT_SUCCESS);
+      break;
+    case 'q':
+      exit (EXIT_SUCCESS);
+      break;
+    case 't':
+      rotate();
+      break;
+    case 'r': // 'r' key restarts the game
+      restart();
+      break;
+  }
+  glutPostRedisplay();
+}
+
+// Draws the game
+void display() {
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  glUniform1i(locxsize, xsize); // x and y sizes are passed to the shader program to maintain shape of the vertices on screen
+  glUniform1i(locysize, ysize);
+
+  glBindVertexArray(vaoIDs[1]); // Bind the VAO representing the grid cells (to be drawn first)
+  glDrawArrays(GL_TRIANGLES, 0, 1200); // Draw the board (10*20*2 = 400 triangles)
+
+  glBindVertexArray(vaoIDs[2]); // Bind the VAO representing the current tile (to be drawn on top of the board)
+  glDrawArrays(GL_TRIANGLES, 0, 24); // Draw the current tile (8 triangles)
+
+  glBindVertexArray(vaoIDs[0]); // Bind the VAO representing the grid lines (to be drawn on top of everything else)
+  glDrawArrays(GL_LINES, 0, 64); // Draw the grid lines (21+11 = 32 lines)
+
+  glutSwapBuffers();
+}
+
+void
+idle() {
+  glutPostRedisplay();
+}
+
 int main(int argc, char **argv)
 {
 	// OpenGL Utility ToolKit - Configure a window
@@ -60,7 +147,7 @@ int main(int argc, char **argv)
 
 	// Initialize GLEW
 	if(glewInit()) {
-		cerr << "Unable to initialize GLEW ... exiting" << endl;
+    std::cerr << "Unable to initialize GLEW ... exiting.\n";
 		exit(EXIT_FAILURE);
 	}
 
@@ -68,10 +155,11 @@ int main(int argc, char **argv)
   srand (time(NULL)); // initialize random seed
 
 	// Callback functions
+  glutReshapeFunc(reshape);
+  glutSpecialFunc(special);
+  glutKeyboardFunc(keyboard);
 	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
-	glutSpecialFunc(special);
-	glutKeyboardFunc(keyboard);
+
 	// TODO:	glutTimerFunc(800,)
 	glutIdleFunc(idle);
 
