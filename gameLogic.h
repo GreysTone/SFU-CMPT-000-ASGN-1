@@ -66,6 +66,8 @@ namespace GT_gameLogic {
   bool moveTile(vec2 direction);
   // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
   void updateTile();
+  // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
+  void setTile();
 
 
   // Checks if the current tile is collide with the bottom or the stack of tiles
@@ -73,15 +75,13 @@ namespace GT_gameLogic {
   // Checks if it is possible to remove some tri-parts
   void removeTriTile(int x, int y, vec4 color);
   void searchMatrix(int x, int y, gtDirection direction, vec4 color);
+  bool searchPoint(int x, int y, vec4 color);
+  void eliminatePoint(int x, int y);
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
-  void checkFullRow(int row);
-
-  // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
-  void setTile();
+  inline void checkFullRow(int row);
 
 
-  void timerDrop(int data);
   bool isGameOver();
   // Starts the game over - empties the board, creates new tiles, resets line counters
   void restart();

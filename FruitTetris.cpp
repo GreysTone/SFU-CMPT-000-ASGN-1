@@ -51,6 +51,8 @@ init() {
 	glClearColor(0, 0, 0, 0);
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+
 // Reshape callback will simply change xsize and ysize variables, which are passed to the vertex shader
 // to keep the game the same from stretching if the window is stretched
 void
@@ -131,10 +133,26 @@ void display() {
   glutSwapBuffers();
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+
+void
+timerDrop(int data) {
+  //reset timer
+  glutTimerFunc(800, timerDrop, 0);
+
+#ifdef _GT_DEBUG_
+  std::cout << "timerDrop triggered - " << data << "\n";
+#endif
+  moveTile(vec2(0, -2));
+  glutPostRedisplay();
+}
+
 void
 idle() {
   glutPostRedisplay();
 }
+
+//-------------------------------------------------------------------------------------------------------------------
 
 int main(int argc, char **argv)
 {
