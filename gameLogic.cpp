@@ -24,28 +24,30 @@ namespace GT_gameLogic {
   // current tile
   vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
   vec2 tilepos = vec2(5, 19); // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
+  gtShape tileShape = sI;
+  int tileModule = 0;
 
   // An array storing all possible orientations of all possible tiles
   // The 'tile' array will always be some element [i][j] of this array (an array of vec2)
   vec2 allRotationsLShape[4][4] = {
-      {vec2( 0, 0), vec2(-1, 0), vec2( 1, 0), vec2(-1,-1)},
+      {vec2( 1, 0), vec2( 0, 0), vec2(-1, 0), vec2(-1,-1)},
       {vec2( 0, 1), vec2( 0, 0), vec2( 0,-1), vec2( 1,-1)},
-      {vec2( 1, 1), vec2(-1, 0), vec2( 0, 0), vec2( 1, 0)},
-      {vec2(-1, 1), vec2( 0, 1), vec2( 0, 0), vec2( 0,-1)}
+      {vec2(-1, 0), vec2( 0, 0), vec2( 1, 0), vec2( 1, 1)},
+      {vec2( 0,-1), vec2( 0, 0), vec2( 0, 1), vec2(-1, 1)}
   };
   vec2 allRotationsIShape[2][4] = {
-      {vec2( 0, 0), vec2(-1, 0), vec2(-2, 0), vec2( 1, 0)},
-      {vec2( 0, 0), vec2( 0, 1), vec2( 0,-1), vec2( 0,-2)}
+      {vec2(-2, 0), vec2(-1, 0), vec2( 0, 0), vec2( 1, 0)},
+      {vec2( 0,-2), vec2( 0,-1), vec2( 0, 0), vec2( 0, 1)}
   };
   vec2 allRotationsSShape[2][4] = {
-      {vec2( 0, 0), vec2( 0,-1), vec2(-1,-1), vec2( 1, 0)},
-      {vec2( 0, 0), vec2( 0, 1), vec2( 1, 0), vec2( 1,-1)}
+      {vec2(-1,-1), vec2( 0,-1), vec2( 0, 0), vec2( 1, 0)},
+      {vec2( 1,-1), vec2( 1, 0), vec2( 0, 0), vec2( 0, 1)}
   };
   vec2 allRotationsTShape[4][4] = {
-      {vec2( 0, 0), vec2(-1, 0), vec2( 0,-1), vec2( 1, 0)},
-      {vec2( 0, 0), vec2( 0, 1), vec2( 0,-1), vec2( 1, 0)},
-      {vec2( 0, 0), vec2(-1, 0), vec2( 1, 0), vec2( 0, 1)},
-      {vec2(-1, 1), vec2( 0, 1), vec2( 0,-1), vec2(-1, 0)}
+      {vec2(-1, 0), vec2( 0, 0), vec2( 1, 0), vec2( 0,-1)},
+      {vec2( 0,-1), vec2( 0, 0), vec2( 0, 1), vec2( 1, 0)},
+      {vec2( 1, 0), vec2( 0, 0), vec2(-1, 0), vec2( 0, 1)},
+      {vec2( 0, 1), vec2( 0, 0), vec2( 0,-1), vec2(-1, 0)}
   };
 
   //board[x][y] represents whether the cell (x,y) is occupied
@@ -87,7 +89,32 @@ namespace GT_gameLogic {
   // Handle arrow key keypresses
   void
   special(int key, int x, int y) {
-
+    switch (key) {
+      case 100: // Left Arrow
+#ifdef _GT_DEBUG_
+          std::cout << "[LEFT Arrow] Pressed.\n";
+#endif
+        movetile(vec2(-1,0));
+        break;
+      case 101: // Up Arrow (Rotate Tile)
+#ifdef _GT_DEBUG_
+        std::cout << "[UP Arrow] Pressed.\n";
+#endif
+        rotate();
+        break;
+      case 102: // Right Arrow
+#ifdef _GT_DEBUG_
+        std::cout << "[RIGHT Arrow] Pressed.\n";
+#endif
+        movetile(vec2(1,0));
+        break;
+      case 103: // Down Arrow
+#ifdef _GT_DEBUG_
+        std::cout << "[DOWN Arrow] Pressed.\n";
+#endif
+        movetile(vec2(0,-1));
+        break;
+    }
   }
 
   // Handles standard keypresses
@@ -101,6 +128,9 @@ namespace GT_gameLogic {
         break;
       case 'q':
         exit (EXIT_SUCCESS);
+        break;
+      case 't':
+        rotate();
         break;
       case 'r': // 'r' key restarts the game
         restart();
@@ -146,14 +176,54 @@ namespace GT_gameLogic {
 
   // Called at the start of play and every time a tile is placed
   void
-  newTile()
-  {
-    tilepos = vec2(5 , 19); // Put the tile at the top of the board
+  newTile() {
+    tileShape = gtShape(rand() % 3);
 
     // Update the geometry VBO of current tile
-    for (int i = 0; i < 4; i++)
-      tile[i] = allRotationsLShape[0][i]; // Get the 4 pieces of the new tile
+    switch (tileShape) {
+      case sI: {
+        tileModule = rand() % 2;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsIShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
+      case sS: {
+        tileModule = rand() % 2;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsSShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
+      case sL: {
+        tileModule = rand() % 4;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsLShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
+      case sT: {
+        tileModule = rand() % 4;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsTShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
+    }
+
+    // calculate the range of the tile
+    GLfloat xmax = tile[0].x;
+    GLfloat ymax = tile[0].y;
+    GLfloat xmin = tile[0].x;
+    for (int i = 1; i < 4; i++) {
+      if (tile[i].x > xmax) xmax = tile[i].x;
+      if (tile[i].y > ymax) ymax = tile[i].y;
+      if (tile[i].x < xmin) xmin = tile[i].x;
+    }
+
+    // randomize the position
+    GLfloat x = (rand() % (int)(10 - xmax + xmin)) - xmin;
+    GLfloat y = 19 - ymax;
+    tilepos = vec2(x , y);
+
     updateTile();
+
 
     // Update the color VBO of current tile
     vec4 newcolours[24];
@@ -280,7 +350,58 @@ namespace GT_gameLogic {
   }
 
   // Rotates the current tile, if there is room
-  void rotate(){}
+  void rotate(){
+    // Update the geometry VBO of current tile
+    switch (tileShape) {
+      case sI: {
+        tileModule = (tileModule + 1) % 2;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsIShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
+      case sS: {
+        tileModule = (tileModule + 1) % 2;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsSShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
+      case sL: {
+        tileModule = (tileModule + 1) % 4;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsLShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
+      case sT: {
+        tileModule = (tileModule + 1) % 4;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsTShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
+    }
+
+    // calculate the range of the tile
+    GLfloat xmax = tile[0].x;
+    GLfloat ymax = tile[0].y;
+    GLfloat xmin = tile[0].x;
+    GLfloat ymin = tile[0].y;
+    for (int i = 1; i < 4; i++) {
+      if (tile[i].x > xmax) xmax = tile[i].x;
+      if (tile[i].y > ymax) ymax = tile[i].y;
+      if (tile[i].x < xmin) xmin = tile[i].x;
+      if (tile[i].y < ymin) ymin = tile[i].y;
+    }
+
+    // adjust the position
+    while(tilepos.x + xmax >  9) tilepos.x--;
+    while(tilepos.y + ymax > 19) tilepos.y--;
+    while(tilepos.x + xmin <  0) tilepos.x++;
+    while(tilepos.y + ymin <  0) tilepos.y++;
+
+    updateTile();
+
+    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+  }
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -299,12 +420,68 @@ namespace GT_gameLogic {
 // Returns true if the tile was successfully moved, or false if there was some issue
   bool movetile(vec2 direction)
   {
+    int shifty = (int)direction.y;
+#ifdef _GT_DEBUG_
+    std::cout << "shifty - " << shifty << std::endl;
+#endif
+    switch (shifty) {
+      case 0: { // Horizontal movement
+        int shiftx = (int)direction.x;
+#ifdef _GT_DEBUG_
+        std::cout << "shiftx - " << shiftx << std::endl;
+#endif
+        // calculate the range of the tile
+        GLfloat xmax = tile[0].x;
+        GLfloat xmin = tile[0].x;
+        for (int i = 1; i < 4; i++) {
+          if (tile[i].x > xmax) xmax = tile[i].x;
+          if (tile[i].x < xmin) xmin = tile[i].x;
+        }
+        switch (shiftx) {
+          case -1: { // Left
+            std::cout << "xo:" << tilepos.x << "\n";
+            if (tilepos.x + xmin > 0) tilepos.x--; // adjust position
+            std::cout << "xo:" << tilepos.x << "\n";
+            break;
+          }
+          case 1: { // Right
+            if (tilepos.x + xmax < 9) tilepos.x++; // adjust position
+            break;
+          }
+        }
+        updateTile();
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        break;
+      }
+      case -1: { // Down
+        break;
+      }
+    }
     return false;
   }
 //-------------------------------------------------------------------------------------------------------------------
 
 // Starts the game over - empties the board, creates new tiles, resets line counters
-  void restart(){}
+  void
+  restart(){
+    // Initialize the grid, the board, and the current tile
+    initGrid();
+    initBoard();
+    initCurrentTile();
+
+    // The location of the uniform variables in the shader program
+//    locxsize = glGetUniformLocation(program, "xsize");
+//    locysize = glGetUniformLocation(program, "ysize");
+
+    // Game initialization
+    newTile(); // create new next tile
+
+    // set to default
+    glBindVertexArray(0);
+    glClearColor(0, 0, 0, 0);
+  }
 
 
 

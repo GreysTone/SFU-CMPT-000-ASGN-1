@@ -9,8 +9,11 @@
 //#include <random>
 #include <stdlib.h>
 #include <time.h>
+#include <iostream>
 
 namespace GT_gameLogic {
+
+#define _GT_DEBUG_
 
   extern int xsize;
   extern int ysize;
@@ -29,6 +32,9 @@ namespace GT_gameLogic {
   extern vec2 allRotationsIShape[2][4];
   extern vec2 allRotationsSShape[2][4];
   extern vec2 allRotationsTShape[4][4];
+  enum gtShape {sI = 0, sS, sL, sT};
+  extern gtShape tileShape;
+  extern int tileModule;
 
   //board[x][y] represents whether the cell (x,y) is occupied
   extern bool board[10][20];
@@ -51,8 +57,8 @@ namespace GT_gameLogic {
   extern GLuint vboIDs[6]; // Two Vertex Buffer Objects for each VAO (specifying vertex positions and colours, respectively)
 
   // random generator
-//  extern std::default_random_engine generator;
-//  extern std::uniform_int_distribution<int> dist;
+  //  extern std::default_random_engine generator;
+  //  extern std::uniform_int_distribution<int> dist;
 
 //-------------------------------------------------------------------------------------------------------------------
 
