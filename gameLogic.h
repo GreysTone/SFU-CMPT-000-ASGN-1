@@ -27,7 +27,7 @@ namespace GT_gameLogic {
   extern gtShape tileShape;
   extern int tileModule;
 
-  enum gtDirection {UL = 0, UP, UR, LE, RI, DL, DO, DR};
+  enum gtDirection {UL = 0, UP, UR, LE, RI, DL, DO, DR, CTN};
 
   //board[x][y] represents whether the cell (x,y) is occupied
   extern bool board[10][20];
@@ -47,6 +47,11 @@ namespace GT_gameLogic {
   // random generator
   //  extern std::default_random_engine generator;
   //  extern std::uniform_int_distribution<int> dist;
+
+  // Searching Temporary Data
+  extern bool removingMatrix[10][20];
+  extern bool isRemovingMatrixEmpty;
+  extern bool visitedBoard[10][20];
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -78,6 +83,15 @@ namespace GT_gameLogic {
   bool searchPoint(int x, int y, vec4 c);
   void eliminatePoint(int x, int y);
   inline void updateBoardColor(int x, int y, vec4 color);
+
+
+
+  // NewIdea
+  void detectWholeMap();
+  void searchTileInDFS(int x, int y, vec4 color);
+
+
+
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
   inline void checkFullRow(int row);

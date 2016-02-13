@@ -381,8 +381,7 @@ namespace GT_gameLogic {
 
   // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
   void
-  updateTile()
-  {
+  updateTile() {
     // Bind the VBO containing current tile vertex positions
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
 
@@ -627,6 +626,65 @@ namespace GT_gameLogic {
     boardcolours[6*(10*y + x) + 3] = c;
     boardcolours[6*(10*y + x) + 4] = c;
     boardcolours[6*(10*y + x) + 5] = c;
+  }
+
+  // NewIdea
+  bool isRemovingMatrixEmpty;
+
+  void
+  detectWholeMap() {
+    // clear temporary data
+    for(int i = 0; i < 10; i++) {
+      for (int j = 0; j < 20; j++){
+        removingMatrix[i][j] = false;
+        visitedBoard[i][j] = false;
+      }
+    }
+    isRemovingMatrixEmpty = true;
+
+    for(int i = 0; i < 20; i++) {
+      for (int j = 0; j < 10; j++)
+    }
+  }
+
+  bool visitedBoard[10][20];
+
+  void
+  searchTileInDFS(int x, int y, vec4 color) {
+    // when searching is out of range, stop
+    if(x < 0 || x >= 10 || y < 0 || y >= 20) return ;
+
+    // visited status
+    visitedBoard[x][y] = true;
+
+    if(boardcolours[6*(10*y+x)] == color) removingMatrix[x][y] = true;
+    else return ; // when current color is different, stop
+
+    // search UpLeft
+    if(x - 1 > 0 && y + 1 < 20 && !visitedBoard[x-1][y+1])
+      searchTileInDFS(x-1, y+1, color);
+    // search Up
+    if(y + 1 < 20 && !visitedBoard[x][y+1])
+      searchTileInDFS(x, y+1, color);
+    // search UpRight
+    if(x + 1 < 10 && y + 1 < 20 && !visitedBoard[x+1][y+1])
+      searchTileInDFS(x+1, y+1, color);
+    // search Left
+    if(x - 1 > 0 && !visitedBoard[x-1][y])
+      searchTileInDFS(x-1, y, color);
+    // search Right
+    if(x + 1 < 10 && !visitedBoard[x+1][y])
+      searchTileInDFS(x+1, y, color);
+    // search DownLeft
+    if(x - 1 > 0 && y - 1 > 0 && !visitedBoard[x-1][y-1])
+      searchTileInDFS(x-1, y-1, color);
+    // search Down
+    if(y - 1 > 0 && !visitedBoard[x][y-1])
+      searchTileInDFS(x, y-1, color);
+    // search DownRight
+    if(x + 1 < 10 && y - 1 > 0 && !visitedBoard[x+1][y-1])
+      searchTileInDFS(x+1, y-1, color);
+
   }
 
   // Checks if the specified row (0 is the bottom 19 the top) is full
