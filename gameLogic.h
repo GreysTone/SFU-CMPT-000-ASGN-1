@@ -12,19 +12,25 @@
 #include <time.h>
 #include <iostream>
 
-//#define GT_DEBUG_TIMER
-//#define GT_DEBUG_COLLISION
-//#define GT_DEBUG_TILE_POSITION_ONLINE
-//#define GT_DEBUG_TILE_POSITION
-//#define GT_DEBUG_OCCUPATION
-#define GT_DEBUG_ELIMINATION_MATRIX
-#define GT_DEBUG_ELIMINATION_HOR
-//#define GT_DEBUG_ELIMINATION
-
 using namespace std;
 using namespace GT_gameSetting;
 
 namespace GT_gameLogic {
+
+#define GT_DEBUG_COLLISION
+//#define GT_DEBUG_TILE_POSITION_ONLINE
+//#define GT_DEBUG_TILE_POSITION
+//#define GT_DEBUG_OCCUPATION
+//#define GT_DEBUG_SOLID_COLOR
+#define GT_DEBUG_COLOR_MATRIX
+#define GT_DEBUG_ELIMINATION_MATRIX
+#define GT_DEBUG_ELIMINATION
+//#define GT_DEBUG_ELIMINATION_HOR
+//#define GT_DEBUG_ELIMINATION_VER
+//#define GT_DEBUG_ELIMINATION_LDG
+//#define GT_DEBUG_ELIMINATION_RDG
+//#define GT_DEBUG_ELIMINATION_OUTPUT
+//#define GT_DEBUG_ELIMINATION_POINT_DETAIL
 
   // current tile
   extern vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
@@ -41,8 +47,8 @@ namespace GT_gameLogic {
   extern bool board[10][20];
 
   // location of vertex attributes in the shader program
-  extern GLint vPosition;
-  extern GLint vColor;
+  extern GLuint vPosition;
+  extern GLuint vColor;
 
   // locations of uniform variables in shader program
   extern GLint locxsize;
@@ -84,7 +90,7 @@ namespace GT_gameLogic {
 
 
   // Checks if the current tile is collide with the bottom or the stack of tiles
-  bool collisionDetect();
+  bool collisionDetect(gtDirection towards);
   void eliminatePoint(int x, int y);
   inline void updateBoardColor(int x, int y, vec4 color);
 
@@ -94,6 +100,7 @@ namespace GT_gameLogic {
   bool isWholeMapStatic();
 
   inline bool isColorSame(vec4 a, vec4 b);
+  void getColorName(int x, int y);
 
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row

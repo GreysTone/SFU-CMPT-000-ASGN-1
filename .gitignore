@@ -9,5 +9,8 @@ FruitTetris
 # ignore profiling files
 gmon.out
 
+# ignore dump files
+core
+
 # ignore IDE files
 .idea

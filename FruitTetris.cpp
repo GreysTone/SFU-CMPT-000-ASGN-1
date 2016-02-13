@@ -20,8 +20,6 @@ Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
 
 using namespace GT_gameLogic;
 
-#define GT_DEBUG_CLOSE_TIMER
-
 void
 init() {
 	// Load shaders and use the shader program
@@ -68,25 +66,25 @@ void
 special(int key, int x, int y) {
   switch (key) {
     case 100: // Left Arrow
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_SPECIAL_KEYINFO
       std::cout << "[LEFT Arrow] Pressed.\n";
 #endif
       moveTile(vec2(-1, 0));
       break;
     case 101: // Up Arrow (Rotate Tile)
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_SPECIAL_KEYINFO
       std::cout << "[UP Arrow] Pressed.\n";
 #endif
       rotate();
       break;
     case 102: // Right Arrow
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_SPECIAL_KEYINFO
       std::cout << "[RIGHT Arrow] Pressed.\n";
 #endif
       moveTile(vec2(1, 0));
       break;
     case 103: // Down Arrow
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_SPECIAL_KEYINFO
       std::cout << "[DOWN Arrow] Pressed.\n";
 #endif
       moveTile(vec2(0, -1));
@@ -139,9 +137,9 @@ void display() {
 void
 timerDrop(int data) {
   //reset timer
-  glutTimerFunc(800, timerDrop, 0);
+  glutTimerFunc(DROP_SPEED, timerDrop, 0);
 
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_TIMER
   std::cout << "timerDrop triggered - " << data << "\n";
 #endif
   moveTile(vec2(0, -2));
@@ -180,7 +178,7 @@ int main(int argc, char **argv)
 	glutDisplayFunc(display);
 
 #ifndef GT_DEBUG_CLOSE_TIMER
-	glutTimerFunc(800, timerDrop, 0);
+	glutTimerFunc(DROP_SPEED, timerDrop, 0);
 #endif
 	glutIdleFunc(idle);
 
