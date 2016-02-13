@@ -1,5 +1,5 @@
 //
-// Created by greystone on 11/02/16.
+// Created by Danyang Song on 11/02/16.
 //
 
 #ifndef ASSIGNMENT1_GAMESETTING_H

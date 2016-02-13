@@ -77,19 +77,13 @@ namespace GT_gameLogic {
 
   // Checks if the current tile is collide with the bottom or the stack of tiles
   bool collisionDetect();
-  // Checks if it is possible to remove some tri-parts
-  //void removeTriTile(int x, int y, vec4 color);
-  //void searchMatrix(int x, int y, gtDirection direction, vec4 color);
-  //bool searchPoint(int x, int y, vec4 c);
   void eliminatePoint(int x, int y);
   inline void updateBoardColor(int x, int y, vec4 color);
 
 
 
-  // NewIdea
   void clearWholeMap();
   bool isWholeMapStatic();
-  //void searchTileInDFS(int x, int y, vec4 color);
 
 
 
