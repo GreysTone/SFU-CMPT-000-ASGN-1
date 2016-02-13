@@ -1,6 +1,6 @@
 # FruitTetris
 
-Assignment 1 for **SFU-CMPT 361** *Introductions to Computer Graphics*
+Assignment 1 for *Intros to CG*
 
 Based on "Skeleton Code" (commit 731f2cf343bc525ebcd16e506c7dd5e652c6d228 on GitLab).
 
