@@ -20,6 +20,8 @@ Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
 using namespace GT_gameLogic;
 
 #define _GT_DEBUG_
+//#define GT_DEBUG_TIMER
+//#define GT_DEBUG_COLLISION
 
 void
 init() {

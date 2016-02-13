@@ -334,34 +334,51 @@ namespace GT_gameLogic {
       }
       case -1: // Down
       case -2: { // Timer Drop
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_TIMER
         if(shifty == -2) std::cout << "timer tigger in movtile(vec2)\n";
 #endif
         if(!collisionDetect()) { // Can move downward
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_COLLISION
           std::cout << "no collision, moving downward...\n";
 #endif
           tilepos.y--; // adjust position
         } else { // Collision
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_COLLISION
           std::cout << "[!!!]collision detected!\n";
 #endif
           // Solid tile (update board occupation & color)
           setTile();
-          // Remove tri-part
-          for(int i = 0; i < 4; i++) {
-            int offsetX = (int) tilepos.x + (int) tile[i].x;
-            int offsetY = (int) tilepos.y + (int) tile[i].y;
-            vec4 offsetColor = palette[tiledColor[i]];
-            removeTriTile(offsetX, offsetY, offsetColor);
-          }
+          // Remove Tri-part
+          clearWholeMap();
+//          // Remove tri-part
+//          for(int i = 0; i < 4; i++) {
+//            int offsetX = (int) tilepos.x + (int) tile[i].x;
+//            int offsetY = (int) tilepos.y + (int) tile[i].y;
+//            vec4 offsetColor = palette[tiledColor[i]];
+//            removeTriTile(offsetX, offsetY, offsetColor);
+//          }
           // Remove full row
           for(int i = 0; i < 20; i++)
             checkFullRow(i);
           // Check Game Over
           if(!isGameOver()) {
             // Render Board
+            //TODO: <<<FIN?>>> Update VBO to OpenGL engine
+            // *** set up buffer objects
+            glBindVertexArray(vaoIDs[1]);
+            glGenBuffers(2, &vboIDs[2]);
 
+            // Grid cell vertex positions
+            //glBindBuffer(GL_ARRAY_BUFFER, vboIDs[2]);
+            //glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardpoints, GL_STATIC_DRAW);
+            //glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+            //glEnableVertexAttribArray(vPosition);
+
+            // Grid cell vertex colours
+            glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
+            glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+            glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(vColor);
             // New tile
             newTile();
           } else {
@@ -420,23 +437,6 @@ namespace GT_gameLogic {
       vec4 offsetColor = palette[tiledColor[i]];
       updateBoardColor(offsetX, offsetY, offsetColor);
     }
-
-    //TODO: Update VBO to OpenGL engine
-    // *** set up buffer objects
-    glBindVertexArray(vaoIDs[1]);
-    glGenBuffers(2, &vboIDs[2]);
-
-    // Grid cell vertex positions
-    //glBindBuffer(GL_ARRAY_BUFFER, vboIDs[2]);
-    //glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardpoints, GL_STATIC_DRAW);
-    //glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    //glEnableVertexAttribArray(vPosition);
-
-    // Grid cell vertex colours
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
-    glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vColor);
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -444,10 +444,12 @@ namespace GT_gameLogic {
   // Checks if the current tile is collide with the bottom or the stack of tiles
   bool
   collisionDetect() {
+    //TODO: not strict detection
+
     for(int i = 0; i < 4; i++) {
       int nxtPosX = (int)tilepos.x + (int)tile[i].x;
       int nxtPosY = (int)tilepos.y + (int)tile[i].y - 1;
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_COLLISION
       std::cout << "detecting nxtX:" << nxtPosX << " - nxtY:" << nxtPosY << ".\n";
 #endif
       if(board[nxtPosX][nxtPosY] || nxtPosY < 0) return true;
@@ -457,165 +459,150 @@ namespace GT_gameLogic {
 
   // Checks if it is possible to remove some tri-parts
   bool removingMatrix[10][20];
-  bool removingEmpty;
+//  bool removingEmpty;
+//
+//  void
+//  removeTriTile(int x, int y, vec4 color) {
+//    if(board[x][y]) {
+//      bool empty = searchPoint(x, y, color);
+//
+//      // Remove Tiles (update board occupation & color) & Drop Rest
+//      if(!empty){
+//        for(int i = 19; i != 0; i--) {
+//          for (int j = 0; j != 9; j++) {
+//            if(removingMatrix[j][i]) {
+//              eliminatePoint(j, i);
+//            }
+//          }
+//        }
+//        //TOD
+//      }
+//
+//
+//    } else {
+//      return ;
+//    }
+//  }
 
-  void
-  removeTriTile(int x, int y, vec4 color) {
-    if(board[x][y]) {
-      bool empty = searchPoint(x, y, color);
-#ifdef _GT_DEBUG_
-      for(int i = 19; i != 0; i--) {
-        for(int j = 0; j != 9; j++) {
-          if(j == x && i == y) {
-            std::cout << "* ";
-          } else {
-            std::cout << removingMatrix[j][i] << " ";
-          }
-        }
-        std::cout << "\n";
-      }
-      std::cout << "\n";
-#endif
-      // Remove Tiles (update board occupation & color) & Drop Rest
-      if(!empty){
-        for(int i = 19; i != 0; i--) {
-          for (int j = 0; j != 9; j++) {
-            if(removingMatrix[j][i]) {
-              eliminatePoint(j, i);
-            }
-          }
-        }
-        //TODO: check down
-      }
-
-
-    } else {
-      return ;
-    }
-  }
-
-  void
-  searchMatrix(int x, int y, gtDirection direction, vec4 color) {
-    if(x < 0 || x > 9 || y < 0 || y > 19) return;
-    if(!board[x][y]) return;
-    switch (direction) {
-      case UL: {
-        if(x - 1 > 0 && y + 1 < 20 && boardcolours[6*(10*(x-1)+(y+1))] == color) {
-          removingMatrix[x-1][y+1] = true;
-          removingEmpty = false;
-          searchMatrix(x-1, y+1, direction, color);
-        } else {
-          return ;
-        }
-        break;
-      }
-      case UP: {
-        if(y + 1 < 20 && boardcolours[6*(10*(x)+(y+1))] == color) {
-          removingMatrix[x][y+1] = true;
-          removingEmpty = false;
-          searchMatrix(x, y+1, direction, color);
-        } else {
-          return ;
-        }
-        break;
-      }
-      case UR: {
-        if(x + 1 < 10 && y + 1 < 20 && boardcolours[6*(10*(x+1)+(y+1))] == color) {
-          removingMatrix[x+1][y+1] = true;
-          removingEmpty = false;
-          searchMatrix(x+1, y+1, direction, color);
-        } else {
-          return ;
-        }
-        break;
-      }
-      case LE: {
-        if(x - 1 > 0 && boardcolours[6*(10*(x-1)+(y))] == color) {
-          removingMatrix[x-1][y] = true;
-          removingEmpty = false;
-          searchMatrix(x-1, y, direction, color);
-        } else {
-          return ;
-        }
-        break;
-      }
-      case RI: {
-        if(x + 1 < 10 &&  boardcolours[6*(10*(x+1)+(y))] == color) {
-          removingMatrix[x+1][y] = true;
-          removingEmpty = false;
-          searchMatrix(x+1, y, direction, color);
-        } else {
-          return ;
-        }
-        break;
-      }
-      case DL: {
-        if(x - 1 > 0 && y - 1 > 0 && boardcolours[6*(10*(x-1)+(y-1))] == color) {
-          removingMatrix[x-1][y-1] = true;
-          removingEmpty = false;
-          searchMatrix(x-1, y-1, direction, color);
-        } else {
-          return ;
-        }
-        break;
-      }
-      case DO: {
-        if(y - 1 > 0 && boardcolours[6*(10*(x)+(y-1))] == color) {
-          removingMatrix[x][y-1] = true;
-          removingEmpty = false;
-          searchMatrix(x, y-1, direction, color);
-        } else {
-          return ;
-        }
-        break;
-      }
-      case DR: {
-        if(x + 1 < 10 && y - 1 > 0 && boardcolours[6*(10*(x+1)+(y-1))] == color) {
-          removingMatrix[x+1][y-1] = true;
-          removingEmpty = false;
-          searchMatrix(x+1, y-1, direction, color);
-        } else {
-          return ;
-        }
-        break;
-      }
-    }
-  }
-
-  bool
-  searchPoint(int x, int y, vec4 color) {
-    // initialize Matrix & EmptyFlag
-    for(int i = 0; i < 10; i++)
-      for(int j = 0; j < 20; j++)
-        removingMatrix[i][j] = false;
-    removingEmpty = true;
-    // searching
-    searchMatrix(x, y, UL, color);
-    searchMatrix(x, y, UP, color);
-    searchMatrix(x, y, UR, color);
-    searchMatrix(x, y, LE, color);
-    searchMatrix(x, y, RI, color);
-    searchMatrix(x, y, DL, color);
-    searchMatrix(x, y, DO, color);
-    searchMatrix(x, y, DR, color);
-    if(!removingEmpty) removingMatrix[x][y] = true;
-    return removingEmpty;
-  }
+//  void
+//  searchMatrix(int x, int y, gtDirection direction, vec4 color) {
+//    if(x < 0 || x > 9 || y < 0 || y > 19) return;
+//    if(!board[x][y]) return;
+//    switch (direction) {
+//      case UL: {
+//        if(x - 1 > 0 && y + 1 < 20 && boardcolours[6*(10*(x-1)+(y+1))] == color) {
+//          removingMatrix[x-1][y+1] = true;
+//          removingEmpty = false;
+//          searchMatrix(x-1, y+1, direction, color);
+//        } else {
+//          return ;
+//        }
+//        break;
+//      }
+//      case UP: {
+//        if(y + 1 < 20 && boardcolours[6*(10*(x)+(y+1))] == color) {
+//          removingMatrix[x][y+1] = true;
+//          removingEmpty = false;
+//          searchMatrix(x, y+1, direction, color);
+//        } else {
+//          return ;
+//        }
+//        break;
+//      }
+//      case UR: {
+//        if(x + 1 < 10 && y + 1 < 20 && boardcolours[6*(10*(x+1)+(y+1))] == color) {
+//          removingMatrix[x+1][y+1] = true;
+//          removingEmpty = false;
+//          searchMatrix(x+1, y+1, direction, color);
+//        } else {
+//          return ;
+//        }
+//        break;
+//      }
+//      case LE: {
+//        if(x - 1 > 0 && boardcolours[6*(10*(x-1)+(y))] == color) {
+//          removingMatrix[x-1][y] = true;
+//          removingEmpty = false;
+//          searchMatrix(x-1, y, direction, color);
+//        } else {
+//          return ;
+//        }
+//        break;
+//      }
+//      case RI: {
+//        if(x + 1 < 10 &&  boardcolours[6*(10*(x+1)+(y))] == color) {
+//          removingMatrix[x+1][y] = true;
+//          removingEmpty = false;
+//          searchMatrix(x+1, y, direction, color);
+//        } else {
+//          return ;
+//        }
+//        break;
+//      }
+//      case DL: {
+//        if(x - 1 > 0 && y - 1 > 0 && boardcolours[6*(10*(x-1)+(y-1))] == color) {
+//          removingMatrix[x-1][y-1] = true;
+//          removingEmpty = false;
+//          searchMatrix(x-1, y-1, direction, color);
+//        } else {
+//          return ;
+//        }
+//        break;
+//      }
+//      case DO: {
+//        if(y - 1 > 0 && boardcolours[6*(10*(x)+(y-1))] == color) {
+//          removingMatrix[x][y-1] = true;
+//          removingEmpty = false;
+//          searchMatrix(x, y-1, direction, color);
+//        } else {
+//          return ;
+//        }
+//        break;
+//      }
+//      case DR: {
+//        if(x + 1 < 10 && y - 1 > 0 && boardcolours[6*(10*(x+1)+(y-1))] == color) {
+//          removingMatrix[x+1][y-1] = true;
+//          removingEmpty = false;
+//          searchMatrix(x+1, y-1, direction, color);
+//        } else {
+//          return ;
+//        }
+//        break;
+//      }
+//    }
+//  }
+//
+//  bool
+//  searchPoint(int x, int y, vec4 color) {
+//    // initialize Matrix & EmptyFlag
+//    for(int i = 0; i < 10; i++)
+//      for(int j = 0; j < 20; j++)
+//        removingMatrix[i][j] = false;
+//    removingEmpty = true;
+//    // searching
+//    searchMatrix(x, y, UL, color);
+//    searchMatrix(x, y, UP, color);
+//    searchMatrix(x, y, UR, color);
+//    searchMatrix(x, y, LE, color);
+//    searchMatrix(x, y, RI, color);
+//    searchMatrix(x, y, DL, color);
+//    searchMatrix(x, y, DO, color);
+//    searchMatrix(x, y, DR, color);
+//    if(!removingEmpty) removingMatrix[x][y] = true;
+//    return removingEmpty;
+//  }
 
   void
   eliminatePoint(int x, int y) {
     board[x][y] = false; // eliminate occupation
-    // move board downward
+    // move upside blocks downward
     for(int i = y + 1; i < 20; i++) {
-      //TODO: board[]
       board[x][i-1] = board[x][i];
       updateBoardColor(x, i-1, boardcolours[6*(10*i+y)]);
     }
-    // update top row
-    for(int i = 0; i < 10; i++) {
-      board[i][19] = false;
-      updateBoardColor(i, 19, palette[black]);
-    }
+    // update the top block on this column
+    board[x][19] = false;
+    updateBoardColor(x, 19, palette[black]);
   }
 
   inline void
@@ -632,60 +619,213 @@ namespace GT_gameLogic {
   bool isRemovingMatrixEmpty;
 
   void
-  detectWholeMap() {
-    // clear temporary data
-    for(int i = 0; i < 10; i++) {
-      for (int j = 0; j < 20; j++){
-        removingMatrix[i][j] = false;
-        visitedBoard[i][j] = false;
+  clearWholeMap() {
+    while(!isWholeMapStatic()) {
+#ifdef _GT_DEBUG_
+      for(int i = 19; i != 0; i--) {
+        for(int j = 0; j != 9; j++) {
+            std::cout << removingMatrix[j][i] << " ";
+        }
+        std::cout << "\n";
       }
+      std::cout << "\n";
+#endif
+      // elimination
+      for (int y = 19; y >= 0; y--)
+        for (int x = 0; x < 10; x++)
+          if (removingMatrix[x][y]) eliminatePoint(x, y);
     }
+  }
+
+  bool
+  isWholeMapStatic() {
+    // clear temporary data
+    for(int i = 0; i < 10; i++)
+      for (int j = 0; j < 20; j++)
+        removingMatrix[i][j] = false;
     isRemovingMatrixEmpty = true;
 
-    for(int i = 0; i < 20; i++) {
-      for (int j = 0; j < 10; j++)
+    // check horizontal
+    for(int i = 20; i >= 0 ; i--) {
+      for (int j = 0; j < 10; j++) {
+        if(!board[j][i]) continue;  // if the board[j][i] is empty
+        int count = 0;    // store the count of the same color
+        int tail = 0;     // store the end of the same color
+        vec4 targetColor = boardcolours[6*(10*i+j)];
+        for (int k = j; k < 10; k++) {
+          if(boardcolours[6*(10*i+k)] == targetColor) {
+            count++;
+            continue;
+          } else {
+            tail = k - 1;
+            break;
+          }
+        }
+        // prepare to eliminate if more than 3
+        if(count >= 3) {
+          for(int k = j; k <= tail; k++) removingMatrix[k][i] = true;
+          isRemovingMatrixEmpty = false;
+        }
+      }
     }
+
+    // check vertical
+    for(int i = 20; i >= 0 ; i--) {
+      for (int j = 0; j < 10; j++) {
+        if(!board[j][i]) continue;  // if the board[j][i] is empty
+        int count = 0;    // store the count of the same color
+        int tail = 0;     // store the end of the same color
+        vec4 targetColor = boardcolours[6*(10*i+j)];
+        for (int k = i; k >= 0; k--) {
+          if(boardcolours[6*(10*k+j)] == targetColor) {
+            count++;
+            continue;
+          } else {
+            tail = k - 1;
+            break;
+          }
+        }
+        // prepare to eliminate if more than 3
+        if(count >= 3) {
+          for(int k = i; k >= tail; k--) removingMatrix[j][k] = true;
+          isRemovingMatrixEmpty = false;
+        }
+      }
+    }
+
+    // check diagonal - DL
+    for(int i = 20; i >= 0 ; i--) {
+      for (int j = 0; j < 10; j++) {
+        if (!board[j][i]) continue;  // if the board[j][i] is empty
+        int count = 0;    // store the count of the same color
+        int tail = 0;     // store the end of the same color
+        vec4 targetColor = boardcolours[6 * (10 * i + j)];
+        int offsetX = j, offsetY = i;
+        while(boardcolours[6*(10*offsetX+offsetY)] == targetColor) {
+          count++;
+          tail++;
+          if(!(offsetX-1>0 && offsetY-1>0)) break;
+          offsetX--;
+          offsetY--;
+        }
+        if(count >= 3) {
+          for(int k = tail - 1; k >= 0; k--) removingMatrix[j-k][i-k] = true;
+          isRemovingMatrixEmpty = false;
+        }
+      }
+    }
+
+    // check diagonal - DR
+    for(int i = 20; i >= 0 ; i--) {
+      for (int j = 0; j < 10; j++) {
+        if (!board[j][i]) continue;  // if the board[j][i] is empty
+        int count = 0;    // store the count of the same color
+        int tail = 0;     // store the end of the same color
+        vec4 targetColor = boardcolours[6 * (10 * i + j)];
+        int offsetX = j, offsetY = i;
+        while(boardcolours[6*(10*offsetX+offsetY)] == targetColor) {
+          count++;
+          tail++;
+          if(!(offsetX+1<10 && offsetY+1<19)) break;
+          offsetX++;
+          offsetY++;
+        }
+        if(count >= 3) {
+          for(int k = tail - 1; k >= 0; k--) removingMatrix[j+k][i+k] = true;
+          isRemovingMatrixEmpty = false;
+        }
+      }
+    }
+
+    return isRemovingMatrixEmpty;
   }
 
-  bool visitedBoard[10][20];
-
-  void
-  searchTileInDFS(int x, int y, vec4 color) {
-    // when searching is out of range, stop
-    if(x < 0 || x >= 10 || y < 0 || y >= 20) return ;
-
-    // visited status
-    visitedBoard[x][y] = true;
-
-    if(boardcolours[6*(10*y+x)] == color) removingMatrix[x][y] = true;
-    else return ; // when current color is different, stop
-
-    // search UpLeft
-    if(x - 1 > 0 && y + 1 < 20 && !visitedBoard[x-1][y+1])
-      searchTileInDFS(x-1, y+1, color);
-    // search Up
-    if(y + 1 < 20 && !visitedBoard[x][y+1])
-      searchTileInDFS(x, y+1, color);
-    // search UpRight
-    if(x + 1 < 10 && y + 1 < 20 && !visitedBoard[x+1][y+1])
-      searchTileInDFS(x+1, y+1, color);
-    // search Left
-    if(x - 1 > 0 && !visitedBoard[x-1][y])
-      searchTileInDFS(x-1, y, color);
-    // search Right
-    if(x + 1 < 10 && !visitedBoard[x+1][y])
-      searchTileInDFS(x+1, y, color);
-    // search DownLeft
-    if(x - 1 > 0 && y - 1 > 0 && !visitedBoard[x-1][y-1])
-      searchTileInDFS(x-1, y-1, color);
-    // search Down
-    if(y - 1 > 0 && !visitedBoard[x][y-1])
-      searchTileInDFS(x, y-1, color);
-    // search DownRight
-    if(x + 1 < 10 && y - 1 > 0 && !visitedBoard[x+1][y-1])
-      searchTileInDFS(x+1, y-1, color);
-
-  }
+//  void
+//  clearWholeMap() {
+//    for (int i = 20; i >= 0; i--) {
+//      for (int j = 0; j < 10; j++) {
+//        // clear temporary data
+//        for(int k = 0; k < 10; k++) {
+//          for (int p = 0; p < 20; p++){
+//            removingMatrix[k][p] = false;
+//            visitedBoard[k][p] = false;
+//          }
+//        }
+//        isRemovingMatrixEmpty = true;
+//        // doing searching
+//        searchTileInDFS(j, i, boardcolours[6*(10*i+j)]);
+//#ifdef _GT_DEBUG_
+//        std::cout << "Searching Map for row:" << i << " col:" << j << std::endl;
+//        for(int k = 19; k != 0; k--) {
+//          for(int p = 0; p != 9; p++) {
+//            if(k == i && p == j) {
+//              std::cout << "* ";
+//            } else {
+//              std::cout << removingMatrix[j][i] << " ";
+//            }
+//          }
+//          std::cout << "\n";
+//        }
+//        std::cout << "emptyFlag:" << isRemovingMatrixEmpty << "\n";
+//#endif
+//
+//        if(!isRemovingMatrixEmpty) {
+//          removingMatrix[j][i] = true;
+//
+//
+//
+//          // elimination
+//
+//          // rescan whole map
+//          i = 20;
+//          j = 0;
+//        }
+//      }
+//    }
+//  }
+//
+//  bool visitedBoard[10][20];
+//
+//  void
+//  searchTileInDFS(int x, int y, vec4 color) {
+//    // when searching is out of range, stop
+//    if(x < 0 || x >= 10 || y < 0 || y >= 20) return ;
+//
+//    // visited status
+//    visitedBoard[x][y] = true;
+//
+//    if(boardcolours[6*(10*y+x)] == color) {
+//      removingMatrix[x][y] = true;
+//      isRemovingMatrixEmpty = false;
+//    }
+//    else return ; // when current color is different, stop
+//
+//    // search UpLeft
+//    if(x - 1 > 0 && y + 1 < 20 && !visitedBoard[x-1][y+1])
+//      searchTileInDFS(x-1, y+1, color);
+//    // search Up
+//    if(y + 1 < 20 && !visitedBoard[x][y+1])
+//      searchTileInDFS(x, y+1, color);
+//    // search UpRight
+//    if(x + 1 < 10 && y + 1 < 20 && !visitedBoard[x+1][y+1])
+//      searchTileInDFS(x+1, y+1, color);
+//    // search Left
+//    if(x - 1 > 0 && !visitedBoard[x-1][y])
+//      searchTileInDFS(x-1, y, color);
+//    // search Right
+//    if(x + 1 < 10 && !visitedBoard[x+1][y])
+//      searchTileInDFS(x+1, y, color);
+//    // search DownLeft
+//    if(x - 1 > 0 && y - 1 > 0 && !visitedBoard[x-1][y-1])
+//      searchTileInDFS(x-1, y-1, color);
+//    // search Down
+//    if(y - 1 > 0 && !visitedBoard[x][y-1])
+//      searchTileInDFS(x, y-1, color);
+//    // search DownRight
+//    if(x + 1 < 10 && y - 1 > 0 && !visitedBoard[x+1][y-1])
+//      searchTileInDFS(x+1, y-1, color);
+//
+//  }
 
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
@@ -703,9 +843,11 @@ namespace GT_gameLogic {
     }
     // detect a full row
     if(isFull) {
-      for(int j = 0; j < 10; j++) {
-        eliminatePoint(j, row);
-      }
+      //TODO: <<<FIN?>>> if detect a full row
+//      clearWholeMap();
+//      for(int j = 0; j < 10; j++) {
+//        eliminatePoint(j, row);
+//      }
     }
   }
 

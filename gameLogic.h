@@ -51,7 +51,7 @@ namespace GT_gameLogic {
   // Searching Temporary Data
   extern bool removingMatrix[10][20];
   extern bool isRemovingMatrixEmpty;
-  extern bool visitedBoard[10][20];
+//  extern bool visitedBoard[10][20];
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -78,17 +78,18 @@ namespace GT_gameLogic {
   // Checks if the current tile is collide with the bottom or the stack of tiles
   bool collisionDetect();
   // Checks if it is possible to remove some tri-parts
-  void removeTriTile(int x, int y, vec4 color);
-  void searchMatrix(int x, int y, gtDirection direction, vec4 color);
-  bool searchPoint(int x, int y, vec4 c);
+  //void removeTriTile(int x, int y, vec4 color);
+  //void searchMatrix(int x, int y, gtDirection direction, vec4 color);
+  //bool searchPoint(int x, int y, vec4 c);
   void eliminatePoint(int x, int y);
   inline void updateBoardColor(int x, int y, vec4 color);
 
 
 
   // NewIdea
-  void detectWholeMap();
-  void searchTileInDFS(int x, int y, vec4 color);
+  void clearWholeMap();
+  bool isWholeMapStatic();
+  //void searchTileInDFS(int x, int y, vec4 color);
 
 
 
