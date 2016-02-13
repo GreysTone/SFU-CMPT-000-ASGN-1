@@ -395,6 +395,9 @@ namespace GT_gameLogic {
     // Bind the VBO containing current tile vertex positions
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
 
+#ifdef GT_DEBUG_TILE_POSITION_ONLINE
+    cout << "CUR_POS on updateTile()\n\t";
+#endif
     // For each of the 4 'cells' of the tile,
     for (int i = 0; i < 4; i++)
     {
@@ -402,6 +405,9 @@ namespace GT_gameLogic {
       GLfloat x = tilepos.x + tile[i].x;
       GLfloat y = tilepos.y + tile[i].y;
 
+#ifdef GT_DEBUG_TILE_POSITION_ONLINE
+      cout << "[" << i << "] X:" << x << " - Y:" << y << " | ";
+#endif
       // Create the 4 corners of the square - these vertices are using location in pixels
       // These vertices are later converted by the vertex shader
       vec4 p1 = vec4(33.0 + (x * 33.0), 33.0 + (y * 33.0), .4, 1);
@@ -415,6 +421,9 @@ namespace GT_gameLogic {
       // Put new data in the VBO
       glBufferSubData(GL_ARRAY_BUFFER, i*6*sizeof(vec4), 6*sizeof(vec4), newpoints);
     }
+#ifdef GT_DEBUG_TILE_POSITION_ONLINE
+    cout << endl;
+#endif
 
     glBindVertexArray(0);
   }
@@ -425,11 +434,21 @@ namespace GT_gameLogic {
     for(int i = 0; i < 4; i++) {
       int offsetX = (int)tilepos.x + (int)tile[i].x;
       int offsetY = (int)tilepos.y + (int)tile[i].y;
+#ifdef GT_DEBUG_TILE_POSITION
+      cout << "CUR_POS on setTile() : X:" << offsetX << " - Y:" << offsetY << endl;
+#endif
       board[offsetX][offsetY] = true;
       // Two points are reused
       vec4 offsetColor = palette[tiledColor[i]];
       updateBoardColor(offsetX, offsetY, offsetColor);
     }
+#ifdef GT_DEBUG_OCCUPATION
+    for(int i = 19; i >= 0; i--) {
+      for(int j = 0; j < 10; j++)
+        cout << board[j][i] << " ";
+      cout << endl;
+    } cout << endl;
+#endif
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -481,15 +500,16 @@ namespace GT_gameLogic {
 
   void
   clearWholeMap() {
+#ifdef GT_DEBUG_ELIMINATION
+    cout << "Called clearWholeMap()\n";
+#endif
     while(!isWholeMapStatic()) {
-#ifdef _GT_DEBUG_
+#ifdef GT_DEBUG_ELIMINATION_MATRIX
       for(int i = 19; i != 0; i--) {
-        for(int j = 0; j != 9; j++) {
-            std::cout << removingMatrix[j][i] << " ";
-        }
-        std::cout << "\n";
-      }
-      std::cout << "\n";
+        for(int j = 0; j != 9; j++)
+            cout << removingMatrix[j][i] << " ";
+        cout << "\n";
+      } cout << "\n";
 #endif
       // elimination
       for (int y = 19; y >= 0; y--)
@@ -500,21 +520,37 @@ namespace GT_gameLogic {
 
   bool
   isWholeMapStatic() {
+#ifdef GT_DEBUG_ELIMINATION
+    cout << "Called isWholeMapStatic()\n";
+#endif
+
     // clear temporary data
     for(int i = 0; i < 10; i++)
       for (int j = 0; j < 20; j++)
         removingMatrix[i][j] = false;
     isRemovingMatrixEmpty = true;
 
+#ifdef GT_DEBUG_ELIMINATION_HOR
+    cout << "\tiWMS() checking horizontal...\n";
+#endif
     // check horizontal
-    for(int i = 20; i >= 0 ; i--) {
+    for(int i = 19; i >= 0 ; i--) {
       for (int j = 0; j < 10; j++) {
         if(!board[j][i]) continue;  // if the board[j][i] is empty
+#ifdef GT_DEBUG_ELIMINATION_HOR
+        cout << "\t\tHOR on row:" << i << " - col:" << j << "\n";
+#endif
         int count = 0;    // store the count of the same color
         int tail = 0;     // store the end of the same color
         vec4 targetColor = boardcolours[6*(10*i+j)];
+#ifdef GT_DEBUG_ELIMINATION_HOR_COLOR
+        cout << "\t\t targetColor" << targetColor << "\n";
+#endif
         for (int k = j; k < 10; k++) {
-          if(boardcolours[6*(10*i+k)] == targetColor) {
+#ifdef GT_DEBUG_ELIMINATION_HOR_COLOR
+          cout << "\t\t [" << k << "] boardColor" << boardcolours[6*(10*i+k)] << "\n";
+#endif
+          if(isColorSame(boardcolours[6*(10*i+k)], targetColor)) {
             count++;
             continue;
           } else {
@@ -522,6 +558,9 @@ namespace GT_gameLogic {
             break;
           }
         }
+#ifdef GT_DEBUG_ELIMINATION_HOR
+        cout << "\t\t count:" << count << " tail:" << tail << "\n";
+#endif
         // prepare to eliminate if more than 3
         if(count >= 3) {
           for(int k = j; k <= tail; k++) removingMatrix[k][i] = true;
@@ -531,14 +570,17 @@ namespace GT_gameLogic {
     }
 
     // check vertical
-    for(int i = 20; i >= 0 ; i--) {
+    for(int i = 19; i >= 0 ; i--) {
       for (int j = 0; j < 10; j++) {
         if(!board[j][i]) continue;  // if the board[j][i] is empty
+#ifdef GT_DEBUG_ELIMINATION
+        cout << "\t\tVER on row:" << i << " - col:" << j << "\n";
+#endif
         int count = 0;    // store the count of the same color
         int tail = 0;     // store the end of the same color
         vec4 targetColor = boardcolours[6*(10*i+j)];
         for (int k = i; k >= 0; k--) {
-          if(boardcolours[6*(10*k+j)] == targetColor) {
+          if(isColorSame(boardcolours[6*(10*k+j)], targetColor)) {
             count++;
             continue;
           } else {
@@ -546,6 +588,9 @@ namespace GT_gameLogic {
             break;
           }
         }
+#ifdef GT_DEBUG_ELIMINATION
+        cout << "\t\t count:" << count << "\n";
+#endif
         // prepare to eliminate if more than 3
         if(count >= 3) {
           for(int k = i; k >= tail; k--) removingMatrix[j][k] = true;
@@ -555,20 +600,26 @@ namespace GT_gameLogic {
     }
 
     // check diagonal - DL
-    for(int i = 20; i >= 0 ; i--) {
+    for(int i = 19; i >= 0 ; i--) {
       for (int j = 0; j < 10; j++) {
         if (!board[j][i]) continue;  // if the board[j][i] is empty
+#ifdef GT_DEBUG_ELIMINATION
+        cout << "\t\tLDG on row:" << i << " - col:" << j << "\n";
+#endif
         int count = 0;    // store the count of the same color
         int tail = 0;     // store the end of the same color
         vec4 targetColor = boardcolours[6 * (10 * i + j)];
         int offsetX = j, offsetY = i;
-        while(boardcolours[6*(10*offsetX+offsetY)] == targetColor) {
+        while(isColorSame(boardcolours[6*(10*offsetX+offsetY)], targetColor)) {
           count++;
           tail++;
           if(!(offsetX-1>0 && offsetY-1>0)) break;
           offsetX--;
           offsetY--;
         }
+#ifdef GT_DEBUG_ELIMINATION
+        cout << "\t\t count:" << count << "\n";
+#endif
         if(count >= 3) {
           for(int k = tail - 1; k >= 0; k--) removingMatrix[j-k][i-k] = true;
           isRemovingMatrixEmpty = false;
@@ -577,26 +628,35 @@ namespace GT_gameLogic {
     }
 
     // check diagonal - DR
-    for(int i = 20; i >= 0 ; i--) {
+    for(int i = 19; i >= 0 ; i--) {
       for (int j = 0; j < 10; j++) {
         if (!board[j][i]) continue;  // if the board[j][i] is empty
+#ifdef GT_DEBUG_ELIMINATION
+        cout << "\t\tRDG on row:" << i << " - col:" << j << "\n";
+#endif
         int count = 0;    // store the count of the same color
         int tail = 0;     // store the end of the same color
         vec4 targetColor = boardcolours[6 * (10 * i + j)];
         int offsetX = j, offsetY = i;
-        while(boardcolours[6*(10*offsetX+offsetY)] == targetColor) {
+        while(isColorSame(boardcolours[6*(10*offsetX+offsetY)], targetColor)) {
           count++;
           tail++;
           if(!(offsetX+1<10 && offsetY+1<19)) break;
           offsetX++;
           offsetY++;
         }
+#ifdef GT_DEBUG_ELIMINATION
+        cout << "\t\t count:" << count << "\n";
+#endif
         if(count >= 3) {
           for(int k = tail - 1; k >= 0; k--) removingMatrix[j+k][i+k] = true;
           isRemovingMatrixEmpty = false;
         }
       }
     }
+#ifdef GT_DEBUG_ELIMINATION
+    cout << "\t\tisRemovingMatrixEmpty:" << isRemovingMatrixEmpty << "\n";
+#endif
 
     return isRemovingMatrixEmpty;
   }
@@ -620,6 +680,11 @@ namespace GT_gameLogic {
       //TODO: <<<FIN?>>> if detect a full row
       clearWholeMap();
     }
+  }
+
+  inline bool
+  isColorSame(vec4 a, vec4 b) {
+    return (a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
   }
 
 //-------------------------------------------------------------------------------------------------------------------

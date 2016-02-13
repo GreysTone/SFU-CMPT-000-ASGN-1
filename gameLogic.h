@@ -12,8 +12,16 @@
 #include <time.h>
 #include <iostream>
 
-#define _GT_DEBUG_
+//#define GT_DEBUG_TIMER
+//#define GT_DEBUG_COLLISION
+//#define GT_DEBUG_TILE_POSITION_ONLINE
+//#define GT_DEBUG_TILE_POSITION
+//#define GT_DEBUG_OCCUPATION
+#define GT_DEBUG_ELIMINATION_MATRIX
+#define GT_DEBUG_ELIMINATION_HOR
+//#define GT_DEBUG_ELIMINATION
 
+using namespace std;
 using namespace GT_gameSetting;
 
 namespace GT_gameLogic {
@@ -85,7 +93,7 @@ namespace GT_gameLogic {
   void clearWholeMap();
   bool isWholeMapStatic();
 
-
+  inline bool isColorSame(vec4 a, vec4 b);
 
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
