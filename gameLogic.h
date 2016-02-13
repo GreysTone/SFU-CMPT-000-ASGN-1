@@ -75,8 +75,9 @@ namespace GT_gameLogic {
   // Checks if it is possible to remove some tri-parts
   void removeTriTile(int x, int y, vec4 color);
   void searchMatrix(int x, int y, gtDirection direction, vec4 color);
-  bool searchPoint(int x, int y, vec4 color);
+  bool searchPoint(int x, int y, vec4 c);
   void eliminatePoint(int x, int y);
+  inline void updateBoardColor(int x, int y, vec4 color);
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
   inline void checkFullRow(int row);

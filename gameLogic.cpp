@@ -263,6 +263,8 @@ namespace GT_gameLogic {
     while(tilepos.x + xmin <  0) tilepos.x++;
     while(tilepos.y + ymin <  0) tilepos.y++;
 
+    //TODO: rotate collision
+
     // if some tiles prevent rotation
     if(board[(int)tilepos.x][(int)tilepos.y]) {
       switch (tileShape) {
@@ -417,14 +419,25 @@ namespace GT_gameLogic {
       board[offsetX][offsetY] = true;
       // Two points are reused
       vec4 offsetColor = palette[tiledColor[i]];
-      boardcolours[6*(10*offsetX + offsetY)    ] = offsetColor;
-      boardcolours[6*(10*offsetX + offsetY) + 1] = offsetColor;
-      boardcolours[6*(10*offsetX + offsetY) + 2] = offsetColor;
-      boardcolours[6*(10*offsetX + offsetY) + 3] = offsetColor;
-      boardcolours[6*(10*offsetX + offsetY) + 4] = offsetColor;
-      boardcolours[6*(10*offsetX + offsetY) + 5] = offsetColor;
+      updateBoardColor(offsetX, offsetY, offsetColor);
     }
+
     //TODO: Update VBO to OpenGL engine
+    // *** set up buffer objects
+    glBindVertexArray(vaoIDs[1]);
+    glGenBuffers(2, &vboIDs[2]);
+
+    // Grid cell vertex positions
+    //glBindBuffer(GL_ARRAY_BUFFER, vboIDs[2]);
+    //glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardpoints, GL_STATIC_DRAW);
+    //glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    //glEnableVertexAttribArray(vPosition);
+
+    // Grid cell vertex colours
+    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
+    glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(vColor);
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -462,17 +475,18 @@ namespace GT_gameLogic {
         }
         std::cout << "\n";
       }
+      std::cout << "\n";
 #endif
       // Remove Tiles (update board occupation & color) & Drop Rest
-      //TODO: Removing
       if(!empty){
         for(int i = 19; i != 0; i--) {
           for (int j = 0; j != 9; j++) {
             if(removingMatrix[j][i]) {
-
+              eliminatePoint(j, i);
             }
           }
         }
+        //TODO: check down
       }
 
 
@@ -486,7 +500,7 @@ namespace GT_gameLogic {
     if(x < 0 || x > 9 || y < 0 || y > 19) return;
     if(!board[x][y]) return;
     switch (direction) {
-      case gtDirection::UL: {
+      case UL: {
         if(x - 1 > 0 && y + 1 < 20 && boardcolours[6*(10*(x-1)+(y+1))] == color) {
           removingMatrix[x-1][y+1] = true;
           removingEmpty = false;
@@ -496,7 +510,7 @@ namespace GT_gameLogic {
         }
         break;
       }
-      case gtDirection::UP: {
+      case UP: {
         if(y + 1 < 20 && boardcolours[6*(10*(x)+(y+1))] == color) {
           removingMatrix[x][y+1] = true;
           removingEmpty = false;
@@ -506,7 +520,7 @@ namespace GT_gameLogic {
         }
         break;
       }
-      case gtDirection::UR: {
+      case UR: {
         if(x + 1 < 10 && y + 1 < 20 && boardcolours[6*(10*(x+1)+(y+1))] == color) {
           removingMatrix[x+1][y+1] = true;
           removingEmpty = false;
@@ -516,7 +530,7 @@ namespace GT_gameLogic {
         }
         break;
       }
-      case gtDirection::LE: {
+      case LE: {
         if(x - 1 > 0 && boardcolours[6*(10*(x-1)+(y))] == color) {
           removingMatrix[x-1][y] = true;
           removingEmpty = false;
@@ -526,7 +540,7 @@ namespace GT_gameLogic {
         }
         break;
       }
-      case gtDirection::RI: {
+      case RI: {
         if(x + 1 < 10 &&  boardcolours[6*(10*(x+1)+(y))] == color) {
           removingMatrix[x+1][y] = true;
           removingEmpty = false;
@@ -536,7 +550,7 @@ namespace GT_gameLogic {
         }
         break;
       }
-      case gtDirection::DL: {
+      case DL: {
         if(x - 1 > 0 && y - 1 > 0 && boardcolours[6*(10*(x-1)+(y-1))] == color) {
           removingMatrix[x-1][y-1] = true;
           removingEmpty = false;
@@ -546,7 +560,7 @@ namespace GT_gameLogic {
         }
         break;
       }
-      case gtDirection::DO: {
+      case DO: {
         if(y - 1 > 0 && boardcolours[6*(10*(x)+(y-1))] == color) {
           removingMatrix[x][y-1] = true;
           removingEmpty = false;
@@ -556,7 +570,7 @@ namespace GT_gameLogic {
         }
         break;
       }
-      case gtDirection::DR: {
+      case DR: {
         if(x + 1 < 10 && y - 1 > 0 && boardcolours[6*(10*(x+1)+(y-1))] == color) {
           removingMatrix[x+1][y-1] = true;
           removingEmpty = false;
@@ -577,33 +591,72 @@ namespace GT_gameLogic {
         removingMatrix[i][j] = false;
     removingEmpty = true;
     // searching
-    searchMatrix(x, y, gtDirection::UL, color);
-    searchMatrix(x, y, gtDirection::UP, color);
-    searchMatrix(x, y, gtDirection::UR, color);
-    searchMatrix(x, y, gtDirection::LE, color);
-    searchMatrix(x, y, gtDirection::RI, color);
-    searchMatrix(x, y, gtDirection::DL, color);
-    searchMatrix(x, y, gtDirection::DO, color);
-    searchMatrix(x, y, gtDirection::DR, color);
+    searchMatrix(x, y, UL, color);
+    searchMatrix(x, y, UP, color);
+    searchMatrix(x, y, UR, color);
+    searchMatrix(x, y, LE, color);
+    searchMatrix(x, y, RI, color);
+    searchMatrix(x, y, DL, color);
+    searchMatrix(x, y, DO, color);
+    searchMatrix(x, y, DR, color);
     if(!removingEmpty) removingMatrix[x][y] = true;
     return removingEmpty;
   }
+
+  void
+  eliminatePoint(int x, int y) {
+    board[x][y] = false; // eliminate occupation
+    // move board downward
+    for(int i = y + 1; i < 20; i++) {
+      //TODO: board[]
+      board[x][i-1] = board[x][i];
+      updateBoardColor(x, i-1, boardcolours[6*(10*i+y)]);
+    }
+    // update top row
+    for(int i = 0; i < 10; i++) {
+      board[i][19] = false;
+      updateBoardColor(i, 19, palette[black]);
+    }
+  }
+
+  inline void
+  updateBoardColor(int x, int y, vec4 c) {
+    boardcolours[6*(10*y + x)    ] = c;
+    boardcolours[6*(10*y + x) + 1] = c;
+    boardcolours[6*(10*y + x) + 2] = c;
+    boardcolours[6*(10*y + x) + 3] = c;
+    boardcolours[6*(10*y + x) + 4] = c;
+    boardcolours[6*(10*y + x) + 5] = c;
+  }
+
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
   inline void
   checkFullRow(int row) {
-    int i;
-    for(i = 0; i < 10; i++) {
-      if (board[i][row]) continue;
-      else break;
+    bool isFull = true;
+    for(int i = 0; i < 10; i++) {
+      if (board[i][row]) {
+        continue;
+      }
+      else {
+        isFull = false;
+        break;
+      }
     }
-    if(i == 10) { // Full Row
-      //TODO: elimitation Full Row
+    // detect a full row
+    if(isFull) {
+      for(int j = 0; j < 10; j++) {
+        eliminatePoint(j, row);
+      }
     }
   }
 
 //-------------------------------------------------------------------------------------------------------------------
 
+  bool
+  isGameOver() {
+
+  }
   // Starts the game over - empties the board, creates new tiles, resets line counters
   void
   restart() {
