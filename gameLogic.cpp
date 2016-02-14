@@ -32,6 +32,10 @@ namespace GT_gameLogic {
   //  std::default_random_engine generator;
   //  std::uniform_int_distribution<int> dist(0,4);
 
+  // Searching Temporary Data
+  bool removingMatrix[10][20];
+  bool isRemovingMatrixEmpty;
+
 //-------------------------------------------------------------------------------------------------------------------
 
   void initGrid()
@@ -189,6 +193,30 @@ namespace GT_gameLogic {
     GLfloat x = (rand() % (int)(10 - xmax + xmin)) - xmin;
     GLfloat y = 19 - ymax;
     tilepos = vec2(x , y);
+
+
+    // check if there is possible to contain a new tile
+    if(collisionDetect(CTN)) {
+      int col;
+      for(col = 0; col < 10; col++) {
+        int allIn = 0;
+        for(int i = 0; i < 4; i++) {
+          int nxtPosX = col + (int)tile[i].x;
+          int nxtPosY = (int)tilepos.y + (int)tile[i].y;
+          if(!board[nxtPosX][nxtPosY]) allIn++;
+        }
+        if(allIn == 4) break;
+      }
+      if(col == 10) { // Game Over
+        char input;
+        cout << "Game Over! Type 'r' to restart.\n";
+        while(cin >> input) {
+          if(input == 'r') break;
+        }
+        restart();
+      }
+      else tilepos = vec2(col, y);
+    }
 
     updateTile();
 
@@ -357,23 +385,23 @@ namespace GT_gameLogic {
           for(int i = 0; i < 20; i++)
             checkFullRow(i);
           // Check Game Over
-          if(!isGameOver()) {
-            // Render Board (update VBO to OpenGL engine)
-            // *** set up buffer objects
-            glBindVertexArray(vaoIDs[1]);
-            glGenBuffers(2, &vboIDs[2]);
+//          if(!isGameOver()) {
+          // Render Board (update VBO to OpenGL engine)
+          // *** set up buffer objects
+          glBindVertexArray(vaoIDs[1]);
+          glGenBuffers(2, &vboIDs[2]);
 
-            // Grid cell vertex colours
-            glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
-            glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
-            glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-            glEnableVertexAttribArray(vColor);
+          // Grid cell vertex colours
+          glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
+          glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+          glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+          glEnableVertexAttribArray(vColor);
 
-            // New tile
-            newTile();
-          } else {
-            restart();
-          }
+          // New tile && Judge if the game is Over
+          newTile();
+//          } else {
+//            restart();
+//          }
         }
         break;
       }
@@ -386,6 +414,30 @@ namespace GT_gameLogic {
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     return true;
+  }
+
+  // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
+  void
+  setTile() {
+    for(int i = 0; i < 4; i++) {
+      int offsetX = (int)tilepos.x + (int)tile[i].x;
+      int offsetY = (int)tilepos.y + (int)tile[i].y;
+#ifdef GT_DEBUG_TILE_POSITION
+      cout << "CUR_POS on setTile() : X:" << offsetX << " - Y:" << offsetY << endl;
+#endif
+      board[offsetX][offsetY] = true;
+      // Two points are reused
+      vec4 offsetColor = palette[tiledColor[i]];
+      updateBoardColor(offsetX, offsetY, offsetColor);
+    }
+#ifdef GT_DEBUG_OCCUPATION
+    cout << "OCCUPATION\n";
+    for(int i = 19; i >= 0; i--) {
+      for(int j = 0; j < 10; j++)
+        cout << board[j][i] << " ";
+      cout << endl;
+    } cout << endl;
+#endif
   }
 
   // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
@@ -425,30 +477,6 @@ namespace GT_gameLogic {
 #endif
 
     glBindVertexArray(0);
-  }
-
-  // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
-  void
-  setTile() {
-    for(int i = 0; i < 4; i++) {
-      int offsetX = (int)tilepos.x + (int)tile[i].x;
-      int offsetY = (int)tilepos.y + (int)tile[i].y;
-#ifdef GT_DEBUG_TILE_POSITION
-      cout << "CUR_POS on setTile() : X:" << offsetX << " - Y:" << offsetY << endl;
-#endif
-      board[offsetX][offsetY] = true;
-      // Two points are reused
-      vec4 offsetColor = palette[tiledColor[i]];
-      updateBoardColor(offsetX, offsetY, offsetColor);
-    }
-#ifdef GT_DEBUG_OCCUPATION
-    cout << "OCCUPATION\n";
-    for(int i = 19; i >= 0; i--) {
-      for(int j = 0; j < 10; j++)
-        cout << board[j][i] << " ";
-      cout << endl;
-    } cout << endl;
-#endif
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -508,55 +536,9 @@ namespace GT_gameLogic {
     return false;
   }
 
-  // Checks if it is possible to remove some tri-parts
-  bool removingMatrix[10][20];
+//-------------------------------------------------------------------------------------------------------------------
 
-  void
-  eliminatePoint(int x, int y) {
-    board[x][y] = false; // eliminate occupation
-    int movement = 0;
-    // calculate distance of downward
-    for(int i = y; i >=0; i--) {
-      if(!board[x][i]) movement++;
-      else break;
-    }
-    // move upside blocks downward
-    for(int i = y + 1; i < 20; i++) {
-      board[x][i-movement] = board[x][i];
-      updateBoardColor(x, i-movement, boardcolours[6*(10*i+x)]);
-    }
-    // update the top block on this column
-    for(int i = 19; i >= 20 - movement; i--) {
-      board[x][i] = false;
-      updateBoardColor(x, i, palette[black]);
-    }
-  }
-
-  inline void
-  updateBoardColor(int x, int y, vec4 c) {
-//    cout << "ASSERT x:" << x << " y:" << y << endl;
-    boardcolours[6*(10*y + x)    ] = c;
-    boardcolours[6*(10*y + x) + 1] = c;
-    boardcolours[6*(10*y + x) + 2] = c;
-    boardcolours[6*(10*y + x) + 3] = c;
-    boardcolours[6*(10*y + x) + 4] = c;
-    boardcolours[6*(10*y + x) + 5] = c;
-  }
-
-  bool isRemovingMatrixEmpty;
-
-  void
-  getColorName(int x, int y) {
-    vec4 tarColor = boardcolours[6*(10*y + x)];
-    if(isColorSame(tarColor, palette[purple])) cout << "P ";
-    if(isColorSame(tarColor, palette[red]))    cout << "R ";
-    if(isColorSame(tarColor, palette[yellow])) cout << "Y ";
-    if(isColorSame(tarColor, palette[green]))  cout << "G ";
-    if(isColorSame(tarColor, palette[orange])) cout << "O ";
-    if(isColorSame(tarColor, palette[white]))  cout << "EW";
-    if(isColorSame(tarColor, palette[black]))  cout << "EB";
-  }
-
+  // Eliminate any possible tile that could be eliminated
   void
   clearWholeMap() {
 #ifdef GT_DEBUG_ELIMINATION
@@ -564,13 +546,13 @@ namespace GT_gameLogic {
 #endif
 #ifdef GT_DEBUG_COLOR_MATRIX
     cout << "OCCUPATION on COLOR (status)\n";
-      for(int i = 19; i >= 0; i--) {
-        for(int j = 0; j < 10; j++) {
-          if(!board[j][i]) cout << "- ";
-          else getColorName(j, i);
-        }
-        cout << endl;
-      } cout << "*************************\n";
+    for(int i = 19; i >= 0; i--) {
+      for(int j = 0; j < 10; j++) {
+        if(!board[j][i]) cout << "- ";
+        else getColorName(j, i);
+      }
+      cout << endl;
+    } cout << "*************************\n";
 #endif
     while(!isWholeMapStatic()) {
       cout << "LoopDetection, while(RES), RES=" << isRemovingMatrixEmpty << "\n";
@@ -588,7 +570,7 @@ namespace GT_gameLogic {
       cout << "ELIMINATION MATRIX\n";
       for(int i = 19; i >= 0; i--) {
         for(int j = 0; j < 10; j++)
-            cout << removingMatrix[j][i] << " ";
+          cout << removingMatrix[j][i] << " ";
         cout << "\n";
       } cout << "*************************\n";
 #endif
@@ -616,6 +598,7 @@ namespace GT_gameLogic {
     }
   }
 
+  // Check if all block in game cannot be eliminated
   bool
   isWholeMapStatic() {
 #ifdef GT_DEBUG_ELIMINATION
@@ -734,7 +717,7 @@ namespace GT_gameLogic {
           isRemovingMatrixEmpty = false;
         }
       }
-     }
+    }
 
 #ifdef GT_DEBUG_ELIMINATION
     cout << "\tiWMS() checking diagonal-RIGHT...\n";
@@ -778,6 +761,28 @@ namespace GT_gameLogic {
     return isRemovingMatrixEmpty;
   }
 
+  // Eliminate one single block
+  void
+  eliminatePoint(int x, int y) {
+    board[x][y] = false; // eliminate occupation
+    int movement = 0;
+    // calculate distance of downward
+    for(int i = y; i >=0; i--) {
+      if(!board[x][i]) movement++;
+      else break;
+    }
+    // move upside blocks downward
+    for(int i = y + 1; i < 20; i++) {
+      board[x][i-movement] = board[x][i];
+      updateBoardColor(x, i-movement, boardcolours[6*(10*i+x)]);
+    }
+    // update the top block on this column
+    for(int i = 19; i >= 20 - movement; i--) {
+      board[x][i] = false;
+      updateBoardColor(x, i, palette[black]);
+    }
+  }
+
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
   inline void
@@ -803,18 +808,40 @@ namespace GT_gameLogic {
     }
   }
 
+  inline void
+  updateBoardColor(int x, int y, vec4 c) {
+//    cout << "ASSERT x:" << x << " y:" << y << endl;
+    boardcolours[6*(10*y + x)    ] = c;
+    boardcolours[6*(10*y + x) + 1] = c;
+    boardcolours[6*(10*y + x) + 2] = c;
+    boardcolours[6*(10*y + x) + 3] = c;
+    boardcolours[6*(10*y + x) + 4] = c;
+    boardcolours[6*(10*y + x) + 5] = c;
+  }
+
+//-------------------------------------------------------------------------------------------------------------------
+
+  // Judge if (vec4)a == (vec4)b
   inline bool
   isColorSame(vec4 a, vec4 b) {
     return (a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
   }
 
+  // Output the color's name, using for debug
+  void
+  getColorName(int x, int y) {
+    vec4 tarColor = boardcolours[6*(10*y + x)];
+    if(isColorSame(tarColor, palette[purple])) cout << "P ";
+    if(isColorSame(tarColor, palette[red]))    cout << "R ";
+    if(isColorSame(tarColor, palette[yellow])) cout << "Y ";
+    if(isColorSame(tarColor, palette[green]))  cout << "G ";
+    if(isColorSame(tarColor, palette[orange])) cout << "O ";
+    if(isColorSame(tarColor, palette[white]))  cout << "EW";
+    if(isColorSame(tarColor, palette[black]))  cout << "EB";
+  }
+
 //-------------------------------------------------------------------------------------------------------------------
 
-  bool
-  isGameOver() {
-    //TODO: Game Flow Control
-    return false;
-  }
   // Starts the game over - empties the board, creates new tiles, resets line counters
   void
   restart() {

@@ -17,7 +17,7 @@ using namespace GT_gameSetting;
 
 namespace GT_gameLogic {
 
-#define GT_DEBUG_COLLISION
+//#define GT_DEBUG_COLLISION
 //#define GT_DEBUG_TILE_POSITION_ONLINE
 //#define GT_DEBUG_TILE_POSITION
 //#define GT_DEBUG_OCCUPATION
@@ -65,12 +65,12 @@ namespace GT_gameLogic {
   // Searching Temporary Data
   extern bool removingMatrix[10][20];
   extern bool isRemovingMatrixEmpty;
-//  extern bool visitedBoard[10][20];
 
 //-------------------------------------------------------------------------------------------------------------------
 
-
+  // Initialize Grid
   void initGrid();
+  // Initialize Board
   void initBoard();
   // No geometry for current tile initially
   void initCurrentTile();
@@ -83,31 +83,31 @@ namespace GT_gameLogic {
   // Given (x,y), tries to move the tile x squares to the right and y squares down
   // Returns true if the tile was successfully moved, or false if there was some issue
   bool moveTile(vec2 direction);
-  // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
-  void updateTile();
   // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
   void setTile();
+  // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
+  void updateTile();
 
-
-  // Checks if the current tile is collide with the bottom or the stack of tiles
+  // Collision Detection Function
   bool collisionDetect(gtDirection towards);
-  void eliminatePoint(int x, int y);
-  inline void updateBoardColor(int x, int y, vec4 color);
 
-
-
+  // Eliminate any possible tile that could be eliminated
   void clearWholeMap();
+  // Check if all block in game cannot be eliminated
   bool isWholeMapStatic();
-
-  inline bool isColorSame(vec4 a, vec4 b);
-  void getColorName(int x, int y);
-
+  // Eliminate one single block
+  void eliminatePoint(int x, int y);
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
   inline void checkFullRow(int row);
+  // Update the board's color data
+  inline void updateBoardColor(int x, int y, vec4 color);
 
+  // Judge if (vec4)a == (vec4)b
+  inline bool isColorSame(vec4 a, vec4 b);
+  // Output the color's name, using for debug
+  void getColorName(int x, int y);
 
-  bool isGameOver();
   // Starts the game over - empties the board, creates new tiles, resets line counters
   void restart();
 }
