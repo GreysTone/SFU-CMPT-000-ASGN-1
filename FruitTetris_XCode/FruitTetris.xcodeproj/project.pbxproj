@@ -7,13 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D01A756F1C72597600A7F21D /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = D01A75621C72597600A7F21D /* README.md */; };
-		D01A75701C72597600A7F21D /* InitShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A75661C72597600A7F21D /* InitShader.cpp */; };
-		D01A75711C72597600A7F21D /* gameSetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A756A1C72597600A7F21D /* gameSetting.cpp */; };
-		D01A75721C72597600A7F21D /* gameLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A756C1C72597600A7F21D /* gameLogic.cpp */; };
-		D01A75731C72597600A7F21D /* FruitTetris.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A756E1C72597600A7F21D /* FruitTetris.cpp */; };
 		D01A75771C725A1500A7F21D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A75761C725A1500A7F21D /* OpenGL.framework */; };
 		D01A75791C725A1900A7F21D /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A75781C725A1900A7F21D /* GLUT.framework */; };
+		D01A759B1C72655200A7F21D /* InitShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A758E1C72655200A7F21D /* InitShader.cpp */; };
+		D01A759D1C72655200A7F21D /* gameSetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A75971C72655200A7F21D /* gameSetting.cpp */; };
+		D01A759E1C72655200A7F21D /* gameLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A75991C72655200A7F21D /* gameLogic.cpp */; };
+		D01A759F1C72655200A7F21D /* FruitTetris.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A759A1C72655200A7F21D /* FruitTetris.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,21 +29,20 @@
 
 /* Begin PBXFileReference section */
 		D01A75571C72594900A7F21D /* FruitTetris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FruitTetris; sourceTree = BUILT_PRODUCTS_DIR; };
-		D01A75621C72597600A7F21D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
-		D01A75641C72597600A7F21D /* Angel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Angel.h; sourceTree = "<group>"; };
-		D01A75651C72597600A7F21D /* CheckError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckError.h; sourceTree = "<group>"; };
-		D01A75661C72597600A7F21D /* InitShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InitShader.cpp; sourceTree = "<group>"; };
-		D01A75671C72597600A7F21D /* mat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mat.h; sourceTree = "<group>"; };
-		D01A75681C72597600A7F21D /* vec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vec.h; sourceTree = "<group>"; };
-		D01A75691C72597600A7F21D /* gameSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gameSetting.h; path = ../../gameSetting.h; sourceTree = "<group>"; };
-		D01A756A1C72597600A7F21D /* gameSetting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gameSetting.cpp; path = ../../gameSetting.cpp; sourceTree = "<group>"; };
-		D01A756B1C72597600A7F21D /* gameLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gameLogic.h; path = ../../gameLogic.h; sourceTree = "<group>"; };
-		D01A756C1C72597600A7F21D /* gameLogic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gameLogic.cpp; path = ../../gameLogic.cpp; sourceTree = "<group>"; };
-		D01A756E1C72597600A7F21D /* FruitTetris.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FruitTetris.cpp; path = ../../FruitTetris.cpp; sourceTree = "<group>"; };
-		D01A75741C7259C200A7F21D /* vshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vshader.glsl; sourceTree = "<group>"; };
-		D01A75751C7259C200A7F21D /* fshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fshader.glsl; sourceTree = "<group>"; };
 		D01A75761C725A1500A7F21D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		D01A75781C725A1900A7F21D /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		D01A757A1C72642600A7F21D /* vshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vshader.glsl; path = FruitTetris_source_XCode/vshader.glsl; sourceTree = SOURCE_ROOT; };
+		D01A757B1C72642600A7F21D /* fshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fshader.glsl; path = FruitTetris_source_XCode/fshader.glsl; sourceTree = SOURCE_ROOT; };
+		D01A758C1C72655200A7F21D /* Angel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Angel.h; sourceTree = "<group>"; };
+		D01A758D1C72655200A7F21D /* CheckError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckError.h; sourceTree = "<group>"; };
+		D01A758E1C72655200A7F21D /* InitShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InitShader.cpp; sourceTree = "<group>"; };
+		D01A758F1C72655200A7F21D /* mat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mat.h; sourceTree = "<group>"; };
+		D01A75901C72655200A7F21D /* vec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vec.h; sourceTree = "<group>"; };
+		D01A75961C72655200A7F21D /* gameSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gameSetting.h; path = ../../gameSetting.h; sourceTree = "<group>"; };
+		D01A75971C72655200A7F21D /* gameSetting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gameSetting.cpp; path = ../../gameSetting.cpp; sourceTree = "<group>"; };
+		D01A75981C72655200A7F21D /* gameLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gameLogic.h; path = ../../gameLogic.h; sourceTree = "<group>"; };
+		D01A75991C72655200A7F21D /* gameLogic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gameLogic.cpp; path = ../../gameLogic.cpp; sourceTree = "<group>"; };
+		D01A759A1C72655200A7F21D /* FruitTetris.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FruitTetris.cpp; path = ../../FruitTetris.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,27 +79,26 @@
 		D01A75591C72594900A7F21D /* FruitTetris */ = {
 			isa = PBXGroup;
 			children = (
-				D01A75741C7259C200A7F21D /* vshader.glsl */,
-				D01A75751C7259C200A7F21D /* fshader.glsl */,
-				D01A75621C72597600A7F21D /* README.md */,
-				D01A75631C72597600A7F21D /* include */,
-				D01A75691C72597600A7F21D /* gameSetting.h */,
-				D01A756A1C72597600A7F21D /* gameSetting.cpp */,
-				D01A756B1C72597600A7F21D /* gameLogic.h */,
-				D01A756C1C72597600A7F21D /* gameLogic.cpp */,
-				D01A756E1C72597600A7F21D /* FruitTetris.cpp */,
+				D01A758B1C72655200A7F21D /* include */,
+				D01A75961C72655200A7F21D /* gameSetting.h */,
+				D01A75971C72655200A7F21D /* gameSetting.cpp */,
+				D01A75981C72655200A7F21D /* gameLogic.h */,
+				D01A75991C72655200A7F21D /* gameLogic.cpp */,
+				D01A759A1C72655200A7F21D /* FruitTetris.cpp */,
+				D01A757A1C72642600A7F21D /* vshader.glsl */,
+				D01A757B1C72642600A7F21D /* fshader.glsl */,
 			);
 			path = FruitTetris;
 			sourceTree = "<group>";
 		};
-		D01A75631C72597600A7F21D /* include */ = {
+		D01A758B1C72655200A7F21D /* include */ = {
 			isa = PBXGroup;
 			children = (
-				D01A75641C72597600A7F21D /* Angel.h */,
-				D01A75651C72597600A7F21D /* CheckError.h */,
-				D01A75661C72597600A7F21D /* InitShader.cpp */,
-				D01A75671C72597600A7F21D /* mat.h */,
-				D01A75681C72597600A7F21D /* vec.h */,
+				D01A758C1C72655200A7F21D /* Angel.h */,
+				D01A758D1C72655200A7F21D /* CheckError.h */,
+				D01A758E1C72655200A7F21D /* InitShader.cpp */,
+				D01A758F1C72655200A7F21D /* mat.h */,
+				D01A75901C72655200A7F21D /* vec.h */,
 			);
 			name = include;
 			path = ../../include;
@@ -163,11 +160,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D01A75721C72597600A7F21D /* gameLogic.cpp in Sources */,
-				D01A75711C72597600A7F21D /* gameSetting.cpp in Sources */,
-				D01A756F1C72597600A7F21D /* README.md in Sources */,
-				D01A75701C72597600A7F21D /* InitShader.cpp in Sources */,
-				D01A75731C72597600A7F21D /* FruitTetris.cpp in Sources */,
+				D01A759D1C72655200A7F21D /* gameSetting.cpp in Sources */,
+				D01A759E1C72655200A7F21D /* gameLogic.cpp in Sources */,
+				D01A759B1C72655200A7F21D /* InitShader.cpp in Sources */,
+				D01A759F1C72655200A7F21D /* FruitTetris.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,6 +282,7 @@
 				D01A75601C72594900A7F21D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

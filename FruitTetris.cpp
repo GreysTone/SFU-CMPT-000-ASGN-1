@@ -26,8 +26,8 @@ init() {
 #ifdef __APPLE__
     // replace with a absolute path for two shader
     GLuint program = InitShader(
-                "/Users/GreysTone/Desktop/Dev/SFU-CMPT-000-ASGN-1/FruitTetris_XCode/FruitTetris/vshader.glsl",
-                "/Users/GreysTone/Desktop/Dev/SFU-CMPT-000-ASGN-1/FruitTetris_XCode/FruitTetris/fshader.glsl"
+                "/Users/GreysTone/Desktop/Dev/SFU-CMPT-000-ASGN-1/FruitTetris_XCode/FruitTetris_source_XCode/vshader.glsl",
+                "/Users/GreysTone/Desktop/Dev/SFU-CMPT-000-ASGN-1/FruitTetris_XCode/FruitTetris_source_XCode/fshader.glsl"
                                 );
 #else
     GLuint program = InitShader("vshader.glsl", "fshader.glsl");
