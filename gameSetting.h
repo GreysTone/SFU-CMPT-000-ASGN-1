@@ -13,7 +13,7 @@ namespace GT_gameSetting {
 //#define GT_DEBUG_CLOSE_TIMER
 //#define GT_DEBUG_SPECIAL_KEYINFO
 
-#define DROP_SPEED 800
+#define DROP_SPEED 300
 
   extern int xsize;
   extern int ysize;

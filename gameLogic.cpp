@@ -203,15 +203,18 @@ namespace GT_gameLogic {
         for(int i = 0; i < 4; i++) {
           int nxtPosX = col + (int)tile[i].x;
           int nxtPosY = (int)tilepos.y + (int)tile[i].y;
-          if(!board[nxtPosX][nxtPosY]) allIn++;
+          if(nxtPosX > 0 && nxtPosX < 10 && nxtPosY > 0 && nxtPosY < 20 && !board[nxtPosX][nxtPosY]) allIn++;
         }
         if(allIn == 4) break;
       }
       if(col == 10) { // Game Over
         char input;
-        cout << "Game Over! Type 'r' to restart.\n";
+        cout << "Game Over!\nType 'r' to restart, 'q' to quit.\n";
         while(cin >> input) {
           if(input == 'r') break;
+          if(input == 'q') {
+            exit (EXIT_SUCCESS);
+          }
         }
         restart();
       }
