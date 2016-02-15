@@ -2,7 +2,7 @@
 
 Assignment 1 for *Intros to CG*
 
-Based on "Skeleton Code" (commit 731f2cf343bc525ebcd16e506c7dd5e652c6d228 on GitLab).
+Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d228).
 
 ***Author: Danyang Song (Arthur)***
 
@@ -18,9 +18,9 @@ Based on "Skeleton Code" (commit 731f2cf343bc525ebcd16e506c7dd5e652c6d228 on Git
 ## Features
 * ***To make this game more complicated, only on the row of the block that will be eliminated will get a downward movement***
 * Source code style
-* according to *OpenGL Programming Guide*, namespace, multi-files
+  * according to *OpenGL Programming Guide*, namespace, multi-files
 * MACRO debug features
-* \#define GT_DEBUG_...
+  * \#define GT_DEBUG_...
 * **Makefile** provided
 * **'-g'** compile option for *gdb*
 * **'-pg'** compile option for *gprof* profiling
