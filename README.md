@@ -8,6 +8,9 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 
 *More details on completing this project, see https://github.com/GreysTone/SFU-CMPT-000-ASGN-1.*
 
+***All steps (all functions) are implemented in the assignment, extra information are as below.***
+******
+
 ## Compile, Deploy & OS Environment
 * Linux (**tested on Ubuntu 14.04.03 LTS in VMware 8**)
     * Dependency: glew, freeglut3, mesa (possibly need other package based on your environment)
