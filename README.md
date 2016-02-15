@@ -8,15 +8,25 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 
 *More details on completing this project, see https://github.com/GreysTone/SFU-CMPT-000-ASGN-1.*
 
-## Compile & Deploy
-* In an initial environment
-    * make && ./FruitTetris
-* Otherwise
-    * make clean
-    * make && ./FruitTetris
+## Compile, Deploy & OS Environment
+* Linux (**tested on Ubuntu 14.04.03 LTS in VMware 8**)
+    * Dependency: glew, freeglut3, mesa (possibly need other package based on your environment)
+    * In an initial environment
+        * make && ./FruitTetris
+    * Otherwise
+        * make clean
+        * make && ./FruitTetris
+* OS X (**tested on OS X El Caption 10.11.3**)
+  * Dependency: XCode 7.2.1
+  * Using the project file in *./FruitTetris_XCode/FruitTetris.xcodeproj*
+    * add **GLEW.framework** & **OpenGL.framework** if the framework are not automatically import to the project.
+  * Some header files and functions are *deprecated* and(or) even *not supported* by OS X. See more details in source code with the MACRO **#ifdef \_\_APPLE\_\_** or **#ifndef \_\_APPLE\_\_**
+  * Some MACRO for debugging in *mat.h* are *commented* to make the program building successfully in OS X environment.
+  * The *GL Shader Language* supported by OS X is on **version 150**, therefore the .glsl files are provided in ./FruitTetris_XCode/FruitTetris_source_XCode/\*.glsl.
 
 ## Features
 * ***To make this game more complicated, only on the row of the block that will be eliminated will get a downward movement***
+* ***When the game is over, there will be a prompt in CLI, to decide to continue or quit the game.***
 * Source code style
   * according to *OpenGL Programming Guide*, namespace, multi-files
 * MACRO debug features
