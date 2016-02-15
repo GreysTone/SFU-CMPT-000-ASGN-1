@@ -6,7 +6,54 @@ Based on "Skeleton Code" (commit 731f2cf343bc525ebcd16e506c7dd5e652c6d228 on Git
 
 ***Author: Danyang Song (Arthur)***
 
+*More details on completing this project, see https://github.com/GreysTone/SFU-CMPT-000-ASGN-1.*
+
 ## Compile & Deploy
+* In an initial environment
+    * make && ./FruitTetris
+* Otherwise
+    * make clean
+    * make && ./FruitTetris
+
+## Features
+* ***To make this game more complicated, only on the row of the block that will be eliminated will get a downward movement***
+* Source code style
+* according to *OpenGL Programming Guide*, namespace, multi-files
+* MACRO debug features
+* \#define GT_DEBUG_...
+* **Makefile** provided
+* **'-g'** compile option for *gdb*
+* **'-pg'** compile option for *gprof* profiling
+
+## MACRO DEBUG Description
+* gameSetting.h (GT_gameSetting namespace)
+  * GT_DEBUG_TIMER - Output **glutTimerFunc** info
+  * **GT_DEBUG_CLOSE_TIMER** - Close **glutTimerFunc** callback, only make tile downward by *DownArrow* Key
+  * GT_DEBUG_SPECIAL_KEYINFO - Output key pressed info
+* gameSetting.h (GT_gameLogic namespace)
+  * GT_DEBUG_COLLISION - Output collision detection info
+  * GT_DEBUG_TILE_POSITION_ONLINE - Output tile's current position (online)
+  * GT_DEBUG_TILE_POSITION - Output tile's current position
+  * GT_DEBUG_OCCUPATION - Output Occupation Matrix
+  * **GT_DEBUG_SOLID_COLOR** - Make new tile with all same color (red)
+  * GT_DEBUG_COLOR_MATRIX - Output Occupation Matrix with color's name on that block
+  * GT_DEBUG_ELIMINATION_MATRIX - Output Elimination Matrix
+  * GT_DEBUG_ELIMINATION - Output elimination info
+  * GT_DEBUG_ELIMINATION_HOR - Output elimination info in more details on Horizontal elimination
+  * GT_DEBUG_ELIMINATION_VER - Output elimination info in more details on Vertical elimination
+  * GT_DEBUG_ELIMINATION_LDG - Output elimination info in more details on Left-Down Diagonal elimination
+  * GT_DEBUG_ELIMINATION_RDG - Output elimination info in more details on Right-Down Diagonal elimination
+  * GT_DEBUG_ELIMINATION_OUTPUT - Output eliminated point in each loop
+  * GT_DEBUG_ELIMINATION_POINT_DETAIL - Confirmed eliminated point in each loop
+
+
+## Elimination Priority
+* From High to Low
+    * Horizontal
+    * Vertical
+    * Left-Down Diagonal
+    * Right-Down Diagonal
+    * Full Row
 
 ## Settings
 * Colors
@@ -15,9 +62,9 @@ Based on "Skeleton Code" (commit 731f2cf343bc525ebcd16e506c7dd5e652c6d228 on Git
     * vec4(1.0, 1.0, 0.3, 1.0) - yellow
     * vec4(0.3, 1.0, 0.6, 1.0) - green
     * vec4(1.0, 0.6, 0.2, 1.0) - orange
- 
+
 * Drop Speed
-    * \#define DROP_SPEED 800
+    * \#define DROP_SPEED 300
 
 * Keyboard
     * **'UpArrow'**, **'t'** - rotate tile
@@ -25,12 +72,3 @@ Based on "Skeleton Code" (commit 731f2cf343bc525ebcd16e506c7dd5e652c6d228 on Git
     * **'DownArrow'** - set tile down to the bottom
     * **'r'** - restart
     * **'ESC'**, **'q'** - exit game
-
-## Features
-* Source code style
-    * according to *OpenGL Programming Guide*, namespace, multi-files
-* MACRO debug features
-    * \#define GT_DEBUG_...
-* **Makefile** provided
-* **'-g'** compile option for *gdb*
-* **'-pg'** compile option for *gprof* profiling

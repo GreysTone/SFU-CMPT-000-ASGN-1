@@ -1,0 +1,293 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D01A756F1C72597600A7F21D /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = D01A75621C72597600A7F21D /* README.md */; };
+		D01A75701C72597600A7F21D /* InitShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A75661C72597600A7F21D /* InitShader.cpp */; };
+		D01A75711C72597600A7F21D /* gameSetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A756A1C72597600A7F21D /* gameSetting.cpp */; };
+		D01A75721C72597600A7F21D /* gameLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A756C1C72597600A7F21D /* gameLogic.cpp */; };
+		D01A75731C72597600A7F21D /* FruitTetris.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A756E1C72597600A7F21D /* FruitTetris.cpp */; };
+		D01A75771C725A1500A7F21D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A75761C725A1500A7F21D /* OpenGL.framework */; };
+		D01A75791C725A1900A7F21D /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A75781C725A1900A7F21D /* GLUT.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D01A75551C72594900A7F21D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		D01A75571C72594900A7F21D /* FruitTetris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FruitTetris; sourceTree = BUILT_PRODUCTS_DIR; };
+		D01A75621C72597600A7F21D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
+		D01A75641C72597600A7F21D /* Angel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Angel.h; sourceTree = "<group>"; };
+		D01A75651C72597600A7F21D /* CheckError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckError.h; sourceTree = "<group>"; };
+		D01A75661C72597600A7F21D /* InitShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InitShader.cpp; sourceTree = "<group>"; };
+		D01A75671C72597600A7F21D /* mat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mat.h; sourceTree = "<group>"; };
+		D01A75681C72597600A7F21D /* vec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vec.h; sourceTree = "<group>"; };
+		D01A75691C72597600A7F21D /* gameSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gameSetting.h; path = ../../gameSetting.h; sourceTree = "<group>"; };
+		D01A756A1C72597600A7F21D /* gameSetting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gameSetting.cpp; path = ../../gameSetting.cpp; sourceTree = "<group>"; };
+		D01A756B1C72597600A7F21D /* gameLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gameLogic.h; path = ../../gameLogic.h; sourceTree = "<group>"; };
+		D01A756C1C72597600A7F21D /* gameLogic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gameLogic.cpp; path = ../../gameLogic.cpp; sourceTree = "<group>"; };
+		D01A756E1C72597600A7F21D /* FruitTetris.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FruitTetris.cpp; path = ../../FruitTetris.cpp; sourceTree = "<group>"; };
+		D01A75741C7259C200A7F21D /* vshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vshader.glsl; sourceTree = "<group>"; };
+		D01A75751C7259C200A7F21D /* fshader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fshader.glsl; sourceTree = "<group>"; };
+		D01A75761C725A1500A7F21D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		D01A75781C725A1900A7F21D /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D01A75541C72594900A7F21D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D01A75791C725A1900A7F21D /* GLUT.framework in Frameworks */,
+				D01A75771C725A1500A7F21D /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D01A754E1C72594900A7F21D = {
+			isa = PBXGroup;
+			children = (
+				D01A75781C725A1900A7F21D /* GLUT.framework */,
+				D01A75761C725A1500A7F21D /* OpenGL.framework */,
+				D01A75591C72594900A7F21D /* FruitTetris */,
+				D01A75581C72594900A7F21D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D01A75581C72594900A7F21D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D01A75571C72594900A7F21D /* FruitTetris */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D01A75591C72594900A7F21D /* FruitTetris */ = {
+			isa = PBXGroup;
+			children = (
+				D01A75741C7259C200A7F21D /* vshader.glsl */,
+				D01A75751C7259C200A7F21D /* fshader.glsl */,
+				D01A75621C72597600A7F21D /* README.md */,
+				D01A75631C72597600A7F21D /* include */,
+				D01A75691C72597600A7F21D /* gameSetting.h */,
+				D01A756A1C72597600A7F21D /* gameSetting.cpp */,
+				D01A756B1C72597600A7F21D /* gameLogic.h */,
+				D01A756C1C72597600A7F21D /* gameLogic.cpp */,
+				D01A756E1C72597600A7F21D /* FruitTetris.cpp */,
+			);
+			path = FruitTetris;
+			sourceTree = "<group>";
+		};
+		D01A75631C72597600A7F21D /* include */ = {
+			isa = PBXGroup;
+			children = (
+				D01A75641C72597600A7F21D /* Angel.h */,
+				D01A75651C72597600A7F21D /* CheckError.h */,
+				D01A75661C72597600A7F21D /* InitShader.cpp */,
+				D01A75671C72597600A7F21D /* mat.h */,
+				D01A75681C72597600A7F21D /* vec.h */,
+			);
+			name = include;
+			path = ../../include;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D01A75561C72594900A7F21D /* FruitTetris */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D01A755E1C72594900A7F21D /* Build configuration list for PBXNativeTarget "FruitTetris" */;
+			buildPhases = (
+				D01A75531C72594900A7F21D /* Sources */,
+				D01A75541C72594900A7F21D /* Frameworks */,
+				D01A75551C72594900A7F21D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FruitTetris;
+			productName = FruitTetris;
+			productReference = D01A75571C72594900A7F21D /* FruitTetris */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D01A754F1C72594900A7F21D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Danyang Song (Arthur)";
+				TargetAttributes = {
+					D01A75561C72594900A7F21D = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = D01A75521C72594900A7F21D /* Build configuration list for PBXProject "FruitTetris" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = D01A754E1C72594900A7F21D;
+			productRefGroup = D01A75581C72594900A7F21D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D01A75561C72594900A7F21D /* FruitTetris */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D01A75531C72594900A7F21D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D01A75721C72597600A7F21D /* gameLogic.cpp in Sources */,
+				D01A75711C72597600A7F21D /* gameSetting.cpp in Sources */,
+				D01A756F1C72597600A7F21D /* README.md in Sources */,
+				D01A75701C72597600A7F21D /* InitShader.cpp in Sources */,
+				D01A75731C72597600A7F21D /* FruitTetris.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D01A755C1C72594900A7F21D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		D01A755D1C72594900A7F21D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		D01A755F1C72594900A7F21D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D01A75601C72594900A7F21D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D01A75521C72594900A7F21D /* Build configuration list for PBXProject "FruitTetris" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D01A755C1C72594900A7F21D /* Debug */,
+				D01A755D1C72594900A7F21D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D01A755E1C72594900A7F21D /* Build configuration list for PBXNativeTarget "FruitTetris" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D01A755F1C72594900A7F21D /* Debug */,
+				D01A75601C72594900A7F21D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D01A754F1C72594900A7F21D /* Project object */;
+}

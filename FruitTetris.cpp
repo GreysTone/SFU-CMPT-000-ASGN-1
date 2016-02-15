@@ -23,7 +23,15 @@ using namespace GT_gameLogic;
 void
 init() {
 	// Load shaders and use the shader program
-	GLuint program = InitShader("vshader.glsl", "fshader.glsl");
+#ifdef __APPLE__
+    // replace with a absolute path for two shader
+    GLuint program = InitShader(
+                "/Users/GreysTone/Desktop/Dev/SFU-CMPT-000-ASGN-1/FruitTetris_XCode/FruitTetris/vshader.glsl",
+                "/Users/GreysTone/Desktop/Dev/SFU-CMPT-000-ASGN-1/FruitTetris_XCode/FruitTetris/fshader.glsl"
+                                );
+#else
+    GLuint program = InitShader("vshader.glsl", "fshader.glsl");
+#endif
 	glUseProgram(program);
 
 	// Get the location of the attributes (for glVertexAttribPointer() calls)
@@ -157,16 +165,22 @@ int main(int argc, char **argv)
 {
 	// OpenGL Utility ToolKit - Configure a window
 	glutInit(&argc, argv);
+#ifdef __APPLE__
+    glutInitDisplayMode(GLUT_3_2_CORE_PROFILE);
+#else
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+#endif
 	glutInitWindowSize(xsize, ysize);
 	glutInitWindowPosition(680, 178); // Center the game window (well, on a 1920x1080 display)
 	glutCreateWindow("Fruit Tetris");
 
+#ifndef __APPLE__
 	// Initialize GLEW
 	if(glewInit()) {
     std::cerr << "Unable to initialize GLEW ... exiting.\n";
 		exit(EXIT_FAILURE);
 	}
+#endif
 
 	init();
   srand (time(NULL)); // initialize random seed
