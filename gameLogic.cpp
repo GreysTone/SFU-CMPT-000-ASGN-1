@@ -36,6 +36,8 @@ namespace GT_gameLogic {
   bool removingMatrix[10][20];
   bool isRemovingMatrixEmpty;
 
+  bool gamePause = false;
+
 //-------------------------------------------------------------------------------------------------------------------
 
   void initGrid()

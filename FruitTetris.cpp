@@ -72,6 +72,7 @@ reshape(GLsizei w, GLsizei h) {
 // Handle arrow key keypresses
 void
 special(int key, int x, int y) {
+  if(gamePause) return;  // Skip triggering special key when game is pause
   switch (key) {
     case 100: // Left Arrow
 #ifdef GT_DEBUG_SPECIAL_KEYINFO
@@ -111,8 +112,11 @@ keyboard(unsigned char key, int x, int y) {
     case 'q':
       exit (EXIT_SUCCESS);
       break;
-    case 't':
+    case 't': // 't' key rotate the tile
       rotate();
+      break;
+    case 'p':
+      gamePause = !gamePause;
       break;
     case 'r': // 'r' key restarts the game
       restart();
@@ -147,11 +151,13 @@ timerDrop(int data) {
   //reset timer
   glutTimerFunc(DROP_SPEED, timerDrop, 0);
 
+  if(!gamePause) {  // when game is pause, stop handling tiles
 #ifdef GT_DEBUG_TIMER
-  std::cout << "timerDrop triggered - " << data << "\n";
+    std::cout << "timerDrop triggered - " << data << "\n";
 #endif
-  moveTile(vec2(0, -2));
-  glutPostRedisplay();
+    moveTile(vec2(0, -2));
+    glutPostRedisplay();
+  }
 }
 
 void

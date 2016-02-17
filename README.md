@@ -30,6 +30,7 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 ## Features
 * ***To make this game more complicated, only on the row of the block that will be eliminated will get a downward movement***
 * ***When the game is over, there will be a prompt in CLI, to decide to continue or quit the game.***
+* ***Game could pause by 'p' pressed.*** 
 * Source code style
   * according to *OpenGL Programming Guide*, namespace, multi-files
 * MACRO debug features
@@ -83,5 +84,6 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
     * **'UpArrow'**, **'t'** - rotate tile
     * **'LeftArrow'**, **'RightArrow'** - move tile
     * **'DownArrow'** - set tile down to the bottom
+    * **'p'** - pause, when game is pause, other special key will not be triggered
     * **'r'** - restart
     * **'ESC'**, **'q'** - exit game
