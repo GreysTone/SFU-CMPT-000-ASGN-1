@@ -6,6 +6,9 @@
 
 namespace GT_gameSetting {
 
+  int DROP_SPEED = 600;
+  int DROP_SHIFT = 100;
+
   // xsize and ysize represent the window size - updated if window is reshaped to prevent stretching of the game
   int xsize = 400;
   int ysize = 720;

@@ -101,7 +101,7 @@ special(int key, int x, int y) {
   }
 }
 
-// Handles standard keypresses
+// Handles standard key press
 void
 keyboard(unsigned char key, int x, int y) {
   switch(key)
@@ -112,11 +112,14 @@ keyboard(unsigned char key, int x, int y) {
     case 'q':
       exit (EXIT_SUCCESS);
       break;
-    case 't': // 't' key rotate the tile
+    case 't': // 't' key rotates the tile
       rotate();
       break;
-    case 'p':
+    case 'p': // 'p' key pauses the game
       gamePause = !gamePause;
+      break;
+    case 'a': // 'a' key accelerates the drop speed
+      if(DROP_SPEED > DROP_SHIFT) DROP_SPEED -= DROP_SHIFT;
       break;
     case 'r': // 'r' key restarts the game
       restart();

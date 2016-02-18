@@ -30,7 +30,9 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 ## Features
 * ***To make this game more complicated, only on the row of the block that will be eliminated will get a downward movement***
 * ***When the game is over, there will be a prompt in CLI, to decide to continue or quit the game.***
+* ***If the random position for new tile is not available, it will find a possible position to generate it, otherwise game is over.***
 * ***Game could pause by 'p' pressed.*** 
+* ***Could accelerate the dorp speed during game by 'a' pressed.***
 * Source code style
   * according to *OpenGL Programming Guide*, namespace, multi-files
 * MACRO debug features
@@ -84,6 +86,7 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
     * **'UpArrow'**, **'t'** - rotate tile
     * **'LeftArrow'**, **'RightArrow'** - move tile
     * **'DownArrow'** - set tile down to the bottom
+    8 **'a'** - accelerate the drop time
     * **'p'** - pause, when game is pause, other special key will not be triggered
     * **'r'** - restart
     * **'ESC'**, **'q'** - exit game

@@ -858,6 +858,10 @@ namespace GT_gameLogic {
     initBoard();
     initCurrentTile();
 
+    // Reset drop speed
+    DROP_SPEED = 600;
+    DROP_SHIFT = 100;
+
     // Game initialization
     newTile(); // create new next tile
 
