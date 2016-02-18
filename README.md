@@ -80,7 +80,8 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
     * vec4(1.0, 0.6, 0.2, 1.0) - orange
 
 * Drop Speed
-    * \#define DROP_SPEED 300
+    * Initial DROP_SPEED is 600, and DROP_SHIFT is 100
+    * Once 'a' pressed, DROP_SPEED -= DROP_SHIFT
 
 * Keyboard
     * **'UpArrow'**, **'t'** - rotate tile
