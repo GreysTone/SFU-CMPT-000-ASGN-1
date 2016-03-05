@@ -1,6 +1,6 @@
 # FruitTetris
 
-Assignment 1 for *Intros to CG*
+Assignment 2 for *Intros to CG*
 
 Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d228).
 
