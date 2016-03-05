@@ -8,7 +8,8 @@
 # To clean up object files run 'make clean_object'.
 # To delete any compiled files run 'make clean'.
 # Originated in 2001 by Haris Teguh
-# Modified in 2114 by Honghua Li
+# Modified in 2014 by Honghua Li
+# Modified in 2016 by Danyang Song (Arthur)
 
 # Including of non standard library files:
 #   INCLUDEDIR is where the header files can be found

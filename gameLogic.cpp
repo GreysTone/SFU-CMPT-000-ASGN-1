@@ -36,6 +36,8 @@ namespace GT_gameLogic {
   bool removingMatrix[10][20];
   bool isRemovingMatrixEmpty;
 
+  bool gamePause = false;
+
 //-------------------------------------------------------------------------------------------------------------------
 
   void initGrid()
@@ -382,13 +384,8 @@ namespace GT_gameLogic {
 #endif
           // Solid tile (update board occupation & color)
           setTile();
-          // Remove Tri-part
+          // Clear map
           clearWholeMap();
-          // Remove full row
-          for(int i = 0; i < 20; i++)
-            checkFullRow(i);
-          // Check Game Over
-//          if(!isGameOver()) {
           // Render Board (update VBO to OpenGL engine)
           // *** set up buffer objects
           glBindVertexArray(vaoIDs[1]);
@@ -757,6 +754,11 @@ namespace GT_gameLogic {
         }
       }
     }
+
+    // check full row
+    for(int i = 0; i < 20; i++)
+      checkFullRow(i);
+
 #ifdef GT_DEBUG_ELIMINATION
     cout << "\t\tisRemovingMatrixEmpty:" << isRemovingMatrixEmpty << "\n";
 #endif
@@ -805,9 +807,12 @@ namespace GT_gameLogic {
 #ifdef GT_DEBUG_ELIMINATION
       cout << "detect a full row:" << row << ", eliminating...\n";
 #endif
+//      for(int i = 0; i < 10; i++)
+//        eliminatePoint(i, row);
+//      clearWholeMap();
       for(int i = 0; i < 10; i++)
-        eliminatePoint(i, row);
-      clearWholeMap();
+        removingMatrix[i][row] = true;
+      isRemovingMatrixEmpty = false;
     }
   }
 
@@ -852,6 +857,10 @@ namespace GT_gameLogic {
     initGrid();
     initBoard();
     initCurrentTile();
+
+    // Reset drop speed
+    DROP_SPEED = 600;
+    DROP_SHIFT = 100;
 
     // Game initialization
     newTile(); // create new next tile

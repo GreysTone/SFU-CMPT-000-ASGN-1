@@ -66,6 +66,8 @@ namespace GT_gameLogic {
   extern bool removingMatrix[10][20];
   extern bool isRemovingMatrixEmpty;
 
+  extern bool gamePause;
+
 //-------------------------------------------------------------------------------------------------------------------
 
   // Initialize Grid
