@@ -144,7 +144,7 @@ void display() {
   glDrawArrays(GL_TRIANGLES, 0, 24); // Draw the current tile (8 triangles)
 
   glBindVertexArray(vaoIDs[0]); // Bind the VAO representing the grid lines (to be drawn on top of everything else)
-  glDrawArrays(GL_LINES, 0, 128); // Draw the grid lines (21+11 = 32 lines)
+  glDrawArrays(GL_LINES, 0, GT_GLOBAL_VERTEX_GRID); // Draw the grid lines (21+11 = 32 lines)
 
   glutSwapBuffers();
 }

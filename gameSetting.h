@@ -13,6 +13,8 @@ namespace GT_gameSetting {
 //#define GT_DEBUG_CLOSE_TIMER
 //#define GT_DEBUG_SPECIAL_KEYINFO
 
+#define GT_GLOBAL_VERTEX_GRID 128
+
   extern int DROP_SPEED;
   extern int DROP_SHIFT;
 
