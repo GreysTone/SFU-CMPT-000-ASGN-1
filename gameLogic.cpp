@@ -17,13 +17,23 @@ namespace GT_gameLogic {
   bool board[10][20];
 
   // location of vertex attributes in the shader program
-  GLuint vPosition;
-  GLuint vColor;
+  GLint vPosition;
+  GLint vColor;
 
   // locations of uniform variables in shader program
   GLint locxsize;
   GLint locysize;
   GLint loczsize;
+
+  // projection
+  GLint locMVPMatrix;
+  mat4 ModelMat = mat4();
+  mat4 ViewMat = mat4();
+  mat4 ProjectionMat = Perspective(GT_GLOBAL_PROJECT_ANGLE,
+                                   (GLfloat)1.0*xsize/ysize,
+                                   GT_GLOBAL_PROJECT_Z_NEAR,
+                                   GT_GLOBAL_PROJECT_Z_FAR);
+
 
   // VAO and VBO
   GLuint vaoIDs[3]; // One VAO for each object: the grid, the board, the current piece
@@ -39,22 +49,17 @@ namespace GT_gameLogic {
 
   bool gamePause = false;
 
-  //TODO: Lyken
-  mat4 Projection,View, Model;
-  GLuint locMVP;
-
-
-  GLfloat angle1 = M_PI / 2;
-  GLfloat angle2 = M_PI / 4 ;
-  const GLfloat armLength1 = 420.0;
-  const GLfloat armLength2 = 400.0;
-  const GLfloat  dr = 5.0 * DegreesToRadians;
-  GLuint  model_view;  // model-view matrix uniform shader variable location
-
-  GLfloat  lleft = -1.0, rright = 1;
-  GLfloat  bottom = -1.0, top = 1;
-  GLfloat  zNear = 0.1, zFar = 5.0;
-  GLuint  projection; // projection matrix uniform shader variable location
+//  GLfloat angle1 = M_PI / 2;
+//  GLfloat angle2 = M_PI / 4 ;
+//  const GLfloat armLength1 = 420.0;
+//  const GLfloat armLength2 = 400.0;
+//  const GLfloat  dr = 5.0 * DegreesToRadians;
+//  GLuint  model_view;  // model-view matrix uniform shader variable location
+//
+//  GLfloat  lleft = -1.0, rright = 1;
+//  GLfloat  bottom = -1.0, top = 1;
+//  GLfloat  zNear = 0.1, zFar = 5.0;
+//  GLuint  projection; // projection matrix uniform shader variable location
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -66,23 +71,30 @@ namespace GT_gameLogic {
 
     // Vertical lines [+16.5]
     for (int i = 0; i < 11; i++){
-      gridpoints[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)16.5, 1);
-      gridpoints[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)16.5, 1);
+      gridpoints[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)16.6, 1);
+      gridpoints[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)16.6, 1);
     }
     // Vertical lines [-16.5]
     for (int i = 0; i < 11; i++){
-      gridpoints[22 + 2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)-16.5, 1);
-      gridpoints[22 + 2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)-16.5, 1);
+      gridpoints[22 + 2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)-16.6, 1);
+      gridpoints[22 + 2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)-16.6, 1);
     }
     // Horizontal lines [+16.5]
     for (int i = 0; i < 21; i++){
-      gridpoints[44 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.5, 1);
-      gridpoints[44 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.5, 1);
+      gridpoints[44 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.6, 1);
+      gridpoints[44 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.6, 1);
     }
     // Horizontal lines [-16.5]
     for (int i = 0; i < 21; i++){
-      gridpoints[86 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.5, 1);
-      gridpoints[86 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.5, 1);
+      gridpoints[86 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.6, 1);
+      gridpoints[86 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.6, 1);
+    }
+    // Depth lines
+    for (int i = 0; i < GT_GLOBAL_HEIGHT_BOARD + 1; i++){
+      for (int j = 0; j < GT_GLOBAL_WIDTH_BOARD + 1; j++) {
+        gridpoints[128 + 22*i + 2*j] 		= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)16.6, 1);
+        gridpoints[128 + 22*i + 2*j + 1] 	= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)-16.6, 1);
+      }
     }
     // Make all grid lines white
     for (int i = 0; i < GT_GLOBAL_VERTEX_GRID; i++)
@@ -127,13 +139,7 @@ namespace GT_gameLogic {
         vec4 p7 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BBR
         vec4 p8 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BTR
 
-        // Two points are reused
-//        boardpoints[6*(10*i + j)    ] = p1;
-//        boardpoints[6*(10*i + j) + 1] = p2;
-//        boardpoints[6*(10*i + j) + 2] = p3;
-//        boardpoints[6*(10*i + j) + 3] = p2;
-//        boardpoints[6*(10*i + j) + 4] = p3;
-//        boardpoints[6*(10*i + j) + 5] = p4;
+        // Two points are used by two triangles each
         vec4 cube[36] = {
             p1, p2, p3, p2, p3, p4,     // Front
             p1, p2, p5, p2, p5, p6,     // Left
@@ -442,9 +448,6 @@ namespace GT_gameLogic {
 
           // New tile && Judge if the game is Over
           newTile();
-//          } else {
-//            restart();
-//          }
         }
         break;
       }
@@ -505,10 +508,6 @@ namespace GT_gameLogic {
 #endif
       // Create the 4 corners of the square - these vertices are using location in pixels
       // These vertices are later converted by the vertex shader
-//      vec4 p1 = vec4(GLfloat(33.0 + (x * 33.0)), GLfloat(33.0 + (y * 33.0)), .4, 1);
-//      vec4 p2 = vec4(GLfloat(33.0 + (x * 33.0)), GLfloat(66.0 + (y * 33.0)), .4, 1);
-//      vec4 p3 = vec4(GLfloat(66.0 + (x * 33.0)), GLfloat(33.0 + (y * 33.0)), .4, 1);
-//      vec4 p4 = vec4(GLfloat(66.0 + (x * 33.0)), GLfloat(66.0 + (y * 33.0)), .4, 1);
       vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBL
       vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTL
       vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBR
@@ -873,15 +872,47 @@ namespace GT_gameLogic {
 
   inline void
   updateBoardColor(int x, int y, vec4 c) {
+//    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
 //    cout << "updateBoardColor on x:" << x << " y:" << y << endl;
-    for(int i=0; i<GT_GLOBAL_VERTEX_SINGLE_CUBE; i++)
-      boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*y + x) + i] = c;
+    for(int i=0; i<36; i++)
+      boardcolours[36*(10*y + x) + i] = c;
 //    boardcolours[6*(10*y + x)    ] = c;
 //    boardcolours[6*(10*y + x) + 1] = c;
 //    boardcolours[6*(10*y + x) + 2] = c;
 //    boardcolours[6*(10*y + x) + 3] = c;
 //    boardcolours[6*(10*y + x) + 4] = c;
 //    boardcolours[6*(10*y + x) + 5] = c;
+//    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+
+//
+//    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
+//
+//
+//      // Create the 4 corners of the square - these vertices are using location in pixels
+//      // These vertices are later converted by the vertex shader
+//      vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBL
+//      vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTL
+//      vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBR
+//      vec4 p4 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTR
+//      vec4 p5 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBL
+//      vec4 p6 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTL
+//      vec4 p7 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBR
+//      vec4 p8 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTR
+//
+//
+//      // Two points are used by two triangles each
+//      vec4 newpoints[36] = {
+//          p1, p2, p3, p2, p3, p4,     // Front
+//          p1, p2, p5, p2, p5, p6,     // Left
+//          p5, p6, p7, p6, p7, p8,     // Back
+//          p3, p4, p7, p4, p7, p8,     // Right
+//          p2, p4, p6, p4, p6, p8,     // Top
+//          p1, p3, p5, p3, p5, p7      // Bottom
+//      };
+//
+//      // Put new data in the VBO
+//      glBufferSubData(GL_ARRAY_BUFFER, i*36*sizeof(vec4), 36*sizeof(vec4), newpoints);
+
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -910,6 +941,7 @@ namespace GT_gameLogic {
   // Starts the game over - empties the board, creates new tiles, resets line counters
   void
   restart() {
+    //TODO: reset restart() func location
     // Initialize the grid, the board, and the current tile
     initGrid();
     initBoard();

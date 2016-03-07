@@ -38,10 +38,6 @@ init() {
 	vPosition = glGetAttribLocation(program, "vPosition");
 	vColor = glGetAttribLocation(program, "vColor");
 
-  //TODO: Lyken Code
-  model_view = glGetUniformLocation( program, "model_view" );
-  projection = glGetUniformLocation( program, "projection" );
-
 	// Create 3 Vertex Array Objects, each representing one 'object'. Store the names in array vaoIDs
 	glGenVertexArrays(3, &vaoIDs[0]);
 
@@ -54,16 +50,14 @@ init() {
 	locxsize = glGetUniformLocation(program, "xsize");
 	locysize = glGetUniformLocation(program, "ysize");
   loczsize = glGetUniformLocation(program, "zsize");
+  locMVPMatrix = glGetUniformLocation(program, "MVP");
 
-  //TODO: Lyken Code
-  // The location of the uniform variables in the shader program
-  locMVP = glGetUniformLocation(program, "MVP");
+  //TODO: [RESET] Projection
+//  model_view = glGetUniformLocation ( program, "model_view" );
+//  projection = glGetUniformLocation( program, "projection" );
 
-  // Board is now in unit lengths
-  vec4 eye = vec4(0, 20, 1000, 0);
-  vec4 at = vec4(0, 20/2, 0, 0);
-  View = LookAt(eye, at,vec4(0, 1, 0,0));
-
+  // projection
+  ViewMat = LookAt(projectionEye, projectionAt, projectionUp);
 
   // Game initialization
 	newTile(); // create new next tile
@@ -72,13 +66,15 @@ init() {
 	glBindVertexArray(0);
 	glClearColor(0, 0, 0, 0);
 
-  // Antialiasing
+  // anti-aliasing
+#ifdef GT_SET_ANTI_ALIASING
   glEnable(GL_MULTISAMPLE);
   glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
   glEnable(GL_LINE_SMOOTH);
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
   glEnable(GL_POINT_SMOOTH);
   glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -96,54 +92,55 @@ reshape(GLsizei w, GLsizei h) {
 void
 special(int key, int x, int y) {
   if(gamePause) return;  // Skip triggering special key when game is pause
-  //TODO: right setting on CTRL
   bool CTRL = false;
   int modifier = glutGetModifiers();
+#ifdef __APPLE__
   if (modifier != 0 && modifier == GLUT_ACTIVE_SHIFT) {
-    if (modifier == GLUT_ACTIVE_SHIFT) {
       CTRL = 1;
-    }
   }
+#else
+  if (modifier != 0 && modifier == GLUT_ACTIVE_CTRL) {
+      CTRL = 1;
+  }
+#endif
   else if (CTRL) {
     CTRL = 0;
   }
 
+#ifdef GT_DEBUG_SPECIAL_KEYINFO
   switch (key) {
     case 100: // Left Arrow
-#ifdef GT_DEBUG_SPECIAL_KEYINFO
       std::cout << "[LEFT Arrow] Pressed.\n";
-#endif
-      if(CTRL) {
-        //TODO: rotate left
-        View *= RotateY(-5);
-      }
-      else {
-        moveTile(vec2(-1, 0));
-      }
       break;
     case 101: // Up Arrow (Rotate Tile)
-#ifdef GT_DEBUG_SPECIAL_KEYINFO
       std::cout << "[UP Arrow] Pressed.\n";
-#endif
-      rotate();
       break;
     case 102: // Right Arrow
-#ifdef GT_DEBUG_SPECIAL_KEYINFO
       std::cout << "[RIGHT Arrow] Pressed.\n";
-#endif
-      if(CTRL) {
-        //TODO: rotate right
-        View *= RotateY(5);
-      }
-      else {
-        moveTile(vec2(1, 0));
-      }
       break;
     case 103: // Down Arrow
-#ifdef GT_DEBUG_SPECIAL_KEYINFO
       std::cout << "[DOWN Arrow] Pressed.\n";
+      break;
+  }
+}
 #endif
-      moveTile(vec2(0, -1));
+
+  switch (key) {
+    case 100: // Left Arrow
+      if(CTRL) { ViewMat *= RotateY(-5);}
+      else { moveTile(vec2(-1, 0)); }
+      break;
+    case 101: // Up Arrow (Rotate Tile)
+      if(CTRL) { }
+      else { rotate(); }
+      break;
+    case 102: // Right Arrow
+      if(CTRL) { ViewMat *= RotateY(5); }
+      else { moveTile(vec2(1, 0)); }
+      break;
+    case 103: // Down Arrow
+      if(CTRL) { }
+      else { moveTile(vec2(0, -1)); }
       break;
   }
 }
@@ -175,51 +172,17 @@ keyboard(unsigned char key, int x, int y) {
 
 // Draws the game
 void display() {
-//  glClear(GL_COLOR_BUFFER_BIT);
-//
-//  glUniform1i(locxsize, xsize); // x and y sizes are passed to the shader program to maintain shape of the vertices on screen
-//  glUniform1i(locysize, ysize);
-//  glUniform1i(loczsize, zsize);
-//
-//  glBindVertexArray(vaoIDs[1]); // Bind the VAO representing the grid cells (to be drawn first)
-//  glDrawArrays(GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_BOARD); // Draw the board (10*20*2 = 400 triangles)
-//
-//  glBindVertexArray(vaoIDs[2]); // Bind the VAO representing the current tile (to be drawn on top of the board)
-//  glDrawArrays(GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_TILE); // Draw the current tile (8 triangles)
-//
-//  glBindVertexArray(vaoIDs[0]); // Bind the VAO representing the grid lines (to be drawn on top of everything else)
-//  glDrawArrays(GL_LINES, 0, GT_GLOBAL_VERTEX_GRID); // Draw the grid lines (21+11 = 32 lines)
-//
-//  glutSwapBuffers();
-  //TODO: Lyken
-  Projection = Perspective(45, 1.0*xsize/ysize, 10, 200);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  /*
-  point4  eye( radius*sin(theta)*cos(phi),
-         radius*sin(theta)*sin(phi),
-         radius*cos(theta),
-            1.0 );
-    point4  at( 0.0, 0.0, 0.0, 1.0 );
-    vec4    up( 0.0, 1.0, 0.0, 0.0 );
-  */
-
-  // Scale everything to unit length
-  mat4 Model = mat4();
-
-  Model *= Translate(0, 20/2, 0);
-  Model *= Scale(1.0/33 , 1.0/33 , 1.0/33);  // scale to unit length
-  //Model *= Translate(-33*BOARD_WIDTH/2.0 - 33, -33*BOARD_HEIGHT/2.0 - 33, 0); // move to origin
-  mat4 mvp =  Projection *  Model * View;
-  glUniformMatrix4fv(locMVP, 1, GL_TRUE, mvp);
-
-  /*
-    mat4  p = Ortho( lleft, rright, bottom, top, zNear, zFar );
-    glUniformMatrix4fv( projection, 1, GL_TRUE, p );
-  */
+  ModelMat = mat4();  // initialize with Identity Matrix
+  ModelMat *= Translate(0, GT_GLOBAL_HEIGHT_BOARD/2, 0);
+  ModelMat *= Scale((GLfloat)1.0/33, (GLfloat)1.0/33, (GLfloat)1.0/33);
+  mat4 MVPMat =  ProjectionMat *  ModelMat * ViewMat;
 
   glUniform1i(locxsize, xsize); // x and y sizes are passed to the shader program to maintain shape of the vertices on screen
   glUniform1i(locysize, ysize);
+  glUniform1i(loczsize, zsize);
+  glUniformMatrix4fv(locMVPMatrix, 1, GL_TRUE, MVPMat);
 
   glBindVertexArray(vaoIDs[1]); // Bind the VAO representing the grid cells (to be drawn first)
   glDrawArrays(GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_BOARD); // Draw the board (10*20*2 = 400 triangles)
@@ -235,7 +198,6 @@ void display() {
 
 
   glutSwapBuffers();
-
 }
 
 //-------------------------------------------------------------------------------------------------------------------

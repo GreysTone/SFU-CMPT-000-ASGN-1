@@ -13,10 +13,20 @@ namespace GT_gameSetting {
 //#define GT_DEBUG_CLOSE_TIMER
 //#define GT_DEBUG_SPECIAL_KEYINFO
 
-#define GT_GLOBAL_VERTEX_GRID (128)         // 2[planes] * (11+21)[lines/plane] * 2[points/line]
+//#define GT_SET_ANTI_ALIASING
+
+#define GT_GLOBAL_VERTEX_GRID (590)         // 2[planes] * (11+21)[lines/plane] * 2[points/line]
 #define GT_GLOBAL_VERTEX_BOARD (7200)       // (20*10)[cubes] * 6[planes/cube] * 6[points/plane]
 #define GT_GLOBAL_VERTEX_TILE (144)         // (4)[cubes] * 6[planes/cube] * 6[points/plane]
 #define GT_GLOBAL_VERTEX_SINGLE_CUBE (36)
+#define GT_GLOBAL_HEIGHT_BOARD (20)
+#define GT_GLOBAL_WIDTH_BOARD (10)
+#define GT_GLOBAL_EYE_Z (1500)
+#define GT_GLOBAL_PROJECT_ANGLE (45)
+#define GT_GLOBAL_PROJECT_Z_NEAR (1)
+#define GT_GLOBAL_PROJECT_Z_FAR (40)
+
+//#define
 
   extern int DROP_SPEED;
   extern int DROP_SHIFT;
@@ -35,6 +45,11 @@ namespace GT_gameSetting {
   extern vec2 allRotationsIShape[2][4];
   extern vec2 allRotationsSShape[2][4];
   extern vec2 allRotationsTShape[4][4];
+
+  // projections setting
+  extern vec4 projectionEye;
+  extern vec4 projectionAt;
+  extern vec4 projectionUp;
 
   //An array containing the colour of each of the 10*20*2*3 vertices that make up the board
   //Initially, all will be set to black. As tiles are placed, sets of 6 vertices (2 triangles; 1 square)

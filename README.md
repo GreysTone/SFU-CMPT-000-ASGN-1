@@ -28,11 +28,13 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
   * The *GL Shader Language* supported by OS X is on **version 150**, therefore the .glsl files are provided in ./FruitTetris_XCode/FruitTetris_source_XCode/\*.glsl.
 
 ## Features
-* ***To make this game more complicated, only on the row of the block that will be eliminated will get a downward movement***
-* ***When the game is over, there will be a prompt in CLI, to decide to continue or quit the game.***
-* ***If the random position for new tile is not available, it will find a possible position to generate it, otherwise game is over.***
-* ***Game could pause by 'p' pressed.*** 
-* ***Could accelerate the dorp speed during game by 'a' pressed.***
+* ***Anti_Aliasing Feature***
+* ***On Mac, using SHIFT rather than CTRL to rotate 3D projection***
+* To make this game more complicated, only on the row of the block that will be eliminated will get a downward movement
+* When the game is over, there will be a prompt in CLI, to decide to continue or quit the game.
+* If the random position for new tile is not available, it will find a possible position to generate it, otherwise game is over.
+* Game could pause by 'p' pressed.
+* Could accelerate the dorp speed during game by 'a' pressed.
 * Source code style
   * according to *OpenGL Programming Guide*, namespace, multi-files
 * MACRO debug features
@@ -43,6 +45,7 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 
 ## MACRO DEBUG Description
 * gameSetting.h (GT_gameSetting namespace)
+  * **GT_SET_ANTI_ALIASING** - Open anti-aliasing feature
   * GT_DEBUG_TIMER - Output **glutTimerFunc** info
   * **GT_DEBUG_CLOSE_TIMER** - Close **glutTimerFunc** callback, only make tile downward by *DownArrow* Key
   * GT_DEBUG_SPECIAL_KEYINFO - Output key pressed info
@@ -84,6 +87,7 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
     * Once 'a' pressed, DROP_SPEED -= DROP_SHIFT
 
 * Keyboard
+    * **'CTRL(SHIFT)' + 'LeftArrow'/'RightArrow'** - rotate projection
     * **'UpArrow'**, **'t'** - rotate tile
     * **'LeftArrow'**, **'RightArrow'** - move tile
     * **'DownArrow'** - set tile down to the bottom

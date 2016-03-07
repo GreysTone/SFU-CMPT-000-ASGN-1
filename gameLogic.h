@@ -47,19 +47,22 @@ namespace GT_gameLogic {
   extern bool board[10][20];
 
   // location of vertex attributes in the shader program
-  extern GLuint vPosition;
-  extern GLuint vColor;
+  extern GLint vPosition;
+  extern GLint vColor;
 
-  //TODO: Lyken Code
-  extern GLuint locMVP;
-  extern GLuint model_view;
-  extern GLuint projection;
-  extern mat4 Projection,View, Model;
+
 
   // locations of uniform variables in shader program
   extern GLint locxsize;
   extern GLint locysize;
   extern GLint loczsize;
+
+  // projection
+  extern GLint locMVPMatrix;
+  extern mat4 ModelMat, ViewMat, ProjectionMat;
+  //TODO: [RESET]Projection
+//  extern GLuint model_view;
+//  extern GLuint projection;
 
   // VAO and VBO
   extern GLuint vaoIDs[3]; // One VAO for each object: the grid, the board, the current piece
