@@ -884,7 +884,7 @@ namespace GT_gameLogic {
 //    boardcolours[6*(10*y + x) + 5] = c;
 //    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
 
-//
+
 //    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
 //
 //
