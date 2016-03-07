@@ -51,5 +51,5 @@ namespace GT_gameSetting {
   //An array containing the colour of each of the 10*20*2*3 vertices that make up the board
   //Initially, all will be set to black. As tiles are placed, sets of 6 vertices (2 triangles; 1 square)
   //will be set to the appropriate colour in this array before updating the corresponding VBO
-  vec4 boardcolours[1200];
+  vec4 boardcolours[GT_GLOBAL_VERTEX_BOARD];
 }

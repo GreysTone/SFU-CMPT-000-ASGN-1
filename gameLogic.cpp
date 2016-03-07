@@ -49,23 +49,23 @@ namespace GT_gameLogic {
 
     // Vertical lines [+16.5]
     for (int i = 0; i < 11; i++){
-      gridpoints[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, 16.5, 1);
-      gridpoints[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, 16.5, 1);
+      gridpoints[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)16.5, 1);
+      gridpoints[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)16.5, 1);
     }
     // Vertical lines [-16.5]
     for (int i = 0; i < 11; i++){
-      gridpoints[22 + 2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, -16.5, 1);
-      gridpoints[22 + 2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, -16.5, 1);
+      gridpoints[22 + 2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)-16.5, 1);
+      gridpoints[22 + 2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)-16.5, 1);
     }
     // Horizontal lines [+16.5]
     for (int i = 0; i < 21; i++){
-      gridpoints[44 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), 16.5, 1);
-      gridpoints[44 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), 16.5, 1);
+      gridpoints[44 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.5, 1);
+      gridpoints[44 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.5, 1);
     }
     // Horizontal lines [-16.5]
     for (int i = 0; i < 21; i++){
-      gridpoints[86 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), -16.5, 1);
-      gridpoints[86 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), -16.5, 1);
+      gridpoints[86 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.5, 1);
+      gridpoints[86 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.5, 1);
     }
     // Make all grid lines white
     for (int i = 0; i < GT_GLOBAL_VERTEX_GRID; i++)
@@ -93,25 +93,40 @@ namespace GT_gameLogic {
   void initBoard()
   {
     // *** Generate the geometric data
-    vec4 boardpoints[1200];
-    for (int i = 0; i < 1200; i++)
+    vec4 boardpoints[GT_GLOBAL_VERTEX_BOARD];
+    for (int i = 0; i < GT_GLOBAL_VERTEX_BOARD; i++)
       boardcolours[i] = palette[black]; // Let the empty cells on the board be black
-    // Each cell is a square (2 triangles with 6 vertices)
+    // Each cell is a cube (12 triangles with 36 vertices)
     for (int i = 0; i < 20; i++){
       for (int j = 0; j < 10; j++)
       {
-        vec4 p1 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), .5, 1);
-        vec4 p2 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), .5, 1);
-        vec4 p3 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), .5, 1);
-        vec4 p4 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), .5, 1);
+        // F(ront) B(ack) / T(op) B(ottom) / L(eft) R(ight)
+        vec4 p1 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FBL
+        vec4 p2 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FTL
+        vec4 p3 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FBR
+        vec4 p4 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FTR
+        vec4 p5 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BBL
+        vec4 p6 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BTL
+        vec4 p7 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BBR
+        vec4 p8 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BTR
 
         // Two points are reused
-        boardpoints[6*(10*i + j)    ] = p1;
-        boardpoints[6*(10*i + j) + 1] = p2;
-        boardpoints[6*(10*i + j) + 2] = p3;
-        boardpoints[6*(10*i + j) + 3] = p2;
-        boardpoints[6*(10*i + j) + 4] = p3;
-        boardpoints[6*(10*i + j) + 5] = p4;
+//        boardpoints[6*(10*i + j)    ] = p1;
+//        boardpoints[6*(10*i + j) + 1] = p2;
+//        boardpoints[6*(10*i + j) + 2] = p3;
+//        boardpoints[6*(10*i + j) + 3] = p2;
+//        boardpoints[6*(10*i + j) + 4] = p3;
+//        boardpoints[6*(10*i + j) + 5] = p4;
+        vec4 cube[36] = {
+            p1, p2, p3, p2, p3, p4,     // Front
+            p1, p2, p5, p2, p5, p6,     // Left
+            p5, p6, p7, p6, p7, p8,     // Back
+            p3, p4, p7, p4, p7, p8,     // Right
+            p2, p4, p6, p4, p6, p8,     // Top
+            p1, p3, p5, p3, p5, p7      // Bottom
+        };
+        for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+          boardpoints[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i + j) + k] = cube[k];
       }
     }
 
@@ -127,13 +142,13 @@ namespace GT_gameLogic {
 
     // Grid cell vertex positions
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[2]);
-    glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardpoints, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardpoints, GL_STATIC_DRAW);
     glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(vPosition);
 
     // Grid cell vertex colours
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
-    glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(vColor);
   }
@@ -146,13 +161,13 @@ namespace GT_gameLogic {
 
     // Current tile vertex positions
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
-    glBufferData(GL_ARRAY_BUFFER, 24*sizeof(vec4), NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_TILE*sizeof(vec4), NULL, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(vPosition);
 
     // Current tile vertex colours
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]);
-    glBufferData(GL_ARRAY_BUFFER, 24*sizeof(vec4), NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_TILE*sizeof(vec4), NULL, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(vColor);
   }
@@ -235,12 +250,12 @@ namespace GT_gameLogic {
     }
 
     updateTile();
-
+    //TODO: update colours here
 
     // Update the color VBO of current tile
-    vec4 newcolours[24];
+    vec4 newcolours[GT_GLOBAL_VERTEX_TILE];
     int flag = 0;
-    for (int i = 0; i < 24; i += 6) {
+    for (int i = 0; i < GT_GLOBAL_VERTEX_TILE; i += 36) {
       // vec4 tiled = palette[dist(generator)]; // randomize the color
       tiledColor[flag] = (gtColor)((rand() % 32765) % 5); // (rand()%32765) % 5 -> makes color separated
 #ifdef GT_DEBUG_SOLID_COLOR
@@ -248,7 +263,7 @@ namespace GT_gameLogic {
 #endif
       vec4 tiled = palette[tiledColor[flag]]; // randomize the color
       flag++;
-      for (int j = 0; j < 6; j++)
+      for (int j = 0; j < 36; j++)
         newcolours[i + j] = tiled;
     }
 
@@ -404,7 +419,7 @@ namespace GT_gameLogic {
 
           // Grid cell vertex colours
           glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
-          glBufferData(GL_ARRAY_BUFFER, 1200*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+          glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
           glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
           glEnableVertexAttribArray(vColor);
 
@@ -438,6 +453,7 @@ namespace GT_gameLogic {
 #endif
       board[offsetX][offsetY] = true;
       // Two points are reused
+//      cout << "call set tile" << endl;
       vec4 offsetColor = palette[tiledColor[i]];
       updateBoardColor(offsetX, offsetY, offsetColor);
     }
@@ -472,16 +488,32 @@ namespace GT_gameLogic {
 #endif
       // Create the 4 corners of the square - these vertices are using location in pixels
       // These vertices are later converted by the vertex shader
-      vec4 p1 = vec4(GLfloat(33.0 + (x * 33.0)), GLfloat(33.0 + (y * 33.0)), .4, 1);
-      vec4 p2 = vec4(GLfloat(33.0 + (x * 33.0)), GLfloat(66.0 + (y * 33.0)), .4, 1);
-      vec4 p3 = vec4(GLfloat(66.0 + (x * 33.0)), GLfloat(33.0 + (y * 33.0)), .4, 1);
-      vec4 p4 = vec4(GLfloat(66.0 + (x * 33.0)), GLfloat(66.0 + (y * 33.0)), .4, 1);
+//      vec4 p1 = vec4(GLfloat(33.0 + (x * 33.0)), GLfloat(33.0 + (y * 33.0)), .4, 1);
+//      vec4 p2 = vec4(GLfloat(33.0 + (x * 33.0)), GLfloat(66.0 + (y * 33.0)), .4, 1);
+//      vec4 p3 = vec4(GLfloat(66.0 + (x * 33.0)), GLfloat(33.0 + (y * 33.0)), .4, 1);
+//      vec4 p4 = vec4(GLfloat(66.0 + (x * 33.0)), GLfloat(66.0 + (y * 33.0)), .4, 1);
+      vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBL
+      vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTL
+      vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBR
+      vec4 p4 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTR
+      vec4 p5 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBL
+      vec4 p6 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTL
+      vec4 p7 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBR
+      vec4 p8 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTR
+
 
       // Two points are used by two triangles each
-      vec4 newpoints[6] = {p1, p2, p3, p2, p3, p4};
+      vec4 newpoints[36] = {
+              p1, p2, p3, p2, p3, p4,     // Front
+              p1, p2, p5, p2, p5, p6,     // Left
+              p5, p6, p7, p6, p7, p8,     // Back
+              p3, p4, p7, p4, p7, p8,     // Right
+              p2, p4, p6, p4, p6, p8,     // Top
+              p1, p3, p5, p3, p5, p7      // Bottom
+          };
 
       // Put new data in the VBO
-      glBufferSubData(GL_ARRAY_BUFFER, i*6*sizeof(vec4), 6*sizeof(vec4), newpoints);
+      glBufferSubData(GL_ARRAY_BUFFER, i*36*sizeof(vec4), 36*sizeof(vec4), newpoints);
     }
 #ifdef GT_DEBUG_TILE_POSITION_ONLINE
     cout << endl;
@@ -566,7 +598,6 @@ namespace GT_gameLogic {
     } cout << "*************************\n";
 #endif
     while(!isWholeMapStatic()) {
-      cout << "LoopDetection, while(RES), RES=" << isRemovingMatrixEmpty << "\n";
 #ifdef GT_DEBUG_COLOR_MATRIX
       cout << "OCCUPATION on COLOR (before)\n";
       for(int i = 19; i >= 0; i--) {
@@ -578,6 +609,7 @@ namespace GT_gameLogic {
       } cout << "*************************\n";
 #endif
 #ifdef GT_DEBUG_ELIMINATION_MATRIX
+      cout << "LoopDetection, while(RES), RES=" << isRemovingMatrixEmpty << "\n";
       cout << "ELIMINATION MATRIX\n";
       for(int i = 19; i >= 0; i--) {
         for(int j = 0; j < 10; j++)
@@ -633,15 +665,15 @@ namespace GT_gameLogic {
         cout << "\t\tHOR on row:" << i << " - col:" << j;
 #endif
         int count = 0;    // store the count of the same color
-        vec4 targetColor = boardcolours[6*(10*i+j)];
+        vec4 targetColor = boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i+j)];
 #ifdef GT_DEBUG_ELIMINATION_HOR_COLOR
         cout << "\t\t targetColor" << targetColor << "\n";
 #endif
         for (int k = j; k < 10; k++) {
 #ifdef GT_DEBUG_ELIMINATION_HOR_COLOR
-          cout << "\t\t [" << k << "] boardColor" << boardcolours[6*(10*i+k)] << "\n";
+          cout << "\t\t [" << k << "] boardColor" << boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i+k)] << "\n";
 #endif
-          if(isColorSame(boardcolours[6*(10*i+k)], targetColor)) {
+          if(isColorSame(boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i+k)], targetColor)) {
             count++;
             continue;
           } else break;
@@ -673,9 +705,9 @@ namespace GT_gameLogic {
         cout << "\t\tVER on row:" << i << " - col:" << j;
 #endif
         int count = 0;    // store the count of the same color
-        vec4 targetColor = boardcolours[6*(10*i+j)];
+        vec4 targetColor = boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i+j)];
         for (int k = i; k >= 0; k--) {
-          if(isColorSame(boardcolours[6*(10*k+j)], targetColor)) {
+          if(isColorSame(boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*k+j)], targetColor)) {
             count++;
             continue;
           } else break;
@@ -707,9 +739,9 @@ namespace GT_gameLogic {
         cout << "\t\tLDG on row:" << i << " - col:" << j;
 #endif
         int count = 0;    // store the count of the same color
-        vec4 targetColor = boardcolours[6 * (10 * i + j)];
+        vec4 targetColor = boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10 * i + j)];
         int offsetX = j, offsetY = i;
-        while(isColorSame(boardcolours[6*(10*offsetY+offsetX)], targetColor)) {
+        while(isColorSame(boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*offsetY+offsetX)], targetColor)) {
           count++;
           if(!(offsetX-1>=0 && offsetY-1>=0)) break;
           offsetX--;
@@ -741,12 +773,10 @@ namespace GT_gameLogic {
         cout << "\t\tRDG on row:" << i << " - col:" << j;
 #endif
         int count = 0;    // store the count of the same color
-//        int tail = 0;     // store the end of the same color
-        vec4 targetColor = boardcolours[6 * (10 * i + j)];
+        vec4 targetColor = boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10 * i + j)];
         int offsetX = j, offsetY = i;
-        while(isColorSame(boardcolours[6*(10*offsetY+offsetX)], targetColor)) {
+        while(isColorSame(boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*offsetY+offsetX)], targetColor)) {
           count++;
-//          tail++;
           if(!(offsetX+1<=9 && offsetY-1>=0)) break;
           offsetX++;
           offsetY--;
@@ -790,7 +820,7 @@ namespace GT_gameLogic {
     // move upside blocks downward
     for(int i = y + 1; i < 20; i++) {
       board[x][i-movement] = board[x][i];
-      updateBoardColor(x, i-movement, boardcolours[6*(10*i+x)]);
+      updateBoardColor(x, i-movement, boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i+x)]);
     }
     // update the top block on this column
     for(int i = 19; i >= 20 - movement; i--) {
@@ -818,9 +848,6 @@ namespace GT_gameLogic {
 #ifdef GT_DEBUG_ELIMINATION
       cout << "detect a full row:" << row << ", eliminating...\n";
 #endif
-//      for(int i = 0; i < 10; i++)
-//        eliminatePoint(i, row);
-//      clearWholeMap();
       for(int i = 0; i < 10; i++)
         removingMatrix[i][row] = true;
       isRemovingMatrixEmpty = false;
@@ -829,13 +856,15 @@ namespace GT_gameLogic {
 
   inline void
   updateBoardColor(int x, int y, vec4 c) {
-//    cout << "ASSERT x:" << x << " y:" << y << endl;
-    boardcolours[6*(10*y + x)    ] = c;
-    boardcolours[6*(10*y + x) + 1] = c;
-    boardcolours[6*(10*y + x) + 2] = c;
-    boardcolours[6*(10*y + x) + 3] = c;
-    boardcolours[6*(10*y + x) + 4] = c;
-    boardcolours[6*(10*y + x) + 5] = c;
+//    cout << "updateBoardColor on x:" << x << " y:" << y << endl;
+    for(int i=0; i<GT_GLOBAL_VERTEX_SINGLE_CUBE; i++)
+      boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*y + x) + i] = c;
+//    boardcolours[6*(10*y + x)    ] = c;
+//    boardcolours[6*(10*y + x) + 1] = c;
+//    boardcolours[6*(10*y + x) + 2] = c;
+//    boardcolours[6*(10*y + x) + 3] = c;
+//    boardcolours[6*(10*y + x) + 4] = c;
+//    boardcolours[6*(10*y + x) + 5] = c;
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -849,7 +878,7 @@ namespace GT_gameLogic {
   // Output the color's name, using for debug
   void
   getColorName(int x, int y) {
-    vec4 tarColor = boardcolours[6*(10*y + x)];
+    vec4 tarColor = boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*y + x)];
     if(isColorSame(tarColor, palette[purple])) cout << "P ";
     if(isColorSame(tarColor, palette[red]))    cout << "R ";
     if(isColorSame(tarColor, palette[yellow])) cout << "Y ";

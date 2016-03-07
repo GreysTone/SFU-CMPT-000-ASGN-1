@@ -138,10 +138,10 @@ void display() {
   glUniform1i(loczsize, zsize);
 
   glBindVertexArray(vaoIDs[1]); // Bind the VAO representing the grid cells (to be drawn first)
-  glDrawArrays(GL_TRIANGLES, 0, 1200); // Draw the board (10*20*2 = 400 triangles)
+  glDrawArrays(GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_BOARD); // Draw the board (10*20*2 = 400 triangles)
 
   glBindVertexArray(vaoIDs[2]); // Bind the VAO representing the current tile (to be drawn on top of the board)
-  glDrawArrays(GL_TRIANGLES, 0, 24); // Draw the current tile (8 triangles)
+  glDrawArrays(GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_TILE); // Draw the current tile (8 triangles)
 
   glBindVertexArray(vaoIDs[0]); // Bind the VAO representing the grid lines (to be drawn on top of everything else)
   glDrawArrays(GL_LINES, 0, GT_GLOBAL_VERTEX_GRID); // Draw the grid lines (21+11 = 32 lines)
