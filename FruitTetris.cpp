@@ -49,6 +49,7 @@ init() {
 	// The location of the uniform variables in the shader program
 	locxsize = glGetUniformLocation(program, "xsize");
 	locysize = glGetUniformLocation(program, "ysize");
+  loczsize = glGetUniformLocation(program, "zsize");
 
 	// Game initialization
 	newTile(); // create new next tile
@@ -134,6 +135,7 @@ void display() {
 
   glUniform1i(locxsize, xsize); // x and y sizes are passed to the shader program to maintain shape of the vertices on screen
   glUniform1i(locysize, ysize);
+  glUniform1i(loczsize, zsize);
 
   glBindVertexArray(vaoIDs[1]); // Bind the VAO representing the grid cells (to be drawn first)
   glDrawArrays(GL_TRIANGLES, 0, 1200); // Draw the board (10*20*2 = 400 triangles)
@@ -142,7 +144,7 @@ void display() {
   glDrawArrays(GL_TRIANGLES, 0, 24); // Draw the current tile (8 triangles)
 
   glBindVertexArray(vaoIDs[0]); // Bind the VAO representing the grid lines (to be drawn on top of everything else)
-  glDrawArrays(GL_LINES, 0, 64); // Draw the grid lines (21+11 = 32 lines)
+  glDrawArrays(GL_LINES, 0, 128); // Draw the grid lines (21+11 = 32 lines)
 
   glutSwapBuffers();
 }

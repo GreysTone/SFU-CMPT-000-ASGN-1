@@ -23,6 +23,7 @@ namespace GT_gameLogic {
   // locations of uniform variables in shader program
   GLint locxsize;
   GLint locysize;
+  GLint loczsize;
 
   // VAO and VBO
   GLuint vaoIDs[3]; // One VAO for each object: the grid, the board, the current piece
@@ -43,21 +44,31 @@ namespace GT_gameLogic {
   void initGrid()
   {
     // ***Generate geometry data
-    vec4 gridpoints[64]; // Array containing the 64 points of the 32 total lines to be later put in the VBO
-    vec4 gridcolours[64]; // One colour per vertex
-    // Vertical lines
-    for (int i = 0; i < 11; i++){
-      gridpoints[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, 0, 1);
-      gridpoints[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, 0, 1);
+    vec4 gridpoints[128]; // Array containing the 128 points of the 64 total lines to be later put in the VBO
+    vec4 gridcolours[128]; // One colour per vertex
 
+    // Vertical lines [+16.5]
+    for (int i = 0; i < 11; i++){
+      gridpoints[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, 16.5, 1);
+      gridpoints[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, 16.5, 1);
     }
-    // Horizontal lines
+    // Vertical lines [-16.5]
+    for (int i = 0; i < 11; i++){
+      gridpoints[22 + 2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, -16.5, 1);
+      gridpoints[22 + 2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, -16.5, 1);
+    }
+    // Horizontal lines [+16.5]
     for (int i = 0; i < 21; i++){
-      gridpoints[22 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), 0, 1);
-      gridpoints[22 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), 0, 1);
+      gridpoints[44 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), 16.5, 1);
+      gridpoints[44 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), 16.5, 1);
+    }
+    // Horizontal lines [-16.5]
+    for (int i = 0; i < 21; i++){
+      gridpoints[86 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), -16.5, 1);
+      gridpoints[86 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), -16.5, 1);
     }
     // Make all grid lines white
-    for (int i = 0; i < 64; i++)
+    for (int i = 0; i < 128; i++)
       gridcolours[i] = palette[white];
 
 
@@ -68,13 +79,13 @@ namespace GT_gameLogic {
 
     // Grid vertex positions
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[0]); // Bind the first grid VBO (vertex positions)
-    glBufferData(GL_ARRAY_BUFFER, 64*sizeof(vec4), gridpoints, GL_STATIC_DRAW); // Put the grid points in the VBO
+    glBufferData(GL_ARRAY_BUFFER, 128*sizeof(vec4), gridpoints, GL_STATIC_DRAW); // Put the grid points in the VBO
     glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(vPosition); // Enable the attribute
 
     // Grid vertex colours
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[1]); // Bind the second grid VBO (vertex colours)
-    glBufferData(GL_ARRAY_BUFFER, 64*sizeof(vec4), gridcolours, GL_STATIC_DRAW); // Put the grid colours in the VBO
+    glBufferData(GL_ARRAY_BUFFER, 128*sizeof(vec4), gridcolours, GL_STATIC_DRAW); // Put the grid colours in the VBO
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(vColor); // Enable the attribute
   }

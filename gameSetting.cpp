@@ -12,6 +12,7 @@ namespace GT_gameSetting {
   // xsize and ysize represent the window size - updated if window is reshaped to prevent stretching of the game
   int xsize = 400;
   int ysize = 720;
+  int zsize = 33;
 
   // color
   vec4 palette[7] = {

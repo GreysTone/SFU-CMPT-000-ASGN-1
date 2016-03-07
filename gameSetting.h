@@ -18,6 +18,7 @@ namespace GT_gameSetting {
 
   extern int xsize;
   extern int ysize;
+  extern int zsize;
 
   // colors
   extern vec4 palette[7];

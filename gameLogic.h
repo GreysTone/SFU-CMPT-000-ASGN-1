@@ -22,8 +22,8 @@ namespace GT_gameLogic {
 //#define GT_DEBUG_TILE_POSITION
 //#define GT_DEBUG_OCCUPATION
 //#define GT_DEBUG_SOLID_COLOR
-#define GT_DEBUG_COLOR_MATRIX
-#define GT_DEBUG_ELIMINATION_MATRIX
+//#define GT_DEBUG_COLOR_MATRIX
+//#define GT_DEBUG_ELIMINATION_MATRIX
 //#define GT_DEBUG_ELIMINATION
 //#define GT_DEBUG_ELIMINATION_HOR
 //#define GT_DEBUG_ELIMINATION_VER
@@ -53,6 +53,7 @@ namespace GT_gameLogic {
   // locations of uniform variables in shader program
   extern GLint locxsize;
   extern GLint locysize;
+  extern GLint loczsize;
 
   // VAO and VBO
   extern GLuint vaoIDs[3]; // One VAO for each object: the grid, the board, the current piece
