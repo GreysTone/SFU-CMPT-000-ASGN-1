@@ -1,20 +1,23 @@
 //
-// Created by Danyang Song on 11/02/16.
+// CMPT 361 Assignment 2 - Fruit Tetris
+// Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
+// (Network ID: GreysTone)
 //
 
 #include "gameSetting.h"
 
 namespace GT_gameSetting {
 
-  int DROP_SPEED = 600;
-  int DROP_SHIFT = 100;
-
-  // xsize and ysize represent the window size - updated if window is reshaped to prevent stretching of the game
+  // window size
   int xsize = 400;
   int ysize = 720;
   int zsize = 33;
 
-  // colors
+  // drop control
+  int DROP_SPEED = 600;
+  int DROP_SHIFT = 100;
+
+  // palette
   vec4 palette[7] = {
       vec4(1.0, 0.5, 1.0, 1.0),
       vec4(1.0, 0.2, 0.1, 1.0),
@@ -24,6 +27,14 @@ namespace GT_gameSetting {
       vec4(1.0, 1.0, 1.0, 1.0),
       vec4(0.0, 0.0, 0.0, 1.0)
   };
+
+  // object
+//  std::vector<gtObject> objectStack;
+
+  // current tile
+  vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
+  vec2 tilepos = vec2(5, 19); // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
+  gtColor tiledColor[4];
 
   // An array storing all possible orientations of all possible tiles
   // The 'tile' array will always be some element [i][j] of this array (an array of vec2)
@@ -48,13 +59,4 @@ namespace GT_gameSetting {
       {vec2( 0, 1), vec2( 0, 0), vec2( 0,-1), vec2(-1, 0)}
   };
 
-  // projection setting
-  vec4 projectionEye = vec4(0, GT_GLOBAL_HEIGHT_BOARD, GT_GLOBAL_EYE_Z, 0);
-  vec4 projectionAt = vec4(0, GT_GLOBAL_HEIGHT_BOARD/2, 0, 0);
-  vec4 projectionUp = vec4(0, 1, 0, 0);
-
-  //An array containing the colour of each of the 10*20*2*3 vertices that make up the board
-  //Initially, all will be set to black. As tiles are placed, sets of 6 vertices (2 triangles; 1 square)
-  //will be set to the appropriate colour in this array before updating the corresponding VBO
-  vec4 boardcolours[GT_GLOBAL_VERTEX_BOARD];
-}
+} // namespace GT_gameSetting

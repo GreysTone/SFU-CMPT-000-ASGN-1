@@ -1,43 +1,18 @@
 //
-// Created by Danyang Song on 10/02/16.
+// CMPT 361 Assignment 2 - Fruit Tetris
+// Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
+// (Network ID: GreysTone)
 //
 
 #include "gameLogic.h"
 
 namespace GT_gameLogic {
 
-  // current tile
-  vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
-  vec2 tilepos = vec2(5, 19); // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
-  gtColor tiledColor[4];
   gtShape tileShape = sI;
   int tileModule = 0;
 
   //board[x][y] represents whether the cell (x,y) is occupied
   bool board[10][20];
-
-  // location of vertex attributes in the shader program
-  GLint vPosition;
-  GLint vColor;
-
-  // locations of uniform variables in shader program
-  GLint locxsize;
-  GLint locysize;
-  GLint loczsize;
-
-  // projection
-  GLint locMVPMatrix;
-  mat4 ModelMat = mat4();
-  mat4 ViewMat = mat4();
-  mat4 ProjectionMat = Perspective(GT_GLOBAL_PROJECT_ANGLE,
-                                   (GLfloat)1.0*xsize/ysize,
-                                   GT_GLOBAL_PROJECT_Z_NEAR,
-                                   GT_GLOBAL_PROJECT_Z_FAR);
-
-
-  // VAO and VBO
-  GLuint vaoIDs[3]; // One VAO for each object: the grid, the board, the current piece
-  GLuint vboIDs[6]; // Two Vertex Buffer Objects for each VAO (specifying vertex positions and colours, respectively)
 
   // random generator
   //  std::default_random_engine generator;
@@ -49,157 +24,38 @@ namespace GT_gameLogic {
 
   bool gamePause = false;
 
-//  GLfloat angle1 = M_PI / 2;
-//  GLfloat angle2 = M_PI / 4 ;
-//  const GLfloat armLength1 = 420.0;
-//  const GLfloat armLength2 = 400.0;
-//  const GLfloat  dr = 5.0 * DegreesToRadians;
-//  GLuint  model_view;  // model-view matrix uniform shader variable location
-//
-//  GLfloat  lleft = -1.0, rright = 1;
-//  GLfloat  bottom = -1.0, top = 1;
-//  GLfloat  zNear = 0.1, zFar = 5.0;
-//  GLuint  projection; // projection matrix uniform shader variable location
+} // namespace GT_gameLogic
 
 //-------------------------------------------------------------------------------------------------------------------
 
-  void initGrid()
-  {
-    // ***Generate geometry data
-    vec4 gridpoints[GT_GLOBAL_VERTEX_GRID]; // Array containing the 128 points of the 64 total lines to be later put in the VBO
-    vec4 gridcolours[GT_GLOBAL_VERTEX_GRID]; // One colour per vertex
+void
+GT_gameLogic::init() {
+    GT_gameDrawing::initOpenGL();
 
-    // Vertical lines [+16.5]
-    for (int i = 0; i < 11; i++){
-      gridpoints[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)16.6, 1);
-      gridpoints[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)16.6, 1);
-    }
-    // Vertical lines [-16.5]
-    for (int i = 0; i < 11; i++){
-      gridpoints[22 + 2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)-16.6, 1);
-      gridpoints[22 + 2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)-16.6, 1);
-    }
-    // Horizontal lines [+16.5]
-    for (int i = 0; i < 21; i++){
-      gridpoints[44 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.6, 1);
-      gridpoints[44 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.6, 1);
-    }
-    // Horizontal lines [-16.5]
-    for (int i = 0; i < 21; i++){
-      gridpoints[86 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.6, 1);
-      gridpoints[86 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.6, 1);
-    }
-    // Depth lines
-    for (int i = 0; i < GT_GLOBAL_HEIGHT_BOARD + 1; i++){
-      for (int j = 0; j < GT_GLOBAL_WIDTH_BOARD + 1; j++) {
-        gridpoints[128 + 22*i + 2*j] 		= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)16.6, 1);
-        gridpoints[128 + 22*i + 2*j + 1] 	= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)-16.6, 1);
-      }
-    }
-    // Make all grid lines white
-    for (int i = 0; i < GT_GLOBAL_VERTEX_GRID; i++)
-      gridcolours[i] = palette[white];
+    // initialize the grid, the board, and the current tile
+    initGrid();
+    initBoard();
+    initCurrentTile();
 
-
-    // *** set up buffer objects
-    // Set up first VAO (representing grid lines)
-    glBindVertexArray(vaoIDs[0]); // Bind the first VAO
-    glGenBuffers(2, vboIDs); // Create two Vertex Buffer Objects for this VAO (positions, colours)
-
-    // Grid vertex positions
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[0]); // Bind the first grid VBO (vertex positions)
-    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_GRID*sizeof(vec4), gridpoints, GL_STATIC_DRAW); // Put the grid points in the VBO
-    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vPosition); // Enable the attribute
-
-    // Grid vertex colours
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[1]); // Bind the second grid VBO (vertex colours)
-    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_GRID*sizeof(vec4), gridcolours, GL_STATIC_DRAW); // Put the grid colours in the VBO
-    glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vColor); // Enable the attribute
-  }
-
-  void initBoard()
-  {
-    // *** Generate the geometric data
-    vec4 boardpoints[GT_GLOBAL_VERTEX_BOARD];
-    for (int i = 0; i < GT_GLOBAL_VERTEX_BOARD; i++)
-      boardcolours[i] = palette[black]; // Let the empty cells on the board be black
-    // Each cell is a cube (12 triangles with 36 vertices)
-    for (int i = 0; i < 20; i++){
-      for (int j = 0; j < 10; j++)
-      {
-        // F(ront) B(ack) / T(op) B(ottom) / L(eft) R(ight)
-        vec4 p1 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FBL
-        vec4 p2 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FTL
-        vec4 p3 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FBR
-        vec4 p4 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FTR
-        vec4 p5 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BBL
-        vec4 p6 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BTL
-        vec4 p7 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BBR
-        vec4 p8 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BTR
-
-        // Two points are used by two triangles each
-        vec4 cube[36] = {
-            p1, p2, p3, p2, p3, p4,     // Front
-            p1, p2, p5, p2, p5, p6,     // Left
-            p5, p6, p7, p6, p7, p8,     // Back
-            p3, p4, p7, p4, p7, p8,     // Right
-            p2, p4, p6, p4, p6, p8,     // Top
-            p1, p3, p5, p3, p5, p7      // Bottom
-        };
-        for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
-          boardpoints[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i + j) + k] = cube[k];
-      }
-    }
-
-    // Initially no cell is occupied
+    // initially no cell is occupied
     for (int i = 0; i < 10; i++)
       for (int j = 0; j < 20; j++)
         board[i][j] = false;
 
+    // init projection
+    ViewMat = LookAt(projectionEye, projectionAt, projectionUp);
 
-    // *** set up buffer objects
-    glBindVertexArray(vaoIDs[1]);
-    glGenBuffers(2, &vboIDs[2]);
-
-    // Grid cell vertex positions
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[2]);
-    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardpoints, GL_STATIC_DRAW);
-    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vPosition);
-
-    // Grid cell vertex colours
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
-    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vColor);
-  }
-
-  // No geometry for current tile initially
-  void initCurrentTile()
-  {
-    glBindVertexArray(vaoIDs[2]);
-    glGenBuffers(2, &vboIDs[4]);
-
-    // Current tile vertex positions
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
-    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_TILE*sizeof(vec4), NULL, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vPosition);
-
-    // Current tile vertex colours
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]);
-    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_TILE*sizeof(vec4), NULL, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vColor);
+    // game initialization
+    DROP_SPEED = 600; // set drop speed
+    DROP_SHIFT = 100;
+    newTile(); // create new next tile
   }
 
 //-------------------------------------------------------------------------------------------------------------------
 
   // Called at the start of play and every time a tile is placed
   void
-  newTile() {
+  GT_gameLogic::newTile() {
     tileShape = gtShape(rand() % 4);
 
     // Update the geometry VBO of current tile
@@ -299,7 +155,7 @@ namespace GT_gameLogic {
 
   // Rotates the current tile, if there is room
   void
-  rotate() {
+  GT_gameLogic::rotate() {
     // Update the geometry VBO of current tile
     switch (tileShape) {
       case sI: {
@@ -389,7 +245,7 @@ namespace GT_gameLogic {
   // Given (x,y), tries to move the tile x squares to the right and y squares down
   // Returns true if the tile was successfully moved, or false if there was some issue
   bool
-  moveTile(vec2 direction) {
+  GT_gameLogic::moveTile(vec2 direction) {
     // calculate the range of the tile
     GLfloat xmax = tile[0].x;
     GLfloat xmin = tile[0].x;
@@ -464,7 +320,7 @@ namespace GT_gameLogic {
 
   // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
   void
-  setTile() {
+  GT_gameLogic::setTile() {
     for(int i = 0; i < 4; i++) {
       int offsetX = (int)tilepos.x + (int)tile[i].x;
       int offsetY = (int)tilepos.y + (int)tile[i].y;
@@ -487,62 +343,13 @@ namespace GT_gameLogic {
 #endif
   }
 
-  // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
-  void
-  updateTile() {
-    // Bind the VBO containing current tile vertex positions
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
 
-#ifdef GT_DEBUG_TILE_POSITION_ONLINE
-    cout << "CUR_POS on updateTile()\n\t";
-#endif
-    // For each of the 4 'cells' of the tile,
-    for (int i = 0; i < 4; i++)
-    {
-      // Calculate the grid coordinates of the cell
-      GLfloat x = tilepos.x + tile[i].x;
-      GLfloat y = tilepos.y + tile[i].y;
-
-#ifdef GT_DEBUG_TILE_POSITION_ONLINE
-      cout << "[" << i << "] X:" << x << " - Y:" << y << " | ";
-#endif
-      // Create the 4 corners of the square - these vertices are using location in pixels
-      // These vertices are later converted by the vertex shader
-      vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBL
-      vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTL
-      vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBR
-      vec4 p4 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTR
-      vec4 p5 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBL
-      vec4 p6 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTL
-      vec4 p7 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBR
-      vec4 p8 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTR
-
-
-      // Two points are used by two triangles each
-      vec4 newpoints[36] = {
-              p1, p2, p3, p2, p3, p4,     // Front
-              p1, p2, p5, p2, p5, p6,     // Left
-              p5, p6, p7, p6, p7, p8,     // Back
-              p3, p4, p7, p4, p7, p8,     // Right
-              p2, p4, p6, p4, p6, p8,     // Top
-              p1, p3, p5, p3, p5, p7      // Bottom
-          };
-
-      // Put new data in the VBO
-      glBufferSubData(GL_ARRAY_BUFFER, i*36*sizeof(vec4), 36*sizeof(vec4), newpoints);
-    }
-#ifdef GT_DEBUG_TILE_POSITION_ONLINE
-    cout << endl;
-#endif
-
-    glBindVertexArray(0);
-  }
 
 //-------------------------------------------------------------------------------------------------------------------
 
   // Checks if the current tile is collide with the bottom or the stack of tiles
   bool
-  collisionDetect(gtDirection towards) {
+  GT_gameLogic::collisionDetect(gtDirection towards) {
     switch (towards) {
       case DO: { // Downward collision detection
         for(int i = 0; i < 4; i++) {
@@ -599,7 +406,7 @@ namespace GT_gameLogic {
 
   // Eliminate any possible tile that could be eliminated
   void
-  clearWholeMap() {
+  GT_gameLogic::clearWholeMap() {
 #ifdef GT_DEBUG_ELIMINATION
     cout << "Called clearWholeMap()\n";
 #endif
@@ -659,7 +466,7 @@ namespace GT_gameLogic {
 
   // Check if all block in game cannot be eliminated
   bool
-  isWholeMapStatic() {
+  GT_gameLogic::isWholeMapStatic() {
 #ifdef GT_DEBUG_ELIMINATION
     cout << "Called isWholeMapStatic()\n";
 #endif
@@ -825,7 +632,7 @@ namespace GT_gameLogic {
 
   // Eliminate one single block
   void
-  eliminatePoint(int x, int y) {
+  GT_gameLogic::eliminatePoint(int x, int y) {
     board[x][y] = false; // eliminate occupation
     int movement = 0;
     // calculate distance of downward
@@ -848,7 +655,7 @@ namespace GT_gameLogic {
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
   inline void
-  checkFullRow(int row) {
+  GT_gameLogic::checkFullRow(int row) {
     bool isFull = true;
     for(int i = 0; i < 10; i++) {
       if (board[i][row]) {
@@ -870,62 +677,17 @@ namespace GT_gameLogic {
     }
   }
 
-  inline void
-  updateBoardColor(int x, int y, vec4 c) {
-//    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
-//    cout << "updateBoardColor on x:" << x << " y:" << y << endl;
-    for(int i=0; i<36; i++)
-      boardcolours[36*(10*y + x) + i] = c;
-//    boardcolours[6*(10*y + x)    ] = c;
-//    boardcolours[6*(10*y + x) + 1] = c;
-//    boardcolours[6*(10*y + x) + 2] = c;
-//    boardcolours[6*(10*y + x) + 3] = c;
-//    boardcolours[6*(10*y + x) + 4] = c;
-//    boardcolours[6*(10*y + x) + 5] = c;
-//    glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
-
-
-//    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[4]);
-//
-//
-//      // Create the 4 corners of the square - these vertices are using location in pixels
-//      // These vertices are later converted by the vertex shader
-//      vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBL
-//      vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTL
-//      vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBR
-//      vec4 p4 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTR
-//      vec4 p5 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBL
-//      vec4 p6 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTL
-//      vec4 p7 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBR
-//      vec4 p8 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTR
-//
-//
-//      // Two points are used by two triangles each
-//      vec4 newpoints[36] = {
-//          p1, p2, p3, p2, p3, p4,     // Front
-//          p1, p2, p5, p2, p5, p6,     // Left
-//          p5, p6, p7, p6, p7, p8,     // Back
-//          p3, p4, p7, p4, p7, p8,     // Right
-//          p2, p4, p6, p4, p6, p8,     // Top
-//          p1, p3, p5, p3, p5, p7      // Bottom
-//      };
-//
-//      // Put new data in the VBO
-//      glBufferSubData(GL_ARRAY_BUFFER, i*36*sizeof(vec4), 36*sizeof(vec4), newpoints);
-
-  }
-
 //-------------------------------------------------------------------------------------------------------------------
 
   // Judge if (vec4)a == (vec4)b
   inline bool
-  isColorSame(vec4 a, vec4 b) {
+  GT_gameLogic::isColorSame(vec4 a, vec4 b) {
     return (a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
   }
 
   // Output the color's name, using for debug
   void
-  getColorName(int x, int y) {
+  GT_gameLogic::getColorName(int x, int y) {
     vec4 tarColor = boardcolours[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*y + x)];
     if(isColorSame(tarColor, palette[purple])) cout << "P ";
     if(isColorSame(tarColor, palette[red]))    cout << "R ";
@@ -940,23 +702,102 @@ namespace GT_gameLogic {
 
   // Starts the game over - empties the board, creates new tiles, resets line counters
   void
-  restart() {
-    //TODO: reset restart() func location
-    // Initialize the grid, the board, and the current tile
-    initGrid();
-    initBoard();
-    initCurrentTile();
-
-    // Reset drop speed
-    DROP_SPEED = 600;
-    DROP_SHIFT = 100;
-
-    // Game initialization
-    newTile(); // create new next tile
-
-    // set to default
-    glBindVertexArray(0);
-    glClearColor(0, 0, 0, 0);
+  GT_gameLogic::restart() {
+    init();
   }
 
+// Handle arrow key keypresses
+void
+GT_gameLogic::special(int key, int x, int y) {
+  if(gamePause) return;  // Skip triggering special key when game is pause
+  bool CTRL = false;
+  int modifier = glutGetModifiers();
+#ifdef __APPLE__
+  if (modifier != 0 && modifier == GLUT_ACTIVE_SHIFT) {
+    CTRL = 1;
+  }
+#else
+    if (modifier != 0 && modifier == GLUT_ACTIVE_CTRL) {
+      CTRL = 1;
+  }
+#endif
+  else if (CTRL) {
+    CTRL = 0;
+  }
+
+#ifdef GT_DEBUG_SPECIAL_KEYINFO
+  switch (key) {
+    case 100: // Left Arrow
+      std::cout << "[LEFT Arrow] Pressed.\n";
+      break;
+    case 101: // Up Arrow (Rotate Tile)
+      std::cout << "[UP Arrow] Pressed.\n";
+      break;
+    case 102: // Right Arrow
+      std::cout << "[RIGHT Arrow] Pressed.\n";
+      break;
+    case 103: // Down Arrow
+      std::cout << "[DOWN Arrow] Pressed.\n";
+      break;
+  }
+}
+#endif
+
+  switch (key) {
+    case 100: // Left Arrow
+      if(CTRL) { ViewMat *= RotateY(-5);}
+      else { moveTile(vec2(-1, 0)); }
+      break;
+    case 101: // Up Arrow (Rotate Tile)
+      if(CTRL) { }
+      else { rotate(); }
+      break;
+    case 102: // Right Arrow
+      if(CTRL) { ViewMat *= RotateY(5); }
+      else { moveTile(vec2(1, 0)); }
+      break;
+    case 103: // Down Arrow
+      if(CTRL) { }
+      else { moveTile(vec2(0, -1)); }
+      break;
+  }
+}
+
+// Handles standard key press
+void
+GT_gameLogic::keyboard(unsigned char key, int x, int y) {
+  switch(key)
+  {
+    case 033: // Both escape key and 'q' cause the game to exit
+      exit(EXIT_SUCCESS);
+    case 'q':
+      exit (EXIT_SUCCESS);
+    case 't': // 't' key rotates the tile
+      rotate();
+      break;
+    case 'p': // 'p' key pauses the game
+      gamePause = !gamePause;
+      break;
+    case 'a': // 'a' key accelerates the drop speed
+      if(DROP_SPEED > DROP_SHIFT) DROP_SPEED -= DROP_SHIFT;
+      break;
+    case 'r': // 'r' key restarts the game
+      restart();
+      break;
+  }
+  glutPostRedisplay();
+}
+
+void
+GT_gameLogic::timerDrop(int data) {
+  //reset timer
+  glutTimerFunc((unsigned int)DROP_SPEED, timerDrop, 0);
+
+  if(!gamePause) {  // when game is pause, stop handling tiles
+#ifdef GT_DEBUG_TIMER
+    std::cout << "timerDrop triggered - " << data << "\n";
+#endif
+    moveTile(vec2(0, -2));
+    glutPostRedisplay();
+  }
 }

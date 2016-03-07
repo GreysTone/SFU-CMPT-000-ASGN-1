@@ -1,5 +1,7 @@
 //
-// Created by Danyang Song on 10/02/16.
+// CMPT 361 Assignment 2 - Fruit Tetris
+// Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
+// (Network ID: GreysTone)
 //
 
 #ifndef ASSIGNMENT1_GAMELOGIC_H
@@ -7,6 +9,7 @@
 
 #include "include/Angel.h"
 #include "gameSetting.h"
+#include "gameDrawing.h"
 //#include <random>
 #include <stdlib.h>
 #include <time.h>
@@ -14,6 +17,7 @@
 
 using namespace std;
 using namespace GT_gameSetting;
+using namespace GT_gameDrawing;
 
 namespace GT_gameLogic {
 
@@ -32,11 +36,6 @@ namespace GT_gameLogic {
 //#define GT_DEBUG_ELIMINATION_OUTPUT
 //#define GT_DEBUG_ELIMINATION_POINT_DETAIL
 
-  // current tile
-  extern vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
-  extern vec2 tilepos; // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
-  extern gtColor tiledColor[4];
-
   enum gtShape {sI = 0, sS, sL, sT};
   extern gtShape tileShape;
   extern int tileModule;
@@ -45,28 +44,6 @@ namespace GT_gameLogic {
 
   //board[x][y] represents whether the cell (x,y) is occupied
   extern bool board[10][20];
-
-  // location of vertex attributes in the shader program
-  extern GLint vPosition;
-  extern GLint vColor;
-
-
-
-  // locations of uniform variables in shader program
-  extern GLint locxsize;
-  extern GLint locysize;
-  extern GLint loczsize;
-
-  // projection
-  extern GLint locMVPMatrix;
-  extern mat4 ModelMat, ViewMat, ProjectionMat;
-  //TODO: [RESET]Projection
-//  extern GLuint model_view;
-//  extern GLuint projection;
-
-  // VAO and VBO
-  extern GLuint vaoIDs[3]; // One VAO for each object: the grid, the board, the current piece
-  extern GLuint vboIDs[6]; // Two Vertex Buffer Objects for each VAO (specifying vertex positions and colours, respectively)
 
   // random generator
   //  extern std::default_random_engine generator;
@@ -80,14 +57,7 @@ namespace GT_gameLogic {
 
 //-------------------------------------------------------------------------------------------------------------------
 
-  // Initialize Grid
-  void initGrid();
-  // Initialize Board
-  void initBoard();
-  // No geometry for current tile initially
-  void initCurrentTile();
-
-
+  void init();
   // Called at the start of play and every time a tile is placed
   void newTile();
   // Rotates the current tile, if there is room
@@ -95,10 +65,8 @@ namespace GT_gameLogic {
   // Given (x,y), tries to move the tile x squares to the right and y squares down
   // Returns true if the tile was successfully moved, or false if there was some issue
   bool moveTile(vec2 direction);
-  // Places the current tile - update the board vertex colour VBO and the array maintaining occupied cells
+  // Places the current tile
   void setTile();
-  // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
-  void updateTile();
 
   // Collision Detection Function
   bool collisionDetect(gtDirection towards);
@@ -112,8 +80,7 @@ namespace GT_gameLogic {
   // Checks if the specified row (0 is the bottom 19 the top) is full
   // If every cell in the row is occupied, it will clear that cell and everything above it will shift down one row
   inline void checkFullRow(int row);
-  // Update the board's color data
-  inline void updateBoardColor(int x, int y, vec4 color);
+
 
   // Judge if (vec4)a == (vec4)b
   inline bool isColorSame(vec4 a, vec4 b);
@@ -122,6 +89,10 @@ namespace GT_gameLogic {
 
   // Starts the game over - empties the board, creates new tiles, resets line counters
   void restart();
-}
+
+  void special(int key, int x, int y);
+  void keyboard(unsigned char key, int x, int y);
+  void timerDrop(int data);
+} // namespace GT_gameLogic
 
 #endif //ASSIGNMENT1_GAMELOGIC_H

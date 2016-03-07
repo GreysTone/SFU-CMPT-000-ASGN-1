@@ -1,43 +1,47 @@
 //
-// Created by Danyang Song on 11/02/16.
+// CMPT 361 Assignment 2 - Fruit Tetris
+// Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
+// (Network ID: GreysTone)
 //
 
 #ifndef ASSIGNMENT1_GAMESETTING_H
 #define ASSIGNMENT1_GAMESETTING_H
 
 #include "include/Angel.h"
+#include <vector>
 
 namespace GT_gameSetting {
 
 //#define GT_DEBUG_TIMER
 //#define GT_DEBUG_CLOSE_TIMER
 //#define GT_DEBUG_SPECIAL_KEYINFO
-
 //#define GT_SET_ANTI_ALIASING
 
-#define GT_GLOBAL_VERTEX_GRID (590)         // 2[planes] * (11+21)[lines/plane] * 2[points/line]
-#define GT_GLOBAL_VERTEX_BOARD (7200)       // (20*10)[cubes] * 6[planes/cube] * 6[points/plane]
-#define GT_GLOBAL_VERTEX_TILE (144)         // (4)[cubes] * 6[planes/cube] * 6[points/plane]
-#define GT_GLOBAL_VERTEX_SINGLE_CUBE (36)
+#define GT_GLOBAL_OBJECT_AMOUNT (4)
 #define GT_GLOBAL_HEIGHT_BOARD (20)
 #define GT_GLOBAL_WIDTH_BOARD (10)
-#define GT_GLOBAL_EYE_Z (1500)
-#define GT_GLOBAL_PROJECT_ANGLE (45)
-#define GT_GLOBAL_PROJECT_Z_NEAR (1)
-#define GT_GLOBAL_PROJECT_Z_FAR (40)
 
-//#define
-
-  extern int DROP_SPEED;
-  extern int DROP_SHIFT;
-
+  // window size
   extern int xsize;
   extern int ysize;
   extern int zsize;
 
-  // colors
+  // drop control
+  extern int DROP_SPEED;
+  extern int DROP_SHIFT;
+
+  // palette
   extern vec4 palette[7];
   enum gtColor {purple = 0, red, yellow, green, orange, white, black};
+
+  // object
+  enum gtObject {objGrid = 0, objBoard, objTile, objArm};
+//  extern std::vector<gtObject> objectStack;
+
+  // current tile
+  extern vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
+  extern vec2 tilepos; // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
+  extern gtColor tiledColor[4];
 
   // An array storing all possible orientations of all possible tiles
   // The 'tile' array will always be some element [i][j] of this array (an array of vec2)
@@ -46,16 +50,15 @@ namespace GT_gameSetting {
   extern vec2 allRotationsSShape[2][4];
   extern vec2 allRotationsTShape[4][4];
 
-  // projections setting
-  extern vec4 projectionEye;
-  extern vec4 projectionAt;
-  extern vec4 projectionUp;
+  // TODO:Parameters controlling the size of the Robot's arm
+  const GLfloat BASE_HEIGHT      = 2.0;
+  const GLfloat BASE_WIDTH       = 5.0;
+  const GLfloat LOWER_ARM_HEIGHT = 5.0;
+  const GLfloat LOWER_ARM_WIDTH  = 0.5;
+  const GLfloat UPPER_ARM_HEIGHT = 5.0;
+  const GLfloat UPPER_ARM_WIDTH  = 0.5;
 
-  //An array containing the colour of each of the 10*20*2*3 vertices that make up the board
-  //Initially, all will be set to black. As tiles are placed, sets of 6 vertices (2 triangles; 1 square)
-  //will be set to the appropriate colour in this array before updating the corresponding VBO
-  extern vec4 boardcolours[GT_GLOBAL_VERTEX_BOARD];
-}
+} // namespace GT_gameSetting
 
 
 #endif //ASSIGNMENT1_GAMESETTING_H

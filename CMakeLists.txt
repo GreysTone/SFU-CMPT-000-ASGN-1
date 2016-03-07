@@ -9,6 +9,6 @@ set(SOURCE_FILES
     include/InitShader.cpp
     include/mat.h
     include/vec.h
-    FruitTetris.cpp gameLogic.cpp gameLogic.h gameSetting.cpp gameSetting.h)
+    FruitTetris.cpp gameLogic.cpp gameLogic.h gameSetting.cpp gameSetting.h gameDrawing.cc gameDrawing.h)
 
 add_executable(Assignment1 ${SOURCE_FILES})
