@@ -50,6 +50,12 @@ namespace GT_gameLogic {
   extern GLuint vPosition;
   extern GLuint vColor;
 
+  //TODO: Lyken Code
+  extern GLuint locMVP;
+  extern GLuint model_view;
+  extern GLuint projection;
+  extern mat4 Projection,View, Model;
+
   // locations of uniform variables in shader program
   extern GLint locxsize;
   extern GLint locysize;

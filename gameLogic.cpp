@@ -39,6 +39,23 @@ namespace GT_gameLogic {
 
   bool gamePause = false;
 
+  //TODO: Lyken
+  mat4 Projection,View, Model;
+  GLuint locMVP;
+
+
+  GLfloat angle1 = M_PI / 2;
+  GLfloat angle2 = M_PI / 4 ;
+  const GLfloat armLength1 = 420.0;
+  const GLfloat armLength2 = 400.0;
+  const GLfloat  dr = 5.0 * DegreesToRadians;
+  GLuint  model_view;  // model-view matrix uniform shader variable location
+
+  GLfloat  lleft = -1.0, rright = 1;
+  GLfloat  bottom = -1.0, top = 1;
+  GLfloat  zNear = 0.1, zFar = 5.0;
+  GLuint  projection; // projection matrix uniform shader variable location
+
 //-------------------------------------------------------------------------------------------------------------------
 
   void initGrid()
