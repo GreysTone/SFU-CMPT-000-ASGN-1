@@ -102,6 +102,19 @@ GT_gameLogic::init() {
 //    GLfloat y = 19 - ymax;
 //    tilepos = vec2(x , y);
 
+    vec4 newcolours[GT_GLOBAL_VERTEX_TILE];
+    int flag = 0;
+    for (int i = 0; i < GT_GLOBAL_VERTEX_TILE; i += 36) {
+      // vec4 tiled = palette[dist(generator)]; // randomize the color
+      tiledColor[flag] = (gtColor)((rand() % 32765) % 5); // (rand()%32765) % 5 -> makes color separated
+#ifdef GT_DEBUG_SOLID_COLOR
+      tiledColor[flag] = red;
+#endif
+      vec4 tiled = palette[tiledColor[flag]]; // randomize the color
+      flag++;
+      for (int j = 0; j < 36; j++)
+        newcolours[i + j] = tiled;
+    }
 
     // check if there is possible to contain a new tile
 //    if(collisionDetect(CTN)) {
@@ -126,29 +139,16 @@ GT_gameLogic::init() {
 //        }
 //        restart();
 //      }
-//      else tilepos = vec2(col, y);
+////      else tilepos = vec2(col, y);
 //    }
 
-    updateTile(); // only update vertex here
+//    updateTile(); // only update vertex here
 
     // Update the color VBO of current tile
-    vec4 newcolours[GT_GLOBAL_VERTEX_TILE];
-    int flag = 0;
-    for (int i = 0; i < GT_GLOBAL_VERTEX_TILE; i += 36) {
-      // vec4 tiled = palette[dist(generator)]; // randomize the color
-      tiledColor[flag] = (gtColor)((rand() % 32765) % 5); // (rand()%32765) % 5 -> makes color separated
-#ifdef GT_DEBUG_SOLID_COLOR
-      tiledColor[flag] = red;
-#endif
-      vec4 tiled = palette[tiledColor[flag]]; // randomize the color
-      flag++;
-      for (int j = 0; j < 36; j++)
-        newcolours[i + j] = tiled;
-    }
 
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newcolours), newcolours); // Put the colour data in the VBO
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+//    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
   }
@@ -747,7 +747,7 @@ GT_gameLogic::special(int key, int x, int y) {
   switch (key) {
     case 100: // Left Arrow
       if(CTRL) { ViewMat *= RotateY(-5);}
-      else { moveTile(vec2(-1, 0)); }
+//      else { moveTile(vec2(-1, 0)); }
       break;
     case 101: // Up Arrow (Rotate Tile)
       if(CTRL) { }
@@ -755,7 +755,7 @@ GT_gameLogic::special(int key, int x, int y) {
       break;
     case 102: // Right Arrow
       if(CTRL) { ViewMat *= RotateY(5); }
-      else { moveTile(vec2(1, 0)); }
+//      else { moveTile(vec2(1, 0)); }
       break;
     case 103: // Down Arrow
       if(CTRL) { }

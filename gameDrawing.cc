@@ -378,11 +378,39 @@ GT_gameDrawing::updateTile() {
     // Put new data in the VBO
     glBufferSubData(GL_ARRAY_BUFFER, i*36*sizeof(vec4), 36*sizeof(vec4), newpoints);
   }
+
+  // Color reshade
+  bool outRange = false;
+  for(int i = 0; i < 4; i++) {
+    GLfloat x = GT_gameSetting::tilepos.x + GT_gameSetting::tile[i].x;
+    GLfloat y = GT_gameSetting::tilepos.y + GT_gameSetting::tile[i].y;
+    if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19) {
+      outRange = true;
+      break;
+    }
+  }
+  vec4 newcolour[GT_GLOBAL_VERTEX_TILE];
+  if(outRange) {
+    for(int i=0; i<GT_GLOBAL_VERTEX_TILE; i++)
+      newcolour[i] = palette[GT_gameSetting::grey];
+  } else {
+    int flag = 0;
+    for (int i = 0; i < GT_GLOBAL_VERTEX_TILE; i += 36) {
+      // vec4 tiled = palette[dist(generator)]; // randomize the color
+      vec4 tiled = palette[tiledColor[flag]]; // randomize the color
+      flag++;
+      for (int j = 0; j < 36; j++)
+        newcolour[i + j] = tiled;
+    }
+  }
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newcolour), newcolour);
+
 #ifdef GT_DEBUG_TILE_POSITION_ONLINE
   cout << endl;
 #endif
 
-  glBindVertexArray(0);
+//  glBindVertexArray(0);
 }
 
 void
