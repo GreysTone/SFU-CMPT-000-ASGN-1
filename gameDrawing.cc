@@ -7,6 +7,7 @@
 #include "gameDrawing.h"
 
 //using namespace GT_gameDrawing
+//using namespace GT_gameModel::ARM;
 
 namespace GT_gameDrawing {
   // location of vertex attributes in the shader program
@@ -39,13 +40,13 @@ namespace GT_gameDrawing {
 //  const GLfloat armLength1 = 420.0;
 //  const GLfloat armLength2 = 400.0;
 //  const GLfloat  dr = 5.0 * DegreesToRadians;
-//  mat4  model_view;  // model-view matrix uniform shader variable location
+  mat4  model_view;  // model-view matrix uniform shader variable location
 //
 //  GLfloat  lleft = -1.0, rright = 1;
 //  GLfloat  bottom = -1.0, top = 1;
 //  GLfloat  zNear = 0.1, zFar = 5.0;
-//  mat4  projection; // projection matrix uniform shader variable location
-
+  mat4  projection; // projection matrix uniform shader variable location
+  GLuint ModelView, Projection;
 
   // VAO and VBO
   // One VAO for each object: the grid, the board, the current piece
@@ -237,30 +238,37 @@ GT_gameDrawing::initCurrentTile() {
 
 void
 GT_gameDrawing::initArm() {
-  vec4 points[GT_GLOBAL_VERTEX_SINGLE_CUBE];
-  vec4 colors[GT_GLOBAL_VERTEX_SINGLE_CUBE];
+//  using namespace GT_gameModel::ARM;
+//  setupModel();
 
-  vec4 vertices[8] = {
-      vec4( -0.5, -0.5,  0.5, 1.0 ),
-      vec4( -0.5,  0.5,  0.5, 1.0 ),
-      vec4(  0.5,  0.5,  0.5, 1.0 ),
-      vec4(  0.5, -0.5,  0.5, 1.0 ),
-      vec4( -0.5, -0.5, -0.5, 1.0 ),
-      vec4( -0.5,  0.5, -0.5, 1.0 ),
-      vec4(  0.5,  0.5, -0.5, 1.0 ),
-      vec4(  0.5, -0.5, -0.5, 1.0 )
-  };
+  // Create a vertex array object
+//  GLuint vao;
+//  glGenVertexArraysAPPLE( 1, &vao );
+//  glBindVertexArrayAPPLE( vao );
+//  glBindVertexArray(vaoIDs[GT_gameSetting::objArm]);
+//  glGenBuffers(2, &vboIDs[GT_gameSetting::objArm * 2]);
 
-  vec4 vertex_colors[8] = {
-      vec4( 0.0, 0.0, 0.0, 1.0 ),  // black
-      vec4( 1.0, 0.0, 0.0, 1.0 ),  // red
-      vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow
-      vec4( 0.0, 1.0, 0.0, 1.0 ),  // green
-      vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue
-      vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta
-      vec4( 1.0, 1.0, 1.0, 1.0 ),  // white
-      vec4( 0.0, 1.0, 1.0, 1.0 )   // cyan
-  };
+//  // Grid cell vertex positions
+//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2]);
+//  glBufferData(GL_ARRAY_BUFFER, 576, GT_gameModel::ARM::vertexArray, GL_STATIC_DRAW);
+//  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+//  glEnableVertexAttribArray(vPosition);
+//
+//  // Grid cell vertex colours
+//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2 + 1]);
+//  glBufferData(GL_ARRAY_BUFFER, 576, GT_gameModel::ARM::colourArray, GL_DYNAMIC_DRAW);
+//  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+//  glEnableVertexAttribArray(vColor);
+
+  // Create and initialize a buffer object
+//  GLuint buffer;
+//  glGenBuffers( 1, &buffer );
+//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2]);
+////  glBindBuffer( GL_ARRAY_BUFFER, buffer );
+//  glBufferData( GL_ARRAY_BUFFER, sizeof(points) + sizeof(colors),
+//                NULL, GL_DYNAMIC_DRAW );
+//  glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof(points), points );
+//  glBufferSubData( GL_ARRAY_BUFFER, sizeof(points), sizeof(colors), colors );
 }
 
 // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
@@ -365,6 +373,7 @@ GT_gameDrawing::display() {
 
 //  glBindVertexArray(vaoIDs[armVAO]); // Bind the VAO representing the current tile (to be drawn on top of the board)
 //  glDrawArrays(GL_TRIANGLES, 0, allPoints); // Draw the current tile (8 triangles)
+
 
 
   glutSwapBuffers();

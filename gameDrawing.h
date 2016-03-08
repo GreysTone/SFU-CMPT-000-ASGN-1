@@ -9,13 +9,12 @@
 
 #include "include/Angel.h"
 #include "gameSetting.h"
+#include "gameModel.h"
+
+using namespace GT_gameModel;
+using namespace GT_gameModel::ARM;
 
 namespace GT_gameDrawing {
-
-#define GT_GLOBAL_VERTEX_GRID (590)         // 2[planes] * (11+21)[lines/plane] * 2[points/line]
-#define GT_GLOBAL_VERTEX_BOARD (7200)       // (20*10)[cubes] * 6[planes/cube] * 6[points/plane]
-#define GT_GLOBAL_VERTEX_TILE (144)         // (4)[cubes] * 6[planes/cube] * 6[points/plane]
-#define GT_GLOBAL_VERTEX_SINGLE_CUBE (36)
 #define GT_GLOBAL_EYE_Z (1500)
 #define GT_GLOBAL_PROJECT_ANGLE (45)
 #define GT_GLOBAL_PROJECT_Z_NEAR (1)
@@ -33,9 +32,11 @@ namespace GT_gameDrawing {
   // projection
   extern GLint locMVPMatrix;
   extern mat4 ModelMat, ViewMat, ProjectionMat;
+
   //TODO: [RESET]Projection
   extern mat4 model_view;
   extern mat4 projection;
+  extern GLuint ModelView, Projection;
 
   // projections setting
   extern vec4 projectionEye;
@@ -71,6 +72,8 @@ namespace GT_gameDrawing {
   void reshape(GLsizei w, GLsizei h);
   void display();
   void idle();
+
+//  void pipelineUpdate(GT_gameSetting::gtObject);
 
 } // namespace GT_gameDrawing
 

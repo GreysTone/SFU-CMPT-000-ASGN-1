@@ -11,8 +11,6 @@
 #include <vector>
 
 namespace GT_gameSetting {
-
-//#define GT_DEBUG_TIMER
 //#define GT_DEBUG_CLOSE_TIMER
 //#define GT_DEBUG_SPECIAL_KEYINFO
 //#define GT_SET_ANTI_ALIASING
@@ -20,6 +18,11 @@ namespace GT_gameSetting {
 #define GT_GLOBAL_OBJECT_AMOUNT (4)
 #define GT_GLOBAL_HEIGHT_BOARD (20)
 #define GT_GLOBAL_WIDTH_BOARD (10)
+
+#define GT_GLOBAL_VERTEX_GRID (590)         // 2[planes] * (11+21)[lines/plane] * 2[points/line]
+#define GT_GLOBAL_VERTEX_BOARD (7200)       // (20*10)[cubes] * 6[planes/cube] * 6[points/plane]
+#define GT_GLOBAL_VERTEX_TILE (144)         // (4)[cubes] * 6[planes/cube] * 6[points/plane]
+#define GT_GLOBAL_VERTEX_SINGLE_CUBE (36)
 
   // window size
   extern int xsize;
@@ -49,15 +52,6 @@ namespace GT_gameSetting {
   extern vec2 allRotationsIShape[2][4];
   extern vec2 allRotationsSShape[2][4];
   extern vec2 allRotationsTShape[4][4];
-
-  // TODO:Parameters controlling the size of the Robot's arm
-  const GLfloat BASE_HEIGHT      = 2.0;
-  const GLfloat BASE_WIDTH       = 5.0;
-  const GLfloat LOWER_ARM_HEIGHT = 5.0;
-  const GLfloat LOWER_ARM_WIDTH  = 0.5;
-  const GLfloat UPPER_ARM_HEIGHT = 5.0;
-  const GLfloat UPPER_ARM_WIDTH  = 0.5;
-
 } // namespace GT_gameSetting
 
 

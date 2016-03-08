@@ -36,6 +36,7 @@ GT_gameLogic::init() {
     initGrid();
     initBoard();
     initCurrentTile();
+  initArm();
 
     // initially no cell is occupied
     for (int i = 0; i < 10; i++)
@@ -293,14 +294,17 @@ GT_gameLogic::init() {
           clearWholeMap();
           // Render Board (update VBO to OpenGL engine)
           // *** set up buffer objects
-          glBindVertexArray(vaoIDs[1]);
-          glGenBuffers(2, &vboIDs[2]);
+//          glBindVertexArray(vaoIDs[1]);
+//          glGenBuffers(2, &vboIDs[2]);
 
           // Grid cell vertex colours
-          glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
-          glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
-          glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-          glEnableVertexAttribArray(vColor);
+//          glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard]);
+//          glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+//          glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+//          glEnableVertexAttribArray(vColor);
+
+          glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard * 2 + 1]);
+          glBufferSubData(GL_ARRAY_BUFFER, 0, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours);
 
           // New tile && Judge if the game is Over
           newTile();
@@ -313,8 +317,8 @@ GT_gameLogic::init() {
 
     updateTile();
 
-    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+//    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
+//    glBindBuffer(GL_ARRAY_BUFFER, 0);
     return true;
   }
 
@@ -329,7 +333,6 @@ GT_gameLogic::init() {
 #endif
       board[offsetX][offsetY] = true;
       // Two points are reused
-//      cout << "call set tile" << endl;
       vec4 offsetColor = palette[tiledColor[i]];
       updateBoardColor(offsetX, offsetY, offsetColor);
     }
@@ -342,8 +345,6 @@ GT_gameLogic::init() {
     } cout << endl;
 #endif
   }
-
-
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -701,7 +702,8 @@ GT_gameLogic::init() {
 //-------------------------------------------------------------------------------------------------------------------
 
   // Starts the game over - empties the board, creates new tiles, resets line counters
-  void
+
+void
   GT_gameLogic::restart() {
     init();
   }

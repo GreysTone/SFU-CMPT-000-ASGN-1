@@ -20,7 +20,7 @@ using namespace GT_gameSetting;
 using namespace GT_gameDrawing;
 
 namespace GT_gameLogic {
-
+//#define GT_DEBUG_TIMER
 //#define GT_DEBUG_COLLISION
 //#define GT_DEBUG_TILE_POSITION_ONLINE
 //#define GT_DEBUG_TILE_POSITION
