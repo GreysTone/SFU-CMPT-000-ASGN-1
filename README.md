@@ -91,7 +91,7 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
     * **'UpArrow'**, **'t'** - rotate tile
     * **'LeftArrow'**, **'RightArrow'** - move tile
     * **'DownArrow'** - set tile down to the bottom
-    * **'a'** - accelerate the drop time
+    * **'c'** - accelerate the drop time
     * **'p'** - pause, when game is pause, other special key will not be triggered
     * **'r'** - restart
     * **'ESC'**, **'q'** - exit game

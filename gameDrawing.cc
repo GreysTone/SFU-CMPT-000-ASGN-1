@@ -5,9 +5,7 @@
 //
 
 #include "gameDrawing.h"
-
-//using namespace GT_gameDrawing
-//using namespace GT_gameModel::ARM;
+#include "gameLogic.h"
 
 namespace GT_gameDrawing {
   // location of vertex attributes in the shader program
@@ -35,11 +33,6 @@ namespace GT_gameDrawing {
 
 
   // TODO: [RESET] Projection [mat4]model_view & projection
-  //  GLfloat angle1 = M_PI / 2;
-//  GLfloat angle2 = M_PI / 4 ;
-//  const GLfloat armLength1 = 420.0;
-//  const GLfloat armLength2 = 400.0;
-//  const GLfloat  dr = 5.0 * DegreesToRadians;
   mat4  model_view;  // model-view matrix uniform shader variable location
 //
 //  GLfloat  lleft = -1.0, rright = 1;
@@ -58,6 +51,9 @@ namespace GT_gameDrawing {
   //Initially, all will be set to black. As tiles are placed, sets of 6 vertices (2 triangles; 1 square)
   //will be set to the appropriate colour in this array before updating the corresponding VBO
   vec4 boardcolours[GT_GLOBAL_VERTEX_BOARD];
+
+  vec4 armpoints[GT_GLOBAL_VERTEX_ARM];
+  vec4 armcolorus[GT_GLOBAL_VERTEX_ARM];
 } // namespace GT_gameDrawing
 
 void
@@ -236,39 +232,284 @@ GT_gameDrawing::initCurrentTile() {
   glEnableVertexAttribArray(vColor);
 }
 
+
+//----------------------------------------------------------------------------
+
+//vec4 GT_gameDrawing::pointOffset(GLfloat length, GLfloat angle) {return vec4(length * cos(angle),length * sin(angle),0,0);}
+//
+//void GT_gameDrawing::setFace(vec4 boardpoints[],int index,vec4 &p1,vec4 &p2,vec4 &p3,vec4 &p4){
+//  boardpoints[index 	 ] = p1;
+//  boardpoints[index + 1] = p2;
+//  boardpoints[index + 2] = p3;
+//  boardpoints[index + 3] = p2;
+//  boardpoints[index + 4] = p3;
+//  boardpoints[index + 5] = p4;
+//}
+//
+//void GT_gameDrawing::drawCuboid(vec4* armPoints,int index,vec4 leftFront,vec4 leftBack,vec4 rightBack,vec4 rightFront,GLfloat height,GLfloat angle) {
+//  vec4 theta = vec4(height*cos(angle),height*sin(angle),0,0);
+//  vec4 p1 = leftFront;
+//  vec4 p2 = leftFront + theta;
+//  vec4 p3 = rightFront;
+//  vec4 p4 = rightFront + theta;
+//  vec4 p5 = leftBack;
+//  vec4 p6 = leftBack + theta;
+//  vec4 p7 = rightBack;
+//  vec4 p8 = rightBack + theta;
+//
+//
+//  setFace(armPoints, index,      p1, p2, p3, p4); //front
+//  setFace(armPoints, index + 6 , p5, p6, p7, p8); //back
+//  setFace(armPoints, index + 12, p1, p2, p5, p6); //left
+//  setFace(armPoints, index + 18, p3, p4, p7, p8); //right
+//  setFace(armPoints, index + 24, p2, p4, p6, p8); //top
+//  setFace(armPoints, index + 30, p1, p3, p5, p7); //bottom
+//}
+
+void
+GT_gameDrawing::updateArm(int Theta, int Phi) {
+//  if(curTheta+Theta < 135 || curTheta+Theta > 225) return;
+//  if(curPhi+Phi > 45 || curTheta+Theta < -45) return;
+
+  vec4 p[8], q[8];
+  float unit = -16.5;
+
+    GT_gameLogic::Theta = (GT_gameLogic::Theta + Theta) % 360;
+    for(int i=0; i<8; i++) {
+      p[i] = vec4(((i & 4) ? -unit : unit), ((i & 2) ? -unit : unit), ((i & 1) ? -unit : unit), 1);
+    }
+    for(int i=0; i<8; i++) {
+      p[i] = Scale(1, 8, 1) * p[i];
+      p[i] = Translate(0, 4*33, 0) * p[i];
+      p[i] = RotateZ(GT_gameLogic::Theta) * p[i];
+//      cout << "rotate: Theta:" << (GT_gameLogic::Theta) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Theta) << endl;
+      p[i] = Translate(-80, 33, 0) * p[i];
+    }
+
+    vec4 cube2[36] = {
+        p[0], p[1], p[2], p[1], p[2], p[3],     // Front
+        p[0], p[1], p[4], p[1], p[4], p[5],     // Left
+        p[4], p[5], p[6], p[5], p[6], p[7],     // Back
+        p[2], p[3], p[6], p[3], p[6], p[7],     // Right
+        p[1], p[3], p[5], p[3], p[5], p[7],     // Top
+        p[0], p[2], p[4], p[2], p[4], p[6]      // Bottom
+    };
+    for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+      armpoints[36+k] = cube2[k];
+
+    // JOINT Higher Arm
+    GT_gameLogic::Phi = (GT_gameLogic::Phi + Phi) % 360;
+    for(int i=0; i<8; i++) {
+      q[i] = vec4(((i & 4) ? -unit : unit), ((i & 2) ? -unit : unit), ((i & 1) ? -unit : unit), 1);
+    }
+    for(int i=0; i<8; i++) {
+      q[i] = Scale(1, 16, 1) * q[i];
+      q[i] = Translate(0, 8*33, 0) * q[i];
+      q[i] = RotateZ(GT_gameLogic::Phi) * q[i];
+      q[i] = Translate(-8*33*sin(DegreesToRadians * GT_gameLogic::Theta),8*33*cos(DegreesToRadians * GT_gameLogic::Theta),0) * q[i];
+//      cout << "rotate: Phi:" << (GT_gameLogic::Phi) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Phi) << endl;
+      q[i] = Translate(-80, 33, 0) * q[i];
+    }
+//  cout << "POSPOS0: " << q[5] << endl;
+  cout << "POSPOS7: " << q[7] << endl;  //TODO: q[7] is the chosen one
+    vec4 cube3[36] = {
+        q[0], q[1], q[2], q[1], q[2], q[3],     // Front
+        q[0], q[1], q[4], q[1], q[4], q[5],     // Left
+        q[4], q[5], q[6], q[5], q[6], q[7],     // Back
+        q[2], q[3], q[6], q[3], q[6], q[7],     // Right
+        q[1], q[3], q[5], q[3], q[5], q[7],     // Toq
+        q[0], q[2], q[4], q[2], q[4], q[6]      // Bottom
+    };
+    for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+      armpoints[72+k] = cube3[k];
+
+  // Make all grid lines white
+  for (int i = 0; i < 36; i++) //Desktop
+    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::purple];
+
+  for (int i = 36; i < 72; i++) //Arm 1
+    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::red];;
+
+  for (int i = 72; i < 108; i++) //Arm 2
+    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::green];
+
+  // Grid cell vertex positions
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2]);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, 108*sizeof(vec4), armpoints);
+    
+    
+//    //update Hand Pos
+//    int hPosRow = 0;
+//    int hPosCol = 0;
+
+    
+}
+//}
+
 void
 GT_gameDrawing::initArm() {
-//  using namespace GT_gameModel::ARM;
-//  setupModel();
+  // *** Generate the geomadata
+  //vec4 armpoints[GT_GLOBAL_VERTEX_ARM];
+//  for (int i = 0; i < GT_GLOBAL_VERTEX_ARM; i++)
+//    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::red];
+  // Each cell is a cube (12 triangles with 36 vertices)
 
-  // Create a vertex array object
-//  GLuint vao;
-//  glGenVertexArraysAPPLE( 1, &vao );
-//  glBindVertexArrayAPPLE( vao );
-//  glBindVertexArray(vaoIDs[GT_gameSetting::objArm]);
-//  glGenBuffers(2, &vboIDs[GT_gameSetting::objArm * 2]);
 
-//  // Grid cell vertex positions
-//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2]);
-//  glBufferData(GL_ARRAY_BUFFER, 576, GT_gameModel::ARM::vertexArray, GL_STATIC_DRAW);
-//  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-//  glEnableVertexAttribArray(vPosition);
+//  GLfloat angle1 = M_PI / 2;            // 90 degree
+//  GLfloat angle2 = M_PI / 4 ;           // 45 degree
+//  const GLfloat armLength1 = 420.0;
+//  const GLfloat armLength2 = 400.0;
+//  const GLfloat  dr = 5.0 * DegreesToRadians; // each update change 5 degrees
+
+
+//  vec4 leftFrontA = vec4(-160.0, 33.0,  60, 1);
+//  vec4 leftBackA  = vec4(-160.0, 33.0, -60, 1);
+//  vec4 rightBackA = vec4(-40.0 , 33.0, -60, 1);
+//  vec4 rightFrontA = vec4(-40.0, 33.0,  60, 1);
+
+
+
+
+//  vec4 leftFrontA = vec4(-150.0, 33.0,  90, 1);
+//  vec4 leftBackA  = vec4(-150.0, 33.0, -90, 1);
+//  vec4 rightBackA = vec4(-30.0 , 33.0, -90, 1);
+//  vec4 rightFrontA = vec4(-30.0, 33.0,  90, 1);
+
+//  vec4 leftFrontB  = vec4(-110.0, 66.0,  10, 1);
+//  vec4 leftBackB   = vec4(-110.0, 66.0, -10, 1);
+//  vec4 rightBackB  = vec4(-90.0 , 66.0, -10, 1);
+//  vec4 rightFrontB = vec4(-90.0, 66.0,  10, 1);
+
+//  vec4 leftFrontB  = vec4(-110.0, 66.0,  qqq16.5, 1);
+//  vec4 leftBackB   = vec4(-110.0, 66.0, -16.5, 1);
+//  vec4 rightBackB  = vec4(-90.0 , 66.0, -16.5, 1);
+//  vec4 rightFrontB = vec4(-90.0, 66.0,  16.5, 1);
 //
-//  // Grid cell vertex colours
-//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2 + 1]);
-//  glBufferData(GL_ARRAY_BUFFER, 576, GT_gameModel::ARM::colourArray, GL_DYNAMIC_DRAW);
-//  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-//  glEnableVertexAttribArray(vColor);
+//  vec4 leftFrontC = leftFrontB;
+//  vec4 leftBackC  = leftBackB + vec4(0, -20, 0, 0);
+//  vec4 rightBackC = rightBackB;
+//  vec4 rightFrontC= rightFrontB + vec4(0, -20, 0, 0);
+//
+//  vec4 localLeftFrontC  = leftFrontC + pointOffset(armLength1, angle1);
+//  vec4 localLeftBackC   = leftBackC + pointOffset(armLength1, angle1);
+//  vec4 localRightBackC  = rightBackC + pointOffset(armLength1, angle1);
+//  vec4 localRightFrontC = rightFrontC+ pointOffset(armLength1, angle1);
+//
+//  //set point for base
+//  drawCuboid(armpoints, 0, leftFrontA, leftBackA, rightBackA, rightFrontA, 33.0,M_PI/2);
+//  //set point for arm1
+//  drawCuboid(armpoints, 36, leftFrontB, leftBackB, rightBackB, rightFrontB, armLength1, angle1);
+//  //set point for arm2
+//  drawCuboid(armpoints, 72, localLeftFrontC, localLeftBackC, localRightBackC, localRightFrontC, armLength2, angle2);
 
-  // Create and initialize a buffer object
-//  GLuint buffer;
-//  glGenBuffers( 1, &buffer );
-//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2]);
-////  glBindBuffer( GL_ARRAY_BUFFER, buffer );
-//  glBufferData( GL_ARRAY_BUFFER, sizeof(points) + sizeof(colors),
-//                NULL, GL_DYNAMIC_DRAW );
-//  glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof(points), points );
-//  glBufferSubData( GL_ARRAY_BUFFER, sizeof(points), sizeof(colors), colors );
+  //  vec4 p1 = vec4( unit, unit, unit, 1);   // FBL
+//  vec4 p2 = vec4( unit, unit,-unit, 1);   // FBL
+//  vec4 p3 = vec4( unit,-unit, unit, 1);   // FBL
+//  vec4 p4 = vec4( unit,-unit,-unit, 1);   // FBL
+//  vec4 p5 = vec4(-unit, unit, unit, 1);   // FBL
+//  vec4 p6 = vec4(-unit, unit,-unit, 1);   // FBL
+//  vec4 p7 = vec4(-unit,-unit, unit, 1);   // FBL
+//  vec4 p8 = vec4(-unit,-unit,-unit, 1);   // FBL
+//
+
+  // Build Model - Base
+  float unit = 16.5;
+  vec4 p[8] = {
+      vec4( unit, unit, unit, 1),
+      vec4( unit, unit,-unit, 1),
+      vec4( unit,-unit, unit, 1),
+      vec4( unit,-unit,-unit, 1),
+      vec4(-unit, unit, unit, 1),
+      vec4(-unit, unit,-unit, 1),
+      vec4(-unit,-unit, unit, 1),
+      vec4(-unit,-unit,-unit, 1)
+  };
+  for(int i=0; i<8; i++) {
+    p[i] = Scale(5, 1, 4) * p[i];
+    p[i] = Translate(-80, 33, 0) * p[i];
+  }
+  vec4 cube1[36] = {
+      p[0], p[1], p[2], p[1], p[2], p[3],     // Front
+      p[0], p[1], p[4], p[1], p[4], p[5],     // Left
+      p[4], p[5], p[6], p[5], p[6], p[7],     // Back
+      p[2], p[3], p[6], p[3], p[6], p[7],     // Right
+      p[1], p[3], p[5], p[3], p[5], p[7],     // Top
+      p[0], p[2], p[4], p[2], p[4], p[6]      // Bottom
+  };
+  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+    armpoints[k] = cube1[k];
+
+
+  // Build Model - Lower Arm
+  for(int i=0; i<8; i++) {
+    p[i] = vec4(((i&4)?-unit:unit), ((i&2)?-unit:unit), ((i&1)?-unit:unit),1);
+  }
+  for(int i=0; i<8; i++) {
+    p[i] = Scale(1, 8, 1) * p[i];
+    p[i] = Translate(0, 4*33, 0) * p[i];
+    p[i] = RotateZ(GT_gameLogic::Theta) * p[i];
+//      cout << "rotate: Theta:" << (GT_gameLogic::Theta) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Theta) << endl;
+    p[i] = Translate(-80, 33, 0) * p[i];
+  }
+  vec4 cube2[36] = {
+      p[0], p[1], p[2], p[1], p[2], p[3],     // Front
+      p[0], p[1], p[4], p[1], p[4], p[5],     // Left
+      p[4], p[5], p[6], p[5], p[6], p[7],     // Back
+      p[2], p[3], p[6], p[3], p[6], p[7],     // Right
+      p[1], p[3], p[5], p[3], p[5], p[7],     // Top
+      p[0], p[2], p[4], p[2], p[4], p[6]      // Bottom
+  };
+  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+    armpoints[36+k] = cube2[k];
+
+  // Build Model - Higher Arm
+  for(int i=0; i<8; i++) {
+    p[i] = vec4(((i&4)?-unit:unit), ((i&2)?-unit:unit), ((i&1)?-unit:unit),1);
+  }
+  for(int i=0; i<8; i++) {
+    p[i] = Scale(1, 16, 1) * p[i];
+    p[i] = Translate(0, 8*33, 0) * p[i];
+    p[i] = RotateZ(GT_gameLogic::Phi) * p[i];
+    p[i] = Translate(-8*33*sin(DegreesToRadians * GT_gameLogic::Theta),8*33*cos(DegreesToRadians * GT_gameLogic::Theta),0) * p[i];
+    p[i] = Translate(-80, 33, 0) * p[i];
+  }
+  vec4 cube3[36] = {
+      p[0], p[1], p[2], p[1], p[2], p[3],     // Front
+      p[0], p[1], p[4], p[1], p[4], p[5],     // Left
+      p[4], p[5], p[6], p[5], p[6], p[7],     // Back
+      p[2], p[3], p[6], p[3], p[6], p[7],     // Right
+      p[1], p[3], p[5], p[3], p[5], p[7],     // Top
+      p[0], p[2], p[4], p[2], p[4], p[6]      // Bottom
+  };
+  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+    armpoints[72+k] = cube3[k];
+
+
+  // Make all grid lines white
+  for (int i = 0; i < 36; i++) //Desktop
+    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::purple];
+
+  for (int i = 36; i < 72; i++) //Arm 1
+    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::red];;
+
+  for (int i = 72; i < 108; i++) //Arm 2
+    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::green];
+
+  // *** set up buffer objects
+  glBindVertexArray(vaoIDs[GT_gameSetting::objArm]);
+  glGenBuffers(2, &vboIDs[GT_gameSetting::objArm * 2]);
+
+  // Grid cell vertex positions
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2]);
+  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_ARM*sizeof(vec4), armpoints, GL_STATIC_DRAW);
+  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vPosition);
+
+  // Grid cell vertex colours
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2 + 1]);
+  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_ARM*sizeof(vec4), armcolorus, GL_DYNAMIC_DRAW);
+  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vColor);
 }
 
 // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
@@ -368,18 +609,14 @@ GT_gameDrawing::display() {
   glBindVertexArray(vaoIDs[GT_gameSetting::objTile]); // Bind the VAO representing the current tile (to be drawn on top of the board)
   glDrawArrays(GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_TILE); // Draw the current tile (8 triangles)
 
-  glBindVertexArray(vaoIDs[GT_gameSetting::objGrid]); // Bind the VAO representing the grid lines (to be drawn on top of everything else)
+  glBindVertexArray(vaoIDs[GT_gameSetting::objGrid]); // Bind the VAO representing the grid lines (to be drawn on top of tile)
   glDrawArrays(GL_LINES, 0, GT_GLOBAL_VERTEX_GRID); // Draw the grid lines (21+11 = 32 lines)
 
-//  glBindVertexArray(vaoIDs[armVAO]); // Bind the VAO representing the current tile (to be drawn on top of the board)
-//  glDrawArrays(GL_TRIANGLES, 0, allPoints); // Draw the current tile (8 triangles)
-
-
+  glBindVertexArray(vaoIDs[GT_gameSetting::objArm]); // Bind the VAO representing the current tile (to be drawn on top of everything)
+  glDrawArrays(GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_ARM); // Draw the current tile (8 triangles)
 
   glutSwapBuffers();
 }
-
-//-------------------------------------------------------------------------------------------------------------------
 
 void
 GT_gameDrawing::idle() {

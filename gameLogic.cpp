@@ -14,6 +14,10 @@ namespace GT_gameLogic {
   //board[x][y] represents whether the cell (x,y) is occupied
   bool board[10][20];
 
+// robot arm angle
+int Theta = 0;
+int Phi = -45;
+
   // random generator
   //  std::default_random_engine generator;
   //  std::uniform_int_distribution<int> dist(0,4);
@@ -780,7 +784,19 @@ GT_gameLogic::keyboard(unsigned char key, int x, int y) {
     case 'p': // 'p' key pauses the game
       gamePause = !gamePause;
       break;
-    case 'a': // 'a' key accelerates the drop speed
+    case 'a':
+      updateArm(5, 0);
+      break;
+    case 'd':
+      updateArm(-5, 0);
+      break;
+    case 'w':
+      updateArm(0, 5);
+      break;
+    case 's':
+      updateArm(0, -5);
+      break;
+    case 'c': // 'c' key accelerates the drop speed
       if(DROP_SPEED > DROP_SHIFT) DROP_SPEED -= DROP_SHIFT;
       break;
     case 'r': // 'r' key restarts the game

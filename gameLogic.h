@@ -42,8 +42,12 @@ namespace GT_gameLogic {
 
   enum gtDirection {UL = 0, UP, UR, LE, RI, DL, DO, DR, CTN};
 
-  //board[x][y] represents whether the cell (x,y) is occupied
+  // board[x][y] represents whether the cell (x,y) is occupied
   extern bool board[10][20];
+
+  // robot arm rotation
+  extern int Theta;
+  extern int Phi;
 
   // random generator
   //  extern std::default_random_engine generator;

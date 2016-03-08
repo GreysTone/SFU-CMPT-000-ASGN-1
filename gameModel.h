@@ -8,6 +8,7 @@
 #define ASSIGNMENT1_GAMEMODEL_H
 
 namespace GT_gameModel {
+
 namespace GRID {
 extern vec4 vertexArray[GT_GLOBAL_VERTEX_GRID];
 extern vec4 colourArray[GT_GLOBAL_VERTEX_GRID];
@@ -24,6 +25,9 @@ extern vec4 colourArray[GT_GLOBAL_VERTEX_TILE];
 }
 
 namespace ARM {
+extern vec4 points[GT_GLOBAL_VERTEX_SINGLE_CUBE];
+extern vec4 colors[GT_GLOBAL_VERTEX_SINGLE_CUBE];
+
 const GLfloat BASE_HEIGHT      = 2.0;
 const GLfloat BASE_WIDTH       = 5.0;
 const GLfloat LOWER_ARM_HEIGHT = 5.0;

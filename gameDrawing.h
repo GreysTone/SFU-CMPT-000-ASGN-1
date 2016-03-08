@@ -9,16 +9,12 @@
 
 #include "include/Angel.h"
 #include "gameSetting.h"
-#include "gameModel.h"
-
-using namespace GT_gameModel;
-using namespace GT_gameModel::ARM;
 
 namespace GT_gameDrawing {
 #define GT_GLOBAL_EYE_Z (1500)
 #define GT_GLOBAL_PROJECT_ANGLE (45)
 #define GT_GLOBAL_PROJECT_Z_NEAR (1)
-#define GT_GLOBAL_PROJECT_Z_FAR (40)
+#define GT_GLOBAL_PROJECT_Z_FAR (400)
 
   // location of vertex attributes in the shader program
   extern GLint vPosition;
@@ -51,6 +47,8 @@ namespace GT_gameDrawing {
   //Initially, all will be set to black. As tiles are placed, sets of 6 vertices (2 triangles; 1 square)
   //will be set to the appropriate colour in this array before updating the corresponding VBO
   extern vec4 boardcolours[GT_GLOBAL_VERTEX_BOARD];
+extern vec4 armpoints[GT_GLOBAL_VERTEX_ARM];
+  extern vec4 armcolorus[GT_GLOBAL_VERTEX_ARM];
 
   // Initialize OpenGL
   void initOpenGL();
@@ -69,9 +67,17 @@ namespace GT_gameDrawing {
   //TODO: [not handle right now]inline effect in diff namespace
   void updateBoardColor(int x, int y, vec4 color);
 
+  void updateArm(int Theta, int Phi);
+
   void reshape(GLsizei w, GLsizei h);
   void display();
   void idle();
+
+//  vec4 pointOffset(GLfloat length, GLfloat angle);
+//void setFace(vec4 boardpoints[],int index,vec4 &p1,vec4 &p2,vec4 &p3,vec4 &p4);
+//
+//void drawCuboid(vec4* armPoints,int index,vec4 leftFront,vec4 leftBack,vec4 rightBack,vec4 rightFront,GLfloat height,GLfloat angle);
+
 
 //  void pipelineUpdate(GT_gameSetting::gtObject);
 
