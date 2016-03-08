@@ -141,53 +141,81 @@ GLfloat HIGH_Scale_X     = 1.0;
 GLfloat HIGH_Scale_Y     = 16.0;
 GLfloat HIGH_Scale_Z     = 1.0;
 
-GLint Theta = 0;
-GLint Phi = -45;
+int Theta = 0;
+int Phi = -45;
 
 void setupModel() {
   vec4 cuboid[8];
 
-  // Vertex - Base
-  unitCube(cuboid);
-  for(int i=0; i<8; i++) {
-    cuboid[i] = Scale(BASE_Scale_X, BASE_Scale_Y, BASE_Scale_Z) * cuboid[i];
-    cuboid[i] = Translate(BASE_Trans_X, BASE_Trans_Y, 0) * cuboid[i];
-    cout << i << "-" << cuboid[i] << endl;
-  }
+//  // Vertex - Base
+//  unitCube(cuboid);
+//  for(int i=0; i<8; i++) {
+//    cuboid[i] = Scale(BASE_Scale_X, BASE_Scale_Y, BASE_Scale_Z) * cuboid[i];
+//    cuboid[i] = Translate(BASE_Trans_X, BASE_Trans_Y, 0) * cuboid[i];
+//    cout << i << "-" << cuboid[i] << endl;
+//  }
+//
+//  vec4 base[36];
+//  shadeCube(base, cuboid);
+//  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++) {
+//    vertexArray[k] = base[k];
+//    cout << k << "~" << base[k] << endl;
+//  }
 
-  vec4 base[36];
-  shadeCube(base, cuboid);
-  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++) {
-    vertexArray[k] = base[k];
-    cout << k << "~" << base[k] << endl;
-  }
+    // Build Model - Base
+//  float unit = 16.5;
+//  vec4 p[8] = {
+//      vec4( unit, unit, unit, 1),
+//      vec4( unit, unit,-unit, 1),
+//      vec4( unit,-unit, unit, 1),
+//      vec4( unit,-unit,-unit, 1),
+//      vec4(-unit, unit, unit, 1),
+//      vec4(-unit, unit,-unit, 1),
+//      vec4(-unit,-unit, unit, 1),
+//      vec4(-unit,-unit,-unit, 1)
+//  };
+//  for(int i=0; i<8; i++) {
+//    p[i] = Scale(5, 1, 4) * p[i];
+//    p[i] = Translate(-80, 33, 0) * p[i];
+//  }
+//  vec4 cube1[36] = {
+//      p[0], p[1], p[2], p[1], p[2], p[3],     // Front
+//      p[0], p[1], p[4], p[1], p[4], p[5],     // Left
+//      p[4], p[5], p[6], p[5], p[6], p[7],     // Back
+//      p[2], p[3], p[6], p[3], p[6], p[7],     // Right
+//      p[1], p[3], p[5], p[3], p[5], p[7],     // Top
+//      p[0], p[2], p[4], p[2], p[4], p[6]      // Bottom
+//  };
+//  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+//    vertexArray[k] = cube1[k];
 
-  // Build Model - Lower Arm
-  unitCube(cuboid);
-  for(int i=0; i<8; i++) {
-    cuboid[i] = Scale(LOW_Scale_X, LOW_Scale_Y, LOW_Scale_Z) * cuboid[i];
-    cuboid[i] = Translate(0, LOW_Scale_Y/2*33, 0) * cuboid[i];
-    cuboid[i] = RotateZ(Theta) * cuboid[i];
-    cuboid[i] = Translate(BASE_Trans_X, BASE_Trans_Y, 0) * cuboid[i];
-  }
-  vec4 lower[36];
-  shadeCube(lower, cuboid);
-  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
-    vertexArray[36+k] = lower[k];
 
-  // Build Model - Higher Arm
-  unitCube(cuboid);
-  for(int i=0; i<8; i++) {
-    cuboid[i] = Scale(HIGH_Scale_X, HIGH_Scale_Y, HIGH_Scale_Z) * cuboid[i];
-    cuboid[i] = Translate(0, HIGH_Scale_Y/2*33, 0) * cuboid[i];
-    cuboid[i] = RotateZ(Phi) * cuboid[i];
-    cuboid[i] = Translate(-HIGH_Scale_Y/2*33*sin(DegreesToRadians * Theta),HIGH_Scale_Y/2*33*cos(DegreesToRadians * Theta),0) * cuboid[i];
-    cuboid[i] = Translate(BASE_Trans_X, BASE_Trans_Y, 0) * cuboid[i];
-  }
-  vec4 higher[36];
-  shadeCube(higher, cuboid);
-  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
-    vertexArray[72+k] = higher[k];
+//  // Build Model - Lower Arm
+//  unitCube(cuboid);
+//  for(int i=0; i<8; i++) {
+//    cuboid[i] = Scale(LOW_Scale_X, LOW_Scale_Y, LOW_Scale_Z) * cuboid[i];
+//    cuboid[i] = Translate(0, LOW_Scale_Y/2*33, 0) * cuboid[i];
+//    cuboid[i] = RotateZ(Theta) * cuboid[i];
+//    cuboid[i] = Translate(BASE_Trans_X, BASE_Trans_Y, 0) * cuboid[i];
+//  }
+//  vec4 lower[36];
+//  shadeCube(lower, cuboid);
+//  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+//    vertexArray[36+k] = lower[k];
+//
+//  // Build Model - Higher Arm
+//  unitCube(cuboid);
+//  for(int i=0; i<8; i++) {
+//    cuboid[i] = Scale(HIGH_Scale_X, HIGH_Scale_Y, HIGH_Scale_Z) * cuboid[i];
+//    cuboid[i] = Translate(0, HIGH_Scale_Y/2*33, 0) * cuboid[i];
+//    cuboid[i] = RotateZ(Phi) * cuboid[i];
+//    cuboid[i] = Translate(-HIGH_Scale_Y/2*33*sin(DegreesToRadians * Theta),HIGH_Scale_Y/2*33*cos(DegreesToRadians * Theta),0) * cuboid[i];
+//    cuboid[i] = Translate(BASE_Trans_X, BASE_Trans_Y, 0) * cuboid[i];
+//  }
+//  vec4 higher[36];
+//  shadeCube(higher, cuboid);
+//  for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+//    vertexArray[72+k] = higher[k];
 
 
   // Colour

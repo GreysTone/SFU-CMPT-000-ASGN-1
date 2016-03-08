@@ -240,8 +240,6 @@ GT_gameDrawing::updateArm(int Theta, int Phi) {
 
 void
 GT_gameDrawing::initArm() {
-//  GT_gameModel::ARM::setupModel();
-//  gtPipeCreate(objArm, GT_gameModel::ARM::vertexArray, GT_gameModel::ARM::colourArray);
 
   // Build Model - Base
   float unit = 16.5;
@@ -326,23 +324,11 @@ GT_gameDrawing::initArm() {
   for (int i = 72; i < 108; i++) //Arm 2
     armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::green];
 
-  // *** set up buffer objects
-  glBindVertexArray(vaoIDs[GT_gameSetting::objArm]);
-  glGenBuffers(2, &vboIDs[GT_gameSetting::objArm * 2]);
+  gtPipeCreate(objArm, armpoints, armcolorus);
 
-  // Grid cell vertex positions
-  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2]);
-  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_ARM*sizeof(vec4), armpoints, GL_STATIC_DRAW);
-  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-  glEnableVertexAttribArray(vPosition);
+//  GT_gameModel::ARM::setupModel();
+//  gtPipeCreate(GT_gameSetting::objArm, GT_gameModel::ARM::vertexArray, GT_gameModel::ARM::colourArray);
 
-  // Grid cell vertex colours
-  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objArm * 2 + 1]);
-  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_ARM*sizeof(vec4), armcolorus, GL_DYNAMIC_DRAW);
-  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-  glEnableVertexAttribArray(vColor);
-
-  //TODO: need this
   GT_gameLogic::newTile();
   GT_gameSetting::tilepos.x = (int)(p[7].x/33)-1;
   GT_gameSetting::tilepos.y = (int)(p[7].y/33)-1;

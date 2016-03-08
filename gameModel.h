@@ -32,7 +32,8 @@ namespace ARM {
 extern vec4 vertexArray[GT_GLOBAL_VERTEX_SINGLE_CUBE];
 extern vec4 colourArray[GT_GLOBAL_VERTEX_SINGLE_CUBE];
 
-
+extern int Theta;
+extern int Phi;
 
 void setupModel();
 
