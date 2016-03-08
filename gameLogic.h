@@ -61,6 +61,9 @@ namespace GT_gameLogic {
   // Called at the start of play and every time a tile is placed
   void newTile();
   // Rotates the current tile, if there is room
+
+void shuffleColor();
+
   void rotate();
   // Given (x,y), tries to move the tile x squares to the right and y squares down
   // Returns true if the tile was successfully moved, or false if there was some issue

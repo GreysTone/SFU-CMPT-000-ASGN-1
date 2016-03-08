@@ -103,17 +103,10 @@ GT_gameLogic::init() {
 //    tilepos = vec2(x , y);
 
     vec4 newcolours[GT_GLOBAL_VERTEX_TILE];
-    int flag = 0;
+    tiledColor[0] = (gtColor)((rand() % 32765) % 5);
     for (int i = 0; i < GT_GLOBAL_VERTEX_TILE; i += 36) {
-      // vec4 tiled = palette[dist(generator)]; // randomize the color
-      tiledColor[flag] = (gtColor)((rand() % 32765) % 5); // (rand()%32765) % 5 -> makes color separated
-#ifdef GT_DEBUG_SOLID_COLOR
-      tiledColor[flag] = red;
-#endif
-      vec4 tiled = palette[tiledColor[flag]]; // randomize the color
-      flag++;
       for (int j = 0; j < 36; j++)
-        newcolours[i + j] = tiled;
+        newcolours[i + j] = palette[tiledColor[0]];
     }
 
     // check if there is possible to contain a new tile
@@ -150,8 +143,21 @@ GT_gameLogic::init() {
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newcolours), newcolours); // Put the colour data in the VBO
 //    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glBindVertexArray(0);
+//    glBindVertexArray(0);
+    updateTile();
   }
+
+void
+GT_gameLogic::shuffleColor() {
+  vec4 newcolours[GT_GLOBAL_VERTEX_TILE];
+  tiledColor[0] = (gtColor)((rand() % 32765) % 5);
+  for (int i = 0; i < GT_GLOBAL_VERTEX_TILE; i += 36) {
+    for (int j = 0; j < 36; j++)
+      newcolours[i + j] = palette[tiledColor[0]];
+  }
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newcolours), newcolours);
+}
 
   // Rotates the current tile, if there is room
   void

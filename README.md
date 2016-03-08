@@ -88,8 +88,10 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 
 * Keyboard
     * **'CTRL(SHIFT)' + 'LeftArrow'/'RightArrow'** - rotate projection
+    * **'W', 'A', 'S', 'D'** - control robot arm
+    * **'Space'** - drop tile
+    * **'CTRL(SHIFT)' + 'Space'** - shift tile
     * **'UpArrow'**, **'t'** - rotate tile
-    * **'LeftArrow'**, **'RightArrow'** - move tile
     * **'DownArrow'** - set tile down to the bottom
     * **'c'** - accelerate the drop time
     * **'p'** - pause, when game is pause, other special key will not be triggered

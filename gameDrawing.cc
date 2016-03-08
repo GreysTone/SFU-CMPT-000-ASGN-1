@@ -390,7 +390,7 @@ GT_gameDrawing::updateTile() {
     }
   }
   vec4 newcolour[GT_GLOBAL_VERTEX_TILE];
-  if(outRange) {
+  if(outRange || GT_gameLogic::collisionDetect(GT_gameLogic::CTN)) {
     for(int i=0; i<GT_GLOBAL_VERTEX_TILE; i++)
       newcolour[i] = palette[GT_gameSetting::grey];
   } else {
@@ -398,7 +398,6 @@ GT_gameDrawing::updateTile() {
     for (int i = 0; i < GT_GLOBAL_VERTEX_TILE; i += 36) {
       // vec4 tiled = palette[dist(generator)]; // randomize the color
       vec4 tiled = palette[tiledColor[flag]]; // randomize the color
-      flag++;
       for (int j = 0; j < 36; j++)
         newcolour[i + j] = tiled;
     }
