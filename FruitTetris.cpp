@@ -14,6 +14,16 @@ Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
 
 */
 
+#ifdef __APPLE__  // include Mac OS X verions of headers
+#  include <OpenGL/gl3.h>
+#  include <GLUT/glut.h>
+#else // non-Mac OS X operating systems
+#  include <GL/glew.h>
+//#  include <GL/glut.h>
+#  include <GL/freeglut.h>
+#  include <GL/freeglut_ext.h>
+#endif  // __APPLE__
+
 #include "gameSetting.h"
 #include "gameDrawing.h"
 #include "gameLogic.h"

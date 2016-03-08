@@ -8,6 +8,8 @@
 #include "gameLogic.h"
 
 namespace GT_gameDrawing {
+GLvoid *font_style = GLUT_BITMAP_TIMES_ROMAN_24;
+
   // location of vertex attributes in the shader program
   GLint vPosition;
   GLint vColor;
@@ -54,6 +56,35 @@ namespace GT_gameDrawing {
 
   vec4 armpoints[GT_GLOBAL_VERTEX_ARM];
   vec4 armcolorus[GT_GLOBAL_VERTEX_ARM];
+
+
+
+void setText(char* text)
+{
+  glDisable(GL_TEXTURE_2D);
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+  glLoadIdentity();
+  gluOrtho2D(0.0, xsize, 0.0, ysize);
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glLoadIdentity();
+  glRasterPos2i(100, 600);
+  void * font = GLUT_BITMAP_8_BY_13;
+
+  int i = 0;
+  while(text[i]) {
+    glColor3d(1.0, 1.0, 1.0);
+    glutBitmapCharacter(font, text[i]);
+    i++;
+  }
+  glMatrixMode(GL_MODELVIEW);
+  glPopMatrix();
+  glEnable(GL_TEXTURE_2D);
+}
+
+
+
 } // namespace GT_gameDrawing
 
 void
@@ -115,8 +146,10 @@ GT_gameDrawing::initBoard() {
 //  GT_gameModel::BOARD::setupModel();
 //  gtPipeCreate(objBoard, GT_gameModel::BOARD::vertexArray, GT_gameModel::BOARD::colourArray);
 
-  vec4 vertexArray[GT_GLOBAL_VERTEX_BOARD];
-  //Vertex
+  vec4 boardpoints[GT_GLOBAL_VERTEX_BOARD];
+  for (int i = 0; i < GT_GLOBAL_VERTEX_BOARD; i++)
+    boardcolours[i] = GT_gameSetting::palette[GT_gameSetting::black]; // Let the empty cells on the board be black
+  // Each cell is a cube (12 triangles with 36 vertices)
   for (int i = 0; i < 20; i++){
     for (int j = 0; j < 10; j++)
     {
@@ -140,14 +173,25 @@ GT_gameDrawing::initBoard() {
           p1, p3, p5, p3, p5, p7      // Bottom
       };
       for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
-        vertexArray[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10 * i + j) + k] = cube[k];
+        boardpoints[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i + j) + k] = cube[k];
     }
   }
 
-  //Colour
-  for (int i = 0; i < GT_GLOBAL_VERTEX_BOARD; i++)
-    boardcolours[i] = GT_gameSetting::palette[GT_gameSetting::black];
-  gtPipeCreate(objBoard, vertexArray, boardcolours);
+  // *** set up buffer objects
+  glBindVertexArray(vaoIDs[GT_gameSetting::objBoard]);
+  glGenBuffers(2, &vboIDs[GT_gameSetting::objBoard * 2]);
+
+  // Grid cell vertex positions
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard * 2]);
+  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardpoints, GL_STATIC_DRAW);
+  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vPosition);
+
+  // Grid cell vertex colours
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard * 2 + 1]);
+  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vColor);
 }
 
 void
@@ -415,9 +459,13 @@ GT_gameDrawing::updateTile() {
 void
 GT_gameDrawing::updateBoardColor(int x, int y, vec4 c) {
   //TODO: connect Bind Buffer
-//    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[3]);
+//  std::cout << "update Board" << c << endl;
+//    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[objBoard*2+1]);
   for(int i=0; i<36; i++)
     boardcolours[36*(10*y + x) + i] = c;
+
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard * 2 + 1]);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours);
 
 }
 
@@ -449,6 +497,10 @@ GT_gameDrawing::display() {
   gtPipeDraw(objTile, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_TILE);
   gtPipeDraw(objGrid, GL_LINES, 0, GT_GLOBAL_VERTEX_GRID);
   gtPipeDraw(objArm, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_ARM);
+
+  char text[6] = "Test!";
+  GT_gameDrawing::setText(text);
+
   glutSwapBuffers();
 }
 
@@ -483,3 +535,4 @@ GT_gameDrawing::gtPipeDraw(GT_gameSetting::gtObject object, GLenum mode, GLint f
   glBindVertexArray(vaoIDs[object]);
   glDrawArrays(mode, first, count);
 }
+

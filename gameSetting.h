@@ -53,6 +53,8 @@ namespace GT_gameSetting {
   extern vec2 allRotationsIShape[2][4];
   extern vec2 allRotationsSShape[2][4];
   extern vec2 allRotationsTShape[4][4];
+
+extern bool CTRL;
 } // namespace GT_gameSetting
 
 

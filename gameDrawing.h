@@ -74,6 +74,8 @@ void gtPipeCreate(GT_gameSetting::gtObject object, vec4 *vertexArray, vec4 *colo
 void gtPipeUpdate();
 void gtPipeDraw(GT_gameSetting::gtObject object, GLenum mode, GLint first, GLsizei count);
 
+void setText(char * text);
+
 } // namespace GT_gameDrawing
 
 

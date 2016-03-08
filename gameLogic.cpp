@@ -23,6 +23,10 @@ int Phi = -45;
   bool isRemovingMatrixEmpty;
 
   bool gamePause = false;
+  bool CTRL = false;
+
+
+
 
 } // namespace GT_gameLogic
 
@@ -50,6 +54,8 @@ GT_gameLogic::init() {
     DROP_SPEED = 600; // set drop speed
     DROP_SHIFT = 100;
     //TODO:newTile(); // create new next tile
+    char text[6] = "Test!";
+    GT_gameDrawing::setText(text);
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -338,7 +344,8 @@ GT_gameLogic::shuffleColor() {
 #endif
       board[offsetX][offsetY] = true;
       // Two points are reused
-      vec4 offsetColor = palette[tiledColor[i]];
+      vec4 offsetColor = palette[tiledColor[0]];
+//      cout << offsetColor << endl;
       updateBoardColor(offsetX, offsetY, offsetColor);
     }
 #ifdef GT_DEBUG_OCCUPATION
@@ -717,7 +724,6 @@ void
 void
 GT_gameLogic::special(int key, int x, int y) {
   if(gamePause) return;  // Skip triggering special key when game is pause
-  bool CTRL = false;
   int modifier = glutGetModifiers();
 #ifdef __APPLE__
   if (modifier != 0 && modifier == GLUT_ACTIVE_SHIFT) {
@@ -747,10 +753,12 @@ GT_gameLogic::special(int key, int x, int y) {
       std::cout << "[DOWN Arrow] Pressed.\n";
       break;
   }
-}
 #endif
 
   switch (key) {
+    case 32:
+      cout << "Special Space\n";
+      break;
     case 100: // Left Arrow
       if(CTRL) { ViewMat *= RotateY(-5);}
 //      else { moveTile(vec2(-1, 0)); }
@@ -773,8 +781,16 @@ GT_gameLogic::special(int key, int x, int y) {
 // Handles standard key press
 void
 GT_gameLogic::keyboard(unsigned char key, int x, int y) {
+//  printf("%d\n", key);
   switch(key)
   {
+    case 32:  // Space deteccted
+      if(CTRL) {
+        shuffleColor();
+      } else {
+        dropTile();
+      }
+      break;
     case 033: // Both escape key and 'q' cause the game to exit
       exit(EXIT_SUCCESS);
     case 'q':
@@ -818,5 +834,13 @@ GT_gameLogic::timerDrop(int data) {
 #endif
     moveTile(vec2(0, -2));
     glutPostRedisplay();
+  }
+}
+
+void
+GT_gameLogic::dropTile() {
+  if(!collisionDetect(CTN)) {
+    setTile();
+    newTile();
   }
 }

@@ -27,7 +27,7 @@ namespace GT_gameLogic {
 //#define GT_DEBUG_OCCUPATION
 //#define GT_DEBUG_SOLID_COLOR
 #define GT_DEBUG_COLOR_MATRIX
-//#define GT_DEBUG_ELIMINATION_MATRIX
+#define GT_DEBUG_ELIMINATION_MATRIX
 //#define GT_DEBUG_ELIMINATION
 //#define GT_DEBUG_ELIMINATION_HOR
 //#define GT_DEBUG_ELIMINATION_VER
@@ -96,6 +96,7 @@ void shuffleColor();
   void special(int key, int x, int y);
   void keyboard(unsigned char key, int x, int y);
   void timerDrop(int data);
+void dropTile();
 } // namespace GT_gameLogic
 
 #endif //ASSIGNMENT1_GAMELOGIC_H
