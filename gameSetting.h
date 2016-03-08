@@ -11,7 +11,7 @@
 #include <vector>
 
 namespace GT_gameSetting {
-//#define GT_DEBUG_CLOSE_TIMER
+#define GT_DEBUG_CLOSE_TIMER
 //#define GT_DEBUG_SPECIAL_KEYINFO
 //#define GT_SET_ANTI_ALIASING
 
@@ -35,8 +35,8 @@ namespace GT_gameSetting {
   extern int DROP_SHIFT;
 
   // palette
-  extern vec4 palette[7];
-  enum gtColor {purple = 0, red, yellow, green, orange, white, black};
+  extern vec4 palette[8];
+  enum gtColor {purple = 0, red, yellow, green, orange, white, black, grey};
 
   // object
   enum gtObject {objGrid = 0, objBoard, objTile, objArm};

@@ -14,7 +14,6 @@ Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
 
 */
 
-//#include <iostream>
 #include "gameSetting.h"
 #include "gameDrawing.h"
 #include "gameLogic.h"

@@ -18,10 +18,6 @@ namespace GT_gameLogic {
 int Theta = 0;
 int Phi = -45;
 
-  // random generator
-  //  std::default_random_engine generator;
-  //  std::uniform_int_distribution<int> dist(0,4);
-
   // Searching Temporary Data
   bool removingMatrix[10][20];
   bool isRemovingMatrixEmpty;
@@ -53,7 +49,7 @@ GT_gameLogic::init() {
     // game initialization
     DROP_SPEED = 600; // set drop speed
     DROP_SHIFT = 100;
-    newTile(); // create new next tile
+    //TODO:newTile(); // create new next tile
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -101,40 +97,39 @@ GT_gameLogic::init() {
       if (tile[i].x < xmin) xmin = tile[i].x;
     }
 
-    // randomize the position
-    GLfloat x = (rand() % (int)(10 - xmax + xmin)) - xmin;
-    GLfloat y = 19 - ymax;
-    tilepos = vec2(x , y);
+    // randomize the position - robot arm control position
+//    GLfloat x = (rand() % (int)(10 - xmax + xmin)) - xmin;
+//    GLfloat y = 19 - ymax;
+//    tilepos = vec2(x , y);
 
 
     // check if there is possible to contain a new tile
-    if(collisionDetect(CTN)) {
-      int col;
-      for(col = 0; col < 10; col++) {
-        int allIn = 0;
-        for(int i = 0; i < 4; i++) {
-          int nxtPosX = col + (int)tile[i].x;
-          int nxtPosY = (int)tilepos.y + (int)tile[i].y;
-          if(nxtPosX > 0 && nxtPosX < 10 && nxtPosY > 0 && nxtPosY < 20 && !board[nxtPosX][nxtPosY]) allIn++;
-        }
-        if(allIn == 4) break;
-      }
-      if(col == 10) { // Game Over
-        char input;
-        cout << "Game Over!\nType 'r' to restart, 'q' to quit.\n";
-        while(cin >> input) {
-          if(input == 'r') break;
-          if(input == 'q') {
-            exit (EXIT_SUCCESS);
-          }
-        }
-        restart();
-      }
-      else tilepos = vec2(col, y);
-    }
+//    if(collisionDetect(CTN)) {
+//      int col;
+//      for(col = 0; col < 10; col++) {
+//        int allIn = 0;
+//        for(int i = 0; i < 4; i++) {
+//          int nxtPosX = col + (int)tile[i].x;
+//          int nxtPosY = (int)tilepos.y + (int)tile[i].y;
+//          if(nxtPosX > 0 && nxtPosX < 10 && nxtPosY > 0 && nxtPosY < 20 && !board[nxtPosX][nxtPosY]) allIn++;
+//        }
+//        if(allIn == 4) break;
+//      }
+//      if(col == 10) { // Game Over
+//        char input;
+//        cout << "Game Over!\nType 'r' to restart, 'q' to quit.\n";
+//        while(cin >> input) {
+//          if(input == 'r') break;
+//          if(input == 'q') {
+//            exit (EXIT_SUCCESS);
+//          }
+//        }
+//        restart();
+//      }
+//      else tilepos = vec2(col, y);
+//    }
 
-    updateTile();
-    //TODO: update colours here
+    updateTile(); // only update vertex here
 
     // Update the color VBO of current tile
     vec4 newcolours[GT_GLOBAL_VERTEX_TILE];
@@ -311,7 +306,7 @@ GT_gameLogic::init() {
           glBufferSubData(GL_ARRAY_BUFFER, 0, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours);
 
           // New tile && Judge if the game is Over
-          newTile();
+          //TODO:newTile();
         }
         break;
       }

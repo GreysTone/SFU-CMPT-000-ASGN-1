@@ -49,10 +49,6 @@ namespace GT_gameLogic {
   extern int Theta;
   extern int Phi;
 
-  // random generator
-  //  extern std::default_random_engine generator;
-  //  extern std::uniform_int_distribution<int> dist;
-
   // Searching Temporary Data
   extern bool removingMatrix[10][20];
   extern bool isRemovingMatrixEmpty;

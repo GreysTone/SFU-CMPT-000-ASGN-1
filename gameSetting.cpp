@@ -18,14 +18,15 @@ namespace GT_gameSetting {
   int DROP_SHIFT = 100;
 
   // palette
-  vec4 palette[7] = {
+  vec4 palette[8] = {
       vec4(1.0, 0.5, 1.0, 1.0),
       vec4(1.0, 0.2, 0.1, 1.0),
       vec4(1.0, 1.0, 0.3, 1.0),
       vec4(0.3, 1.0, 0.6, 1.0),
       vec4(1.0, 0.6, 0.2, 1.0),
       vec4(1.0, 1.0, 1.0, 1.0),
-      vec4(0.0, 0.0, 0.0, 1.0)
+      vec4(0.0, 0.0, 0.0, 1.0),
+      vec4(0.5, 0.5, 0.4, 1.0)
   };
 
   // object

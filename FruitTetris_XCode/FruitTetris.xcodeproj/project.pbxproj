@@ -14,6 +14,7 @@
 		D01A759E1C72655200A7F21D /* gameLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A75991C72655200A7F21D /* gameLogic.cpp */; };
 		D01A759F1C72655200A7F21D /* FruitTetris.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D01A759A1C72655200A7F21D /* FruitTetris.cpp */; };
 		D0D5FABF1C8E107300B94F73 /* gameDrawing.cc in Sources */ = {isa = PBXBuildFile; fileRef = D0D5FABE1C8E107300B94F73 /* gameDrawing.cc */; };
+		D0D5FAC21C8ED16500B94F73 /* gameModel.cc in Sources */ = {isa = PBXBuildFile; fileRef = D0D5FAC11C8ED16500B94F73 /* gameModel.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +47,8 @@
 		D01A759A1C72655200A7F21D /* FruitTetris.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FruitTetris.cpp; path = ../../FruitTetris.cpp; sourceTree = "<group>"; };
 		D0D5FABD1C8E107300B94F73 /* gameDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gameDrawing.h; path = ../../gameDrawing.h; sourceTree = "<group>"; };
 		D0D5FABE1C8E107300B94F73 /* gameDrawing.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gameDrawing.cc; path = ../../gameDrawing.cc; sourceTree = "<group>"; };
+		D0D5FAC01C8ED16500B94F73 /* gameModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gameModel.h; path = ../../gameModel.h; sourceTree = "<group>"; };
+		D0D5FAC11C8ED16500B94F73 /* gameModel.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gameModel.cc; path = ../../gameModel.cc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +85,8 @@
 		D01A75591C72594900A7F21D /* FruitTetris */ = {
 			isa = PBXGroup;
 			children = (
+				D0D5FAC01C8ED16500B94F73 /* gameModel.h */,
+				D0D5FAC11C8ED16500B94F73 /* gameModel.cc */,
 				D0D5FABD1C8E107300B94F73 /* gameDrawing.h */,
 				D0D5FABE1C8E107300B94F73 /* gameDrawing.cc */,
 				D01A758B1C72655200A7F21D /* include */,
@@ -168,6 +173,7 @@
 				D01A759D1C72655200A7F21D /* gameSetting.cpp in Sources */,
 				D01A759E1C72655200A7F21D /* gameLogic.cpp in Sources */,
 				D01A759B1C72655200A7F21D /* InitShader.cpp in Sources */,
+				D0D5FAC21C8ED16500B94F73 /* gameModel.cc in Sources */,
 				D0D5FABF1C8E107300B94F73 /* gameDrawing.cc in Sources */,
 				D01A759F1C72655200A7F21D /* FruitTetris.cpp in Sources */,
 			);
