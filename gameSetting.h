@@ -13,7 +13,7 @@
 namespace GT_gameSetting {
 #define GT_DEBUG_CLOSE_TIMER
 //#define GT_DEBUG_SPECIAL_KEYINFO
-//#define GT_SET_ANTI_ALIASING
+#define GT_SET_ANTI_ALIASING
 
 #define GT_GLOBAL_OBJECT_AMOUNT (4)
 #define GT_GLOBAL_HEIGHT_BOARD (20)

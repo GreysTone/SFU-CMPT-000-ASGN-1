@@ -48,8 +48,8 @@ GT_gameLogic::init() {
   GT_gameLogic::Theta = 0;
   GT_gameLogic::Phi = -45;
   Delta = 0;
-  tilepos.x = 8;
-  tilepos.y = 18;
+  tilepos.x = 0;
+  tilepos.y = 0;
   tilepos.z = 0;
   initArm();
 
@@ -75,7 +75,7 @@ GT_gameLogic::init() {
   // Called at the start of play and every time a tile is placed
   void
   GT_gameLogic::newTile() {
-    cout << "newTile\n";
+//    cout << "newTile\n";
     tileShape = gtShape(rand() % 4);
 
     // Update the geometry VBO of current tile
@@ -374,7 +374,7 @@ GT_gameLogic::shuffleColor() {
           int y = (int)GT_gameSetting::tilepos.y + (int)GT_gameSetting::tile[i].y;
           int z = (int)GT_gameSetting::tilepos.z + (int)GT_gameSetting::tile[i].z;
           if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19 || z<0 || z>(superPower-1) || board3D[x][y][z]) {
-            cout << "collision: x:" << x << " y:" << y << " z:" << z << endl;
+//            cout << "collision: x:" << x << " y:" << y << " z:" << z << endl;
             return true;
           }
         }
@@ -857,7 +857,7 @@ GT_gameLogic::dropTile() {
     newTile();
     countDown = 10;
   } else { // GameOver
-    cout << "Game Over!\n 'r' - to restart, 'q' to quit.\n";
+    cout << "Game Over!\n 'r' to restart, 'q' to quit.\n";
     char w;
     cin >> w;
     if(w=='r') restart();

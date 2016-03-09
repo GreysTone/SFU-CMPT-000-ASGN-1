@@ -348,7 +348,7 @@ GT_gameDrawing::updateArm(int Theta, int Phi, int Delta) {
   glBufferSubData(GL_ARRAY_BUFFER, 0, 108*sizeof(vec4), armpoints);
 
   //TODO: <POS>
-  cout << "[ARM]X:" << (int)(q[7].x/33)-1 << " - Y:" << (int)(q[7].y/33)-1 << " - Z:" << (int)(q[7].z/33)-1 << endl;
+//  cout << "[ARM]X:" << (int)(q[7].x/33)-1 << " - Y:" << (int)(q[7].y/33)-1 << " - Z:" << (int)(q[7].z/33)-1 << endl;
   GT_gameSetting::tilepos.x = (int)(q[7].x/33)-1;
   GT_gameSetting::tilepos.y = (int)(q[7].y/33)-1;
   GT_gameSetting::tilepos.z = (int)(q[7].z/33)-1;
@@ -470,9 +470,10 @@ GT_gameDrawing::initArm() {
 //  GT_gameModel::ARM::setupModel();
 //  gtPipeCreate(GT_gameSetting::objArm, GT_gameModel::ARM::vertexArray, GT_gameModel::ARM::colourArray);
 
-  GT_gameSetting::tilepos.x = (int)(p[7].x/33)-1;
-  GT_gameSetting::tilepos.y = (int)(p[7].y/33)-1;
-  GT_gameSetting::tilepos.z = (int)(p[7].z/33)-1;
+  GT_gameSetting::tilepos.x = 8;
+  GT_gameSetting::tilepos.y = 18;
+  GT_gameSetting::tilepos.z = 0;
+//  cout << "found ya:" << tilepos << endl;
   GT_gameLogic::newTile();
 }
 
@@ -492,7 +493,7 @@ GT_gameDrawing::updateTile() {
     GLfloat x = GT_gameSetting::tilepos.x + GT_gameSetting::tile[i].x;
     GLfloat y = GT_gameSetting::tilepos.y + GT_gameSetting::tile[i].y;
     GLfloat z = tilepos.z + tile[i].z;
-    cout << "Now what? " << x << ":" << y << ":" << z << endl;
+//    cout << "Now what? " << x << ":" << y << ":" << z << endl;
 
 #ifdef GT_DEBUG_TILE_POSITION_ONLINE
     cout << "[" << i << "] X:" << x << " - Y:" << y << " | ";
