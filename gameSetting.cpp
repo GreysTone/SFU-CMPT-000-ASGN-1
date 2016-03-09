@@ -63,4 +63,7 @@ namespace GT_gameSetting {
   int superPower = 1;
   long int gridPointCount = 0;
 
+  vec4 *gridVertex = NULL;
+  vec4 *gridColour = NULL;
+
 } // namespace GT_gameSetting

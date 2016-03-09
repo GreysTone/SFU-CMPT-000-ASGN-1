@@ -136,8 +136,8 @@ GT_gameDrawing::initOpenGL() {
 
 void
 GT_gameDrawing::initGrid() {
-  vec4 *gridVertex = NULL;
-  vec4 *gridColour = NULL;
+//  vec4 *gridVertex = NULL;
+//  vec4 *gridColour = NULL;
   int n = GT_gameSetting::superPower;
   GT_gameSetting::gridPointCount = 64*(n+1)+(11*21)*2;
   gridVertex = new vec4[gridPointCount];
@@ -189,6 +189,8 @@ void
 GT_gameDrawing::initBoard() {
 //  GT_gameModel::BOARD::setupModel();
 //  gtPipeCreate(objBoard, GT_gameModel::BOARD::vertexArray, GT_gameModel::BOARD::colourArray);
+
+  int n = GT_gameSetting::superPower;
 
   vec4 boardpoints[GT_GLOBAL_VERTEX_BOARD];
   for (int i = 0; i < GT_GLOBAL_VERTEX_BOARD; i++)
