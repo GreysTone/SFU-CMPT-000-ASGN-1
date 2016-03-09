@@ -10,8 +10,8 @@
 namespace GT_gameModel {
 
 namespace GRID {
-extern vec4 vertexArray[GT_GLOBAL_VERTEX_GRID];
-extern vec4 colourArray[GT_GLOBAL_VERTEX_GRID];
+//extern vec4 vertexArray[GT_GLOBAL_VERTEX_GRID];
+//extern vec4 colourArray[GT_GLOBAL_VERTEX_GRID];
 
 void setupModel();
 }

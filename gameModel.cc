@@ -43,42 +43,42 @@ void shadeCube(vec4 *cube, vec4 *p) {
 //  };
 
 namespace GRID {
-vec4 vertexArray[GT_GLOBAL_VERTEX_GRID];
-vec4 colourArray[GT_GLOBAL_VERTEX_GRID];
+//vec4 vertexArray[GT_GLOBAL_VERTEX_GRID];
+//vec4 colourArray[GT_GLOBAL_VERTEX_GRID];
 
 void setupModel() {
   // Vertex
-  // vertical lines [+16.5]
-  for (int i = 0; i < 11; i++){
-    vertexArray[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)16.6, 1);
-    vertexArray[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)16.6, 1);
-  }
-  // vertical lines [-16.5]
-  for (int i = 0; i < 11; i++){
-    vertexArray[22 + 2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)-16.6, 1);
-    vertexArray[22 + 2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)-16.6, 1);
-  }
-  // horizontal lines [+16.5]
-  for (int i = 0; i < 21; i++){
-    vertexArray[44 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.6, 1);
-    vertexArray[44 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.6, 1);
-  }
-  // horizontal lines [-16.5]
-  for (int i = 0; i < 21; i++){
-    vertexArray[86 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.6, 1);
-    vertexArray[86 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.6, 1);
-  }
-  // depth lines
-  for (int i = 0; i < GT_GLOBAL_HEIGHT_BOARD + 1; i++){
-    for (int j = 0; j < GT_GLOBAL_WIDTH_BOARD + 1; j++) {
-      vertexArray[128 + 22*i + 2*j] 		= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)16.6, 1);
-      vertexArray[128 + 22*i + 2*j + 1] 	= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)-16.6, 1);
-    }
-  }
-
-  // Colour
-  for (int i = 0; i < GT_GLOBAL_VERTEX_GRID; i++)
-    colourArray[i] = GT_gameSetting::palette[GT_gameSetting::white];
+//  // vertical lines [+16.5]
+//  for (int i = 0; i < 11; i++){
+//    vertexArray[2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)16.6, 1);
+//    vertexArray[2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)16.6, 1);
+//  }
+//  // vertical lines [-16.5]
+//  for (int i = 0; i < 11; i++){
+//    vertexArray[22 + 2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, (GLfloat)-16.6, 1);
+//    vertexArray[22 + 2*i + 1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, (GLfloat)-16.6, 1);
+//  }
+//  // horizontal lines [+16.5]
+//  for (int i = 0; i < 21; i++){
+//    vertexArray[44 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.6, 1);
+//    vertexArray[44 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)16.6, 1);
+//  }
+//  // horizontal lines [-16.5]
+//  for (int i = 0; i < 21; i++){
+//    vertexArray[86 + 2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.6, 1);
+//    vertexArray[86 + 2*i + 1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), (GLfloat)-16.6, 1);
+//  }
+//  // depth lines
+//  for (int i = 0; i < GT_GLOBAL_HEIGHT_BOARD + 1; i++){
+//    for (int j = 0; j < GT_GLOBAL_WIDTH_BOARD + 1; j++) {
+//      vertexArray[128 + 22*i + 2*j] 		= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)16.6, 1);
+//      vertexArray[128 + 22*i + 2*j + 1] 	= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)-16.6, 1);
+//    }
+//  }
+//
+//  // Colour
+//  for (int i = 0; i < GT_GLOBAL_VERTEX_GRID; i++)
+//    colourArray[i] = GT_gameSetting::palette[GT_gameSetting::white];
 }
 } // namespace GRID
 

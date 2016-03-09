@@ -70,7 +70,7 @@ void reshape(GLsizei w, GLsizei h);
 void display();
 void idle();
 
-void gtPipeCreate(GT_gameSetting::gtObject object, vec4 *vertexArray, vec4 *colourArrary);
+//void gtPipeCreate(GT_gameSetting::gtObject object, vec4 *vertexArray, vec4 *colourArrary);
 void gtPipeUpdate();
 void gtPipeDraw(GT_gameSetting::gtObject object, GLenum mode, GLint first, GLsizei count);
 

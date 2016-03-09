@@ -19,8 +19,9 @@ namespace GT_gameSetting {
 #define GT_GLOBAL_HEIGHT_BOARD (20)
 #define GT_GLOBAL_WIDTH_BOARD (10)
 
-#define GT_GLOBAL_VERTEX_GRID (590)         // 2[planes] * (11+21)[lines/plane] * 2[points/line]
-#define GT_GLOBAL_VERTEX_BOARD (7200)       // (20*10)[cubes] * 6[planes/cube] * 6[points/plane]
+  // Maximum SuperPower is 100
+//#define GT_GLOBAL_VERTEX_GRID (5900)         // 2[planes] * (11+21)[lines/plane] * 2[points/line]
+#define GT_GLOBAL_VERTEX_BOARD (72000)       // (20*10)[cubes] * 6[planes/cube] * 6[points/plane]
 #define GT_GLOBAL_VERTEX_TILE (144)         // (4)[cubes] * 6[planes/cube] * 6[points/plane]
 #define GT_GLOBAL_VERTEX_ARM (108)          // (3)[cubes] * 6[planes/cube] * 6[points/plane]
 #define GT_GLOBAL_VERTEX_SINGLE_CUBE (36)
@@ -55,6 +56,13 @@ namespace GT_gameSetting {
   extern vec2 allRotationsTShape[4][4];
 
 extern bool CTRL;
+
+  extern int superPower;
+  extern vec4 *gridVertex;
+  extern vec4 *gridColour;
+  extern long int gridPointCount;
+
+
 } // namespace GT_gameSetting
 
 

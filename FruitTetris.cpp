@@ -28,8 +28,15 @@ Implemented in Feb 2016 by Danyang Song (Arthur, arthur_song@sfu.ca).
 #include "gameDrawing.h"
 #include "gameLogic.h"
 
+#include <iostream>
+
 int main(int argc, char **argv)
 {
+  std::cout << "input n size:";
+  cin >> GT_gameSetting::superPower;
+  if(GT_gameSetting::superPower < 1) GT_gameSetting::superPower = 1;
+  if(GT_gameSetting::superPower > 100) GT_gameSetting::superPower = 100;
+
 	// OpenGL Utility ToolKit - Configure a window
 	glutInit(&argc, argv);
 #ifdef __APPLE__

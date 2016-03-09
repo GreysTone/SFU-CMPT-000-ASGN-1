@@ -6,10 +6,9 @@
 
 #include "gameDrawing.h"
 #include "gameLogic.h"
+//using namespace GT_gameSetting;
 
 namespace GT_gameDrawing {
-GLvoid *font_style = GLUT_BITMAP_TIMES_ROMAN_24;
-
   // location of vertex attributes in the shader program
   GLint vPosition;
   GLint vColor;
@@ -137,8 +136,53 @@ GT_gameDrawing::initOpenGL() {
 
 void
 GT_gameDrawing::initGrid() {
-  GT_gameModel::GRID::setupModel();
-  gtPipeCreate(objGrid, GT_gameModel::GRID::vertexArray, GT_gameModel::GRID::colourArray);
+  vec4 *gridVertex = NULL;
+  vec4 *gridColour = NULL;
+  int n = GT_gameSetting::superPower;
+  GT_gameSetting::gridPointCount = 64*(n+1)+(11*21)*2;
+  gridVertex = new vec4[gridPointCount];
+  gridColour = new vec4[gridPointCount];
+
+  for(int k = 0; k < n+1; k++) {
+    // vertical lines
+    for(int i=0; i < 11; i++) {
+      gridVertex[64*k+2*i] = vec4((GLfloat)(33.0 + (33.0 * i)), 33.0, 33.0*k, 1);
+      gridVertex[64*k+2*i+1] = vec4((GLfloat)(33.0 + (33.0 * i)), 693.0, 33.0*k, 1);
+    }
+    // horizontal lines
+    for (int i = 0; i < 21; i++){
+      gridVertex[64*k+22+2*i] = vec4(33.0, (GLfloat)(33.0 + (33.0 * i)), 33.0*k, 1);
+      gridVertex[64*k+22+2*i+1] = vec4(363.0, (GLfloat)(33.0 + (33.0 * i)), 33.0*k, 1);
+    }
+  }
+  // depth lines
+  for (int i = 0; i < GT_GLOBAL_HEIGHT_BOARD + 1; i++){
+    for (int j = 0; j < GT_GLOBAL_WIDTH_BOARD + 1; j++) {
+      gridVertex[64*(n+1) + 22*i + 2*j] 		= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)0.0, 1);
+      gridVertex[64*(n+1) + 22*i + 2*j + 1] 	= vec4((GLfloat)33.0 + (GLfloat)(j * 33.0), (GLfloat)33.0 + (GLfloat)(i * 33.0), (GLfloat)33.0*n, 1);
+    }
+  }
+
+  // Colour
+  for (int i = 0; i < gridPointCount; i++)
+    gridColour[i] = GT_gameSetting::palette[GT_gameSetting::white];
+
+//  gtPipeCreate(objGrid, gridVertex, gridColour);
+  glBindVertexArray(vaoIDs[objGrid]); // Bind the first VAO
+  // TODO: [ARS] If bind error, could inspect cuboid
+  glGenBuffers(2, &vboIDs[objGrid * 2]); // Create two Vertex Buffer Objects for this VAO (positions, colours)
+
+  // Grid vertex positions
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[objGrid * 2]); // Bind the first grid VBO (vertex positions)
+  glBufferData(GL_ARRAY_BUFFER,  GT_gameSetting::gridPointCount*sizeof(vec4), gridVertex, GL_STATIC_DRAW); // Put the grid points in the VBO
+  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vPosition); // Enable the attribute
+
+  // Grid vertex colours
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[objGrid * 2 + 1]); // Bind the second grid VBO (vertex colours)
+  glBufferData(GL_ARRAY_BUFFER,  GT_gameSetting::gridPointCount*sizeof(vec4), gridColour, GL_STATIC_DRAW); // Put the grid colours in the VBO
+  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vColor); // Enable the attribute
 }
 
 void
@@ -196,7 +240,24 @@ GT_gameDrawing::initBoard() {
 
 void
 GT_gameDrawing::initCurrentTile() {
-  gtPipeCreate(objTile, NULL, NULL);
+//  gtPipeCreate(objTile, NULL, NULL);
+  //   *** set up buffer objects
+  // Set up first VAO (representing grid lines)
+  glBindVertexArray(vaoIDs[objTile]); // Bind the first VAO
+  // TODO: [ARS] If bind error, could inspect cuboid
+  glGenBuffers(2, &vboIDs[objTile * 2]); // Create two Vertex Buffer Objects for this VAO (positions, colours)
+
+  // Grid vertex positions
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[objTile * 2]); // Bind the first grid VBO (vertex positions)
+  glBufferData(GL_ARRAY_BUFFER, 24*6*sizeof(vec4), NULL, GL_STATIC_DRAW); // Put the grid points in the VBO
+  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vPosition); // Enable the attribute
+
+  // Grid vertex colours
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[objTile * 2 + 1]); // Bind the second grid VBO (vertex colours)
+  glBufferData(GL_ARRAY_BUFFER, 24*6*sizeof(vec4), NULL, GL_STATIC_DRAW); // Put the grid colours in the VBO
+  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vColor); // Enable the attribute
 }
 
 
@@ -363,12 +424,32 @@ GT_gameDrawing::initArm() {
     armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::purple];
 
   for (int i = 36; i < 72; i++) //Arm 1
-    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::red];;
+    armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::red];
 
   for (int i = 72; i < 108; i++) //Arm 2
     armcolorus[i] = GT_gameSetting::palette[GT_gameSetting::green];
 
-  gtPipeCreate(objArm, armpoints, armcolorus);
+//   *** set up buffer objects
+  // Set up first VAO (representing grid lines)
+  glBindVertexArray(vaoIDs[objArm]); // Bind the first VAO
+  // TODO: [ARS] If bind error, could inspect cuboid
+  glGenBuffers(2, &vboIDs[objArm * 2]); // Create two Vertex Buffer Objects for this VAO (positions, colours)
+
+  // Grid vertex positions
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[objArm * 2]); // Bind the first grid VBO (vertex positions)
+  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_ARM*sizeof(vec4), armpoints, GL_STATIC_DRAW); // Put the grid points in the VBO
+  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vPosition); // Enable the attribute
+
+  // Grid vertex colours
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[objArm * 2 + 1]); // Bind the second grid VBO (vertex colours)
+  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_ARM*sizeof(vec4), armcolorus, GL_STATIC_DRAW); // Put the grid colours in the VBO
+  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vColor); // Enable the attribute
+
+
+
+//  gtPipeCreate(objArm, armpoints, armcolorus);
 
 //  GT_gameModel::ARM::setupModel();
 //  gtPipeCreate(GT_gameSetting::objArm, GT_gameModel::ARM::vertexArray, GT_gameModel::ARM::colourArray);
@@ -495,7 +576,7 @@ GT_gameDrawing::display() {
 
   gtPipeDraw(objBoard, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_BOARD);
   gtPipeDraw(objTile, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_TILE);
-  gtPipeDraw(objGrid, GL_LINES, 0, GT_GLOBAL_VERTEX_GRID);
+  gtPipeDraw(objGrid, GL_LINES, 0, GT_gameSetting::gridPointCount);
   gtPipeDraw(objArm, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_ARM);
 
   char text[6] = "Test!";
@@ -509,26 +590,26 @@ GT_gameDrawing::idle() {
   glutPostRedisplay();
 }
 
-void
-GT_gameDrawing::gtPipeCreate(GT_gameSetting::gtObject object, vec4 *vertexArray, vec4 *colourArrary) {
-  // *** set up buffer objects
-  // Set up first VAO (representing grid lines)
-  glBindVertexArray(vaoIDs[object]); // Bind the first VAO
-  // TODO: [ARS] If bind error, could inspect cuboid
-  glGenBuffers(2, &vboIDs[object * 2]); // Create two Vertex Buffer Objects for this VAO (positions, colours)
-
-  // Grid vertex positions
-  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[object * 2]); // Bind the first grid VBO (vertex positions)
-  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_GRID*sizeof(vec4), vertexArray, GL_STATIC_DRAW); // Put the grid points in the VBO
-  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-  glEnableVertexAttribArray(vPosition); // Enable the attribute
-
-  // Grid vertex colours
-  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[object * 2 + 1]); // Bind the second grid VBO (vertex colours)
-  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_GRID*sizeof(vec4), colourArrary, GL_STATIC_DRAW); // Put the grid colours in the VBO
-  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-  glEnableVertexAttribArray(vColor); // Enable the attribute
-}
+//void
+//GT_gameDrawing::gtPipeCreate(GT_gameSetting::gtObject object, vec4 *vertexArray, vec4 *colourArrary) {
+//  // *** set up buffer objects
+//  // Set up first VAO (representing grid lines)
+//  glBindVertexArray(vaoIDs[object]); // Bind the first VAO
+//  // TODO: [ARS] If bind error, could inspect cuboid
+//  glGenBuffers(2, &vboIDs[object * 2]); // Create two Vertex Buffer Objects for this VAO (positions, colours)
+//
+//  // Grid vertex positions
+//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[object * 2]); // Bind the first grid VBO (vertex positions)
+//  glBufferData(GL_ARRAY_BUFFER, sizeof(vertexArray), vertexArray, GL_STATIC_DRAW); // Put the grid points in the VBO
+//  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
+//  glEnableVertexAttribArray(vPosition); // Enable the attribute
+//
+//  // Grid vertex colours
+//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[object * 2 + 1]); // Bind the second grid VBO (vertex colours)
+//  glBufferData(GL_ARRAY_BUFFER, sizeof(colourArrary), colourArrary, GL_STATIC_DRAW); // Put the grid colours in the VBO
+//  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
+//  glEnableVertexAttribArray(vColor); // Enable the attribute
+//}
 
 void
 GT_gameDrawing::gtPipeDraw(GT_gameSetting::gtObject object, GLenum mode, GLint first, GLsizei count) {
