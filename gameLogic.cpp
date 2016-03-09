@@ -41,6 +41,12 @@ GT_gameLogic::init() {
     initGrid();
     initBoard();
     initCurrentTile();
+
+  countDown = 10;
+  GT_gameLogic::Theta = 0;
+  GT_gameLogic::Phi = -45;
+  tilepos.x = 8;
+  tilepos.y = 18;
   initArm();
 
     // initially no cell is occupied
@@ -54,9 +60,10 @@ GT_gameLogic::init() {
     // game initialization
     DROP_SPEED = 600; // set drop speed
     DROP_SHIFT = 100;
-    //TODO:newTile(); // create new next tile
-    char text[6] = "Test!";
-    GT_gameDrawing::setText(text);
+
+
+//  newTile();
+
   }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -784,7 +791,7 @@ GT_gameLogic::special(int key, int x, int y) {
       break;
     case 103: // Down Arrow
       if(CTRL) { }
-      else { moveTile(vec2(0, -1)); }
+//      else { /*moveTile(vec2(0, -1));*/ }
       break;
   }
 }
@@ -853,6 +860,7 @@ GT_gameLogic::dropTile() {
   if(!collisionDetect(DL)) {
     setTile();
     newTile();
+    countDown = 10;
   } else { // GameOver
     cout << "Game Over!\n 'r' - to restart, 'q' to quit.\n";
     char w;
