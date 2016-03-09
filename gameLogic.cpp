@@ -13,6 +13,7 @@ namespace GT_gameLogic {
 
   //board[x][y] represents whether the cell (x,y) is occupied
   bool board[10][20];
+  bool board3D[10][20][100];
 
 // robot arm angle
 int Theta = 0;
@@ -347,14 +348,15 @@ GT_gameLogic::shuffleColor() {
     for(int i = 0; i < 4; i++) {
       int offsetX = (int)tilepos.x + (int)tile[i].x;
       int offsetY = (int)tilepos.y + (int)tile[i].y;
+      int offsetZ = (int)tilepos.z;
 #ifdef GT_DEBUG_TILE_POSITION
       cout << "CUR_POS on setTile() : X:" << offsetX << " - Y:" << offsetY << endl;
 #endif
-      board[offsetX][offsetY] = true;
+      board3D[offsetX][offsetY][offsetZ] = true;
       // Two points are reused
       vec4 offsetColor = palette[tiledColor[0]];
 //      cout << offsetColor << endl;
-      updateBoardColor(offsetX, offsetY, offsetColor);
+      updateBoardColor(offsetX, offsetY, offsetZ, offsetColor);
     }
 #ifdef GT_DEBUG_OCCUPATION
     cout << "OCCUPATION\n";
@@ -398,7 +400,9 @@ GT_gameLogic::shuffleColor() {
         for(int i = 0; i < 4; i++) {
           int x = (int)GT_gameSetting::tilepos.x + (int)GT_gameSetting::tile[i].x;
           int y = (int)GT_gameSetting::tilepos.y + (int)GT_gameSetting::tile[i].y;
-          if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19 || board[x][y]) {
+          int z = (int)GT_gameSetting::tilepos.z;
+          cout << "detecting: x:" << x << " y:" << y << "z:" << z << endl;
+          if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19 || z<0 || z>(superPower-1) || board3D[x][y][z]) {
             return true;
           }
         }

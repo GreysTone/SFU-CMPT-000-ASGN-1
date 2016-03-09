@@ -45,7 +45,7 @@ namespace GT_gameSetting {
 
   // current tile
   extern vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
-  extern vec2 tilepos; // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
+  extern vec4 tilepos; // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
   extern gtColor tiledColor[4];
 
   // An array storing all possible orientations of all possible tiles
@@ -61,6 +61,9 @@ extern bool CTRL;
   extern vec4 *gridVertex;
   extern vec4 *gridColour;
   extern long int gridPointCount;
+  extern vec4 *boardVertex;
+  extern vec4 *boardColour;
+  extern long int boardPointCount;
 
 
 } // namespace GT_gameSetting

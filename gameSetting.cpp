@@ -34,7 +34,7 @@ namespace GT_gameSetting {
 
   // current tile
   vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
-  vec2 tilepos = vec2(5, 19); // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
+  vec4 tilepos = vec4(9, 18, 0, 1); // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
   gtColor tiledColor[4];
 
   // An array storing all possible orientations of all possible tiles
@@ -61,9 +61,13 @@ namespace GT_gameSetting {
   };
 
   int superPower = 1;
-  long int gridPointCount = 0;
 
   vec4 *gridVertex = NULL;
   vec4 *gridColour = NULL;
+  long int gridPointCount = 0;
+
+  vec4 *boardVertex = NULL;
+  vec4 *boardColour = NULL;
+  long int boardPointCount = 0;
 
 } // namespace GT_gameSetting

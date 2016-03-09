@@ -64,6 +64,7 @@ void updateTile();
 // Update the board's color data
 //TODO: [not handle right now]inline effect in diff namespace
 void updateBoardColor(int x, int y, vec4 color);
+  void updateBoardColor(int x, int y, int z, vec4 c);
 
 void updateArm(int Theta, int Phi);
 void reshape(GLsizei w, GLsizei h);

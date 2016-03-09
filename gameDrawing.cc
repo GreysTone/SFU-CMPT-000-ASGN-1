@@ -51,6 +51,7 @@ namespace GT_gameDrawing {
   //An array containing the colour of each of the 10*20*2*3 vertices that make up the board
   //Initially, all will be set to black. As tiles are placed, sets of 6 vertices (2 triangles; 1 square)
   //will be set to the appropriate colour in this array before updating the corresponding VBO
+  //TODO: boardcolours is not in use
   vec4 boardcolours[GT_GLOBAL_VERTEX_BOARD];
 
   vec4 armpoints[GT_GLOBAL_VERTEX_ARM];
@@ -191,37 +192,44 @@ GT_gameDrawing::initBoard() {
 //  gtPipeCreate(objBoard, GT_gameModel::BOARD::vertexArray, GT_gameModel::BOARD::colourArray);
 
   int n = GT_gameSetting::superPower;
+  boardPointCount = 20*10*36*n;
+  boardVertex = new vec4[boardPointCount];
+  boardColour = new vec4[boardPointCount];
 
-  vec4 boardpoints[GT_GLOBAL_VERTEX_BOARD];
-  for (int i = 0; i < GT_GLOBAL_VERTEX_BOARD; i++)
-    boardcolours[i] = GT_gameSetting::palette[GT_gameSetting::black]; // Let the empty cells on the board be black
+//  vec4 boardpoints[GT_GLOBAL_VERTEX_BOARD];
+
+  for (int i = 0; i < boardPointCount; i++)
+    boardColour[i] = GT_gameSetting::palette[GT_gameSetting::black]; // Let the empty cells on the board be black
   // Each cell is a cube (12 triangles with 36 vertices)
-  for (int i = 0; i < 20; i++){
-    for (int j = 0; j < 10; j++)
-    {
-      // F(ront) B(ack) / T(op) B(ottom) / L(eft) R(ight)
-      vec4 p1 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FBL
-      vec4 p2 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FTL
-      vec4 p3 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FBR
-      vec4 p4 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)16.5, 1);   // FTR
-      vec4 p5 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BBL
-      vec4 p6 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BTL
-      vec4 p7 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BBR
-      vec4 p8 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)-16.5, 1);  // BTR
+  for(int w = 0; w < n; w++) {
+    for (int i = 0; i < 20; i++){
+      for (int j = 0; j < 10; j++)
+      {
+        // F(ront) B(ack) / T(op) B(ottom) / L(eft) R(ight)
+        vec4 p1 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)33.0*w, 1);   // FBL
+        vec4 p2 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)33.0*w, 1);   // FTL
+        vec4 p3 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)33.0*w, 1);   // FBR
+        vec4 p4 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)33.0*w, 1);   // FTR
+        vec4 p5 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)33.0*(w+1), 1);  // BBL
+        vec4 p6 = vec4((GLfloat)(33.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)33.0*(w+1), 1);  // BTL
+        vec4 p7 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(33.0 + (i * 33.0)), (GLfloat)33.0*(w+1), 1);  // BBR
+        vec4 p8 = vec4((GLfloat)(66.0 + (j * 33.0)), (GLfloat)(66.0 + (i * 33.0)), (GLfloat)33.0*(w+1), 1);  // BTR
 
-      // Two points are used by two triangles each
-      vec4 cube[36] = {
-          p1, p2, p3, p2, p3, p4,     // Front
-          p1, p2, p5, p2, p5, p6,     // Left
-          p5, p6, p7, p6, p7, p8,     // Back
-          p3, p4, p7, p4, p7, p8,     // Right
-          p2, p4, p6, p4, p6, p8,     // Top
-          p1, p3, p5, p3, p5, p7      // Bottom
-      };
-      for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
-        boardpoints[GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i + j) + k] = cube[k];
+        // Two points are used by two triangles each
+        vec4 cube[36] = {
+            p1, p2, p3, p2, p3, p4,     // Front
+            p1, p2, p5, p2, p5, p6,     // Left
+            p5, p6, p7, p6, p7, p8,     // Back
+            p3, p4, p7, p4, p7, p8,     // Right
+            p2, p4, p6, p4, p6, p8,     // Top
+            p1, p3, p5, p3, p5, p7      // Bottom
+        };
+        for(int k=0; k<GT_GLOBAL_VERTEX_SINGLE_CUBE; k++)
+          boardVertex[7200*w+GT_GLOBAL_VERTEX_SINGLE_CUBE*(10*i + j) + k] = cube[k];
+      }
     }
   }
+
 
   // *** set up buffer objects
   glBindVertexArray(vaoIDs[GT_gameSetting::objBoard]);
@@ -229,13 +237,13 @@ GT_gameDrawing::initBoard() {
 
   // Grid cell vertex positions
   glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard * 2]);
-  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardpoints, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, boardPointCount*sizeof(vec4), boardVertex, GL_STATIC_DRAW);
   glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(vPosition);
 
   // Grid cell vertex colours
   glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard * 2 + 1]);
-  glBufferData(GL_ARRAY_BUFFER, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours, GL_DYNAMIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, boardPointCount*sizeof(vec4), boardColour, GL_DYNAMIC_DRAW);
   glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(vColor);
 }
@@ -476,6 +484,7 @@ GT_gameDrawing::updateTile() {
     // Calculate the grid coordinates of the cell
     GLfloat x = GT_gameSetting::tilepos.x + GT_gameSetting::tile[i].x;
     GLfloat y = GT_gameSetting::tilepos.y + GT_gameSetting::tile[i].y;
+    int z = tilepos.z;
 
 #ifdef GT_DEBUG_TILE_POSITION_ONLINE
     cout << "[" << i << "] X:" << x << " - Y:" << y << " | ";
@@ -507,24 +516,23 @@ GT_gameDrawing::updateTile() {
   }
 
   // Color reshade
-  bool outRange = false;
-  for(int i = 0; i < 4; i++) {
-    GLfloat x = GT_gameSetting::tilepos.x + GT_gameSetting::tile[i].x;
-    GLfloat y = GT_gameSetting::tilepos.y + GT_gameSetting::tile[i].y;
-    if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19) {
-      outRange = true;
-      break;
-    }
-  }
+//  bool outRange = false;
+//  for(int i = 0; i < 4; i++) {
+//    GLfloat x = GT_gameSetting::tilepos.x + GT_gameSetting::tile[i].x;
+//    GLfloat y = GT_gameSetting::tilepos.y + GT_gameSetting::tile[i].y;
+//    int z = tilepos.z;
+//    if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19 || z < 0 || z > (superPower-1)) {
+//      outRange = true;
+//      break;
+//    }
+//  }
   vec4 newcolour[GT_GLOBAL_VERTEX_TILE];
-  if(outRange || GT_gameLogic::collisionDetect(GT_gameLogic::CTN)) {
+  if(GT_gameLogic::collisionDetect(GT_gameLogic::DL)) {
     for(int i=0; i<GT_GLOBAL_VERTEX_TILE; i++)
       newcolour[i] = palette[GT_gameSetting::grey];
   } else {
-    int flag = 0;
     for (int i = 0; i < GT_GLOBAL_VERTEX_TILE; i += 36) {
-      // vec4 tiled = palette[dist(generator)]; // randomize the color
-      vec4 tiled = palette[tiledColor[flag]]; // randomize the color
+      vec4 tiled = palette[tiledColor[0]]; // randomize the color
       for (int j = 0; j < 36; j++)
         newcolour[i + j] = tiled;
     }
@@ -541,14 +549,27 @@ GT_gameDrawing::updateTile() {
 
 void
 GT_gameDrawing::updateBoardColor(int x, int y, vec4 c) {
-  //TODO: connect Bind Buffer
+
 //  std::cout << "update Board" << c << endl;
 //    glBindBuffer(GL_ARRAY_BUFFER, vboIDs[objBoard*2+1]);
   for(int i=0; i<36; i++)
-    boardcolours[36*(10*y + x) + i] = c;
+    boardColour[36*(10*y + x) + i] = c;
+//  boardcolours[36*(10*y + x) + i] = c;
 
   glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard * 2 + 1]);
-  glBufferSubData(GL_ARRAY_BUFFER, 0, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, boardPointCount*sizeof(vec4), boardColour);
+//  glBufferSubData(GL_ARRAY_BUFFER, 0, GT_GLOBAL_VERTEX_BOARD*sizeof(vec4), boardcolours);
+
+}
+
+void
+GT_gameDrawing::updateBoardColor(int x, int y, int z, vec4 c) {
+
+  for(int i=0; i<36; i++)
+    boardColour[7200*z+36*(10*y + x) + i] = c;
+
+  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[GT_gameSetting::objBoard * 2 + 1]);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, boardPointCount*sizeof(vec4), boardColour);
 
 }
 
@@ -576,9 +597,9 @@ GT_gameDrawing::display() {
   glUniform1i(loczsize, GT_gameSetting::zsize);
   glUniformMatrix4fv(locMVPMatrix, 1, GL_TRUE, MVPMat);
 
-  gtPipeDraw(objBoard, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_BOARD);
+  gtPipeDraw(objBoard, GL_TRIANGLES, 0, boardPointCount);
   gtPipeDraw(objTile, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_TILE);
-  gtPipeDraw(objGrid, GL_LINES, 0, GT_gameSetting::gridPointCount);
+  gtPipeDraw(objGrid, GL_LINES, 0, gridPointCount);
   gtPipeDraw(objArm, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_ARM);
 
   char text[10] = "Timer: 00";
