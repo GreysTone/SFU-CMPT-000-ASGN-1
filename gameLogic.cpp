@@ -93,7 +93,7 @@ GT_gameLogic::init() {
         break;
       }
       case sL: {
-        tileModule = rand() % 5;
+        tileModule = rand() % 4;
         for (int i = 0; i < 4; i++)
           tile[i] = allRotationsLShape[tileModule][i]; // Get the 4 pieces of the new tile
         break;
@@ -825,6 +825,8 @@ GT_gameLogic::special(int key, int x, int y) {
   }
 }
 
+namespace  GT_gameLogic { int gamma = 0; }
+
 // Handles standard key press
 void
 GT_gameLogic::keyboard(unsigned char key, int x, int y) {
@@ -840,6 +842,20 @@ GT_gameLogic::keyboard(unsigned char key, int x, int y) {
       exit (EXIT_SUCCESS);
     case 't': // 't' key rotates the tile
       rotate();
+      break;
+    case 'u':
+      gamma += 90;
+      for(int i=0; i<4; i++) {
+        tile[i] = RotateX(gamma) * tile[i];
+        updateTile();
+      }
+      break;
+    case 'i':
+      gamma += 90;
+      for(int i=0; i<4; i++) {
+        tile[i] = RotateZ(gamma) * tile[i];
+        updateTile();
+      }
       break;
     case 'p': // 'p' key pauses the game
       gamePause = !gamePause;

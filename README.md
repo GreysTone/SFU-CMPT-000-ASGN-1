@@ -9,6 +9,7 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 *More details on completing this project, see https://github.com/GreysTone/SFU-CMPT-000-ASGN-1.*
 
 ***All steps (all functions) are implemented in the assignment, extra information are as below.***
+***Bonus Complete***
 ******
 
 ## Compile, Deploy & OS Environment
@@ -88,7 +89,9 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 
 * Keyboard
     * **'CTRL(SHIFT)' + 'LeftArrow'/'RightArrow'** - rotate projection
-    * **'W', 'A', 'S', 'D'** - control robot arm
+    * **'w', 'a', 's', 'd'** - control robot arm
+    * **'z', 'x'** - rotate robot arm
+    * **'u', 'i'** - rotate tile in different dimension
     * **'Space'** - drop tile
     * **'CTRL(SHIFT)' + 'Space'** - shift tile
     * **'UpArrow'**, **'t'** - rotate tile
