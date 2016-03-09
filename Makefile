@@ -18,7 +18,7 @@ INCLUDEDIR=/usr/include/
 LIBDIR=/usr/lib
 
 # If you have more source files add them here
-SOURCE= FruitTetris.cpp include/InitShader.cpp gameLogic.cpp gameSetting.cpp
+SOURCE= FruitTetris.cpp include/InitShader.cpp gameLogic.cpp gameSetting.cpp gameDrawing.cc gameModel.cc
 
 # The compiler we are using
 CC= g++
@@ -35,7 +35,7 @@ EXECUTABLE= FruitTetris
 # to your program here
 
 # Linux (default)
-LDFLAGS = -lGL -lglut -lGLEW -lXext -lX11 -lm -Glut
+LDFLAGS = -lGL -lglut -lGLEW -lXext -lX11 -lm -lGLU
 
 # If you have other library files in a different directory add them here
 INCLUDEFLAG= -I. -I$(INCLUDEDIR) -Iincludeext
