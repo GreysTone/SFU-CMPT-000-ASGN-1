@@ -610,63 +610,69 @@ GT_gameDrawing::display() {
   gtPipeDraw(objGrid, GL_LINES, 0, gridPointCount);
   gtPipeDraw(objArm, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_ARM);
 
-  char text[10] = "Timer: 00";
-  switch (GT_gameLogic::countDown) {
-    case 10:
-      text[7] = '1';
-      text[8] = '0';
-      GT_gameDrawing::setText(text);
-      break;
-    case 9:
-      text[7] = '0';
-      text[8] = '9';
-      GT_gameDrawing::setText(text);
-      break;
-    case 8:
-      text[7] = '0';
-      text[8] = '8';
-      GT_gameDrawing::setText(text);
-      break;
-    case 7:
-      text[7] = '0';
-      text[8] = '7';
-      GT_gameDrawing::setText(text);
-      break;
-    case 6:
-      text[7] = '0';
-      text[8] = '6';
-      GT_gameDrawing::setText(text);
-      break;
-    case 5:
-      text[7] = '0';
-      text[8] = '5';
-      GT_gameDrawing::setText(text);
-      break;
-    case 4:
-      text[7] = '0';
-      text[8] = '4';
-      GT_gameDrawing::setText(text);
-      break;
-    case 3:
-      text[7] = '0';
-      text[8] = '3';
-      GT_gameDrawing::setText(text);
-      break;
-    case 2:
-      text[7] = '0';
-      text[8] = '2';
-      GT_gameDrawing::setText(text);
-      break;
-    case 1:
-      text[7] = '0';
-      text[8] = '1';
-      GT_gameDrawing::setText(text);
-      break;
-    case 0:
-      text[7] = '0';
-      text[8] = '0';
-      GT_gameDrawing::setText(text);
-      break;
+
+  if(GT_gameLogic::gamePause){
+    char prompt[] = "Game Pause";
+    GT_gameDrawing::setText(prompt);
+  } else {
+    char text[10] = "Timer: 00";
+    switch (GT_gameLogic::countDown) {
+      case 10:
+        text[7] = '1';
+        text[8] = '0';
+        GT_gameDrawing::setText(text);
+        break;
+      case 9:
+        text[7] = '0';
+        text[8] = '9';
+        GT_gameDrawing::setText(text);
+        break;
+      case 8:
+        text[7] = '0';
+        text[8] = '8';
+        GT_gameDrawing::setText(text);
+        break;
+      case 7:
+        text[7] = '0';
+        text[8] = '7';
+        GT_gameDrawing::setText(text);
+        break;
+      case 6:
+        text[7] = '0';
+        text[8] = '6';
+        GT_gameDrawing::setText(text);
+        break;
+      case 5:
+        text[7] = '0';
+        text[8] = '5';
+        GT_gameDrawing::setText(text);
+        break;
+      case 4:
+        text[7] = '0';
+        text[8] = '4';
+        GT_gameDrawing::setText(text);
+        break;
+      case 3:
+        text[7] = '0';
+        text[8] = '3';
+        GT_gameDrawing::setText(text);
+        break;
+      case 2:
+        text[7] = '0';
+        text[8] = '2';
+        GT_gameDrawing::setText(text);
+        break;
+      case 1:
+        text[7] = '0';
+        text[8] = '1';
+        GT_gameDrawing::setText(text);
+        break;
+      case 0:
+        text[7] = '0';
+        text[8] = '0';
+        GT_gameDrawing::setText(text);
+        break;
+    }
   }
 
   glutSwapBuffers();

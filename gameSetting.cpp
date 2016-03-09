@@ -66,7 +66,6 @@ namespace GT_gameSetting {
       {vec4( 0, 0, 1, 0), vec4( 1, 0, 1, 0), vec4( 0, 0, 0, 0), vec4( 0, 1, 0, 0)}
   };
 
-  //TODO: Pause Text
   int superPower = 1;
 
   vec4 *gridVertex = NULL;

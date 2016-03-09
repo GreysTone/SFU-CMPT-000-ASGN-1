@@ -228,58 +228,6 @@ GT_gameLogic::shuffleColor() {
       }
     }
 
-//    // calculate the range of the tile
-//    GLfloat originx = tilepos.x;
-//    GLfloat originy = tilepos.y;
-//    GLfloat xmax = tile[0].x;
-//    GLfloat ymax = tile[0].y;
-//    GLfloat xmin = tile[0].x;
-//    GLfloat ymin = tile[0].y;
-//    for (int i = 1; i < 4; i++) {
-//      if (tile[i].x > xmax) xmax = tile[i].x;
-//      if (tile[i].y > ymax) ymax = tile[i].y;
-//      if (tile[i].x < xmin) xmin = tile[i].x;
-//      if (tile[i].y < ymin) ymin = tile[i].y;
-//    }
-//
-//    // adjust the position
-//    while(tilepos.x + xmax >  9) tilepos.x--;
-//    while(tilepos.y + ymax > 19) tilepos.y--;
-//    while(tilepos.x + xmin <  0) tilepos.x++;
-//    while(tilepos.y + ymin <  0) tilepos.y++;
-//
-//    // if some tiles prevent rotation
-//    if(collisionDetect(CTN)) {
-//      switch (tileShape) {
-//        case sI: {
-//          tileModule = (tileModule + 1) % 2;
-//          for (int i = 0; i < 4; i++)
-//            tile[i] = allRotationsIShape[tileModule][i]; // Get the 4 pieces of the new tile
-//          break;
-//        }
-//        case sS: {
-//          tileModule = (tileModule + 1) % 2;
-//          for (int i = 0; i < 4; i++)
-//            tile[i] = allRotationsSShape[tileModule][i]; // Get the 4 pieces of the new tile
-//          break;
-//        }
-//        case sL: {
-//          tileModule = (tileModule + 3) % 4;
-//          for (int i = 0; i < 4; i++)
-//            tile[i] = allRotationsLShape[tileModule][i]; // Get the 4 pieces of the new tile
-//          break;
-//        }
-//        case sT: {
-//          tileModule = (tileModule + 3) % 4;
-//          for (int i = 0; i < 4; i++)
-//            tile[i] = allRotationsTShape[tileModule][i]; // Get the 4 pieces of the new tile
-//          break;
-//        }
-//      }
-//      tilepos.x = originx;
-//      tilepos.y = originy;
-//    }
-
     updateTile();
 
     glBindBuffer(GL_ARRAY_BUFFER, vboIDs[5]); // Bind the VBO containing current tile vertex colours
@@ -831,6 +779,7 @@ namespace  GT_gameLogic { int gamma = 0; }
 void
 GT_gameLogic::keyboard(unsigned char key, int x, int y) {
 //  printf("%d\n", key);
+  if(gamePause && key != 'p') return;
   switch(key)
   {
     case 32:  // Space deteccted
@@ -872,10 +821,10 @@ GT_gameLogic::keyboard(unsigned char key, int x, int y) {
     case 's':
       updateArm(0, -5, 0);
       break;
-    case 'z':
+    case 'x':
       updateArm(0, 0, 5);
       break;
-    case 'x':
+    case 'z':
       updateArm(0, 0, -5);
     case 'c': // 'c' key accelerates the drop speed
       if(DROP_SPEED > DROP_SHIFT) DROP_SPEED -= DROP_SHIFT;
@@ -921,6 +870,7 @@ GT_gameLogic::dropTile() {
 void GT_gameLogic::newTimer(int data) {
   glutTimerFunc(1000, GT_gameLogic::newTimer, 0);
 
+  if(gamePause) return;
   if(countDown > 1) countDown--;
   else {
     countDown = 10;
