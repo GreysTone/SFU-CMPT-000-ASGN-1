@@ -18,6 +18,7 @@ namespace GT_gameLogic {
 // robot arm angle
 int Theta = 0;
 int Phi = -45;
+  int Delta = 0;
 
   // Searching Temporary Data
   bool removingMatrix[10][20];
@@ -46,8 +47,10 @@ GT_gameLogic::init() {
   countDown = 10;
   GT_gameLogic::Theta = 0;
   GT_gameLogic::Phi = -45;
+  Delta = 0;
   tilepos.x = 8;
   tilepos.y = 18;
+  tilepos.z = 0;
   initArm();
 
     // initially no cell is occupied
@@ -349,14 +352,15 @@ GT_gameLogic::shuffleColor() {
       int offsetX = (int)tilepos.x + (int)tile[i].x;
       int offsetY = (int)tilepos.y + (int)tile[i].y;
       int offsetZ = (int)tilepos.z;
+      cout << "[SET] " << offsetX << ":" << offsetY << ":" << offsetZ << endl;
 #ifdef GT_DEBUG_TILE_POSITION
       cout << "CUR_POS on setTile() : X:" << offsetX << " - Y:" << offsetY << endl;
 #endif
       board3D[offsetX][offsetY][offsetZ] = true;
       // Two points are reused
       vec4 offsetColor = palette[tiledColor[0]];
-//      cout << offsetColor << endl;
-      updateBoardColor(offsetX, offsetY, offsetZ, offsetColor);
+  cout << "3DBoard Updating\n";
+      updateBoardColor3D(offsetX, offsetY, offsetZ, offsetColor);
     }
 #ifdef GT_DEBUG_OCCUPATION
     cout << "OCCUPATION\n";
@@ -401,8 +405,8 @@ GT_gameLogic::shuffleColor() {
           int x = (int)GT_gameSetting::tilepos.x + (int)GT_gameSetting::tile[i].x;
           int y = (int)GT_gameSetting::tilepos.y + (int)GT_gameSetting::tile[i].y;
           int z = (int)GT_gameSetting::tilepos.z;
-          cout << "detecting: x:" << x << " y:" << y << "z:" << z << endl;
           if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19 || z<0 || z>(superPower-1) || board3D[x][y][z]) {
+            cout << "collision: x:" << x << " y:" << y << " z:" << z << endl;
             return true;
           }
         }
@@ -807,11 +811,7 @@ GT_gameLogic::keyboard(unsigned char key, int x, int y) {
   switch(key)
   {
     case 32:  // Space deteccted
-      if(CTRL) {
-        shuffleColor();
-      } else {
-        dropTile();
-      }
+      dropTile();
       break;
     case 033: // Both escape key and 'q' cause the game to exit
       exit(EXIT_SUCCESS);
@@ -824,17 +824,22 @@ GT_gameLogic::keyboard(unsigned char key, int x, int y) {
       gamePause = !gamePause;
       break;
     case 'a':
-      updateArm(5, 0);
+      updateArm(5, 0, 0);
       break;
     case 'd':
-      updateArm(-5, 0);
+      updateArm(-5, 0, 0);
       break;
     case 'w':
-      updateArm(0, 5);
+      updateArm(0, 5, 0);
       break;
     case 's':
-      updateArm(0, -5);
+      updateArm(0, -5, 0);
       break;
+    case 'z':
+      updateArm(0, 0, 5);
+      break;
+    case 'x':
+      updateArm(0, 0, -5);
     case 'c': // 'c' key accelerates the drop speed
       if(DROP_SPEED > DROP_SHIFT) DROP_SPEED -= DROP_SHIFT;
       break;

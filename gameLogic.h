@@ -48,6 +48,7 @@ namespace GT_gameLogic {
   // robot arm rotation
   extern int Theta;
   extern int Phi;
+  extern int Delta;
 
   // Searching Temporary Data
   extern bool removingMatrix[10][20];

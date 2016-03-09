@@ -44,7 +44,7 @@ namespace GT_gameSetting {
 //  extern std::vector<gtObject> objectStack;
 
   // current tile
-  extern vec2 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
+  extern vec4 tile[4]; // An array of 4 2d vectors representing displacement from a 'center' piece of the tile, on the grid
   extern vec4 tilepos; // The position of the current tile using grid coordinates ((0,0) is the bottom left corner)
   extern gtColor tiledColor[4];
 

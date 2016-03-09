@@ -272,12 +272,13 @@ GT_gameDrawing::initCurrentTile() {
 
 
 void
-GT_gameDrawing::updateArm(int Theta, int Phi) {
+GT_gameDrawing::updateArm(int Theta, int Phi, int Delta) {
 //  if(curTheta+Theta < 135 || curTheta+Theta > 225) return;
 //  if(curPhi+Phi > 45 || curTheta+Theta < -45) return;
 
   vec4 p[8], q[8];
   float unit = -16.5;
+  GT_gameLogic::Delta = (GT_gameLogic::Delta + Delta) % 360;
 
     GT_gameLogic::Theta = (GT_gameLogic::Theta + Theta) % 360;
     for(int i=0; i<8; i++) {
@@ -287,6 +288,7 @@ GT_gameDrawing::updateArm(int Theta, int Phi) {
       p[i] = Scale(1, 8, 1) * p[i];
       p[i] = Translate(0, 4*33, 0) * p[i];
       p[i] = RotateZ(GT_gameLogic::Theta) * p[i];
+      p[i] = RotateY(GT_gameLogic::Delta) * p[i];
 //      cout << "rotate: Theta:" << (GT_gameLogic::Theta) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Theta) << endl;
       p[i] = Translate(-80, 33, 0) * p[i];
     }
@@ -312,6 +314,7 @@ GT_gameDrawing::updateArm(int Theta, int Phi) {
       q[i] = Translate(0, 8*33, 0) * q[i];
       q[i] = RotateZ(GT_gameLogic::Phi) * q[i];
       q[i] = Translate(-8*33*sin(DegreesToRadians * GT_gameLogic::Theta),8*33*cos(DegreesToRadians * GT_gameLogic::Theta),0) * q[i];
+      q[i] = RotateY(GT_gameLogic::Delta) * q[i];
 //      cout << "rotate: Phi:" << (GT_gameLogic::Phi) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Phi) << endl;
       q[i] = Translate(-80, 33, 0) * q[i];
     }
@@ -345,9 +348,10 @@ GT_gameDrawing::updateArm(int Theta, int Phi) {
   glBufferSubData(GL_ARRAY_BUFFER, 0, 108*sizeof(vec4), armpoints);
 
   //TODO: <POS>
-//  cout << "X:" << (int)(q[7].x/33)-1 << " - Y:" << (int)(q[7].y/33)-1 << endl;
+  cout << "[ARM]X:" << (int)(q[7].x/33)-1 << " - Y:" << (int)(q[7].y/33)-1 << " - Z:" << (int)(q[7].z/33)-1 << endl;
   GT_gameSetting::tilepos.x = (int)(q[7].x/33)-1;
   GT_gameSetting::tilepos.y = (int)(q[7].y/33)-1;
+  GT_gameSetting::tilepos.z = (int)(q[7].z/33)-1;
   GT_gameDrawing::updateTile();
     
 }
@@ -391,6 +395,7 @@ GT_gameDrawing::initArm() {
   for(int i=0; i<8; i++) {
     p[i] = Scale(1, 8, 1) * p[i];
     p[i] = Translate(0, 4*33, 0) * p[i];
+    p[i] = RotateY(GT_gameLogic::Delta) * p[i];
     p[i] = RotateZ(GT_gameLogic::Theta) * p[i];
 //      cout << "rotate: Theta:" << (GT_gameLogic::Theta) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Theta) << endl;
     p[i] = Translate(-80, 33, 0) * p[i];
@@ -413,6 +418,7 @@ GT_gameDrawing::initArm() {
   for(int i=0; i<8; i++) {
     p[i] = Scale(1, 16, 1) * p[i];
     p[i] = Translate(0, 8*33, 0) * p[i];
+    p[i] = RotateY(GT_gameLogic::Delta) * p[i];
     p[i] = RotateZ(GT_gameLogic::Phi) * p[i];
     p[i] = Translate(-8*33*sin(DegreesToRadians * GT_gameLogic::Theta),8*33*cos(DegreesToRadians * GT_gameLogic::Theta),0) * p[i];
     p[i] = Translate(-80, 33, 0) * p[i];
@@ -491,14 +497,14 @@ GT_gameDrawing::updateTile() {
 #endif
     // Create the 4 corners of the square - these vertices are using location in pixels
     // These vertices are later converted by the vertex shader
-    vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)0.0, 1);   // FBL
-    vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)0.0, 1);   // FTL
-    vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)0.0, 1);   // FBR
-    vec4 p4 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)0.0, 1);   // FTR
-    vec4 p5 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)33.0, 1);  // BBL
-    vec4 p6 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)33.0, 1);  // BTL
-    vec4 p7 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)33.0, 1);  // BBR
-    vec4 p8 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)33.0, 1);  // BTR
+    vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)33.0*z, 1);   // FBL
+    vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)33.0*z, 1);   // FTL
+    vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)33.0*z, 1);   // FBR
+    vec4 p4 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)33.0*z, 1);   // FTR
+    vec4 p5 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)33.0*(z+1), 1);  // BBL
+    vec4 p6 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)33.0*(z+1), 1);  // BTL
+    vec4 p7 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)33.0*(z+1), 1);  // BBR
+    vec4 p8 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)33.0*(z+1), 1);  // BTR
 
 
     // Two points are used by two triangles each
@@ -563,7 +569,8 @@ GT_gameDrawing::updateBoardColor(int x, int y, vec4 c) {
 }
 
 void
-GT_gameDrawing::updateBoardColor(int x, int y, int z, vec4 c) {
+GT_gameDrawing::updateBoardColor3D(int x, int y, int z, vec4 c) {
+  cout << "3D\n";
 
   for(int i=0; i<36; i++)
     boardColour[7200*z+36*(10*y + x) + i] = c;
