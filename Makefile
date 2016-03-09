@@ -18,7 +18,7 @@ INCLUDEDIR=/usr/include/
 LIBDIR=/usr/lib
 
 # If you have more source files add them here
-SOURCE= FruitTetris.cpp include/InitShader.cpp gameLogic.cpp gameSetting.cpp gameDrawing.cc gameModel.cc
+SOURCE= FruitTetris.cpp include/InitShader.cpp gameLogic.cpp gameSetting.cpp gameDrawing.cpp gameModel.cpp
 
 # The compiler we are using
 CC= g++

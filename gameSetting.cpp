@@ -39,11 +39,12 @@ namespace GT_gameSetting {
 
   // An array storing all possible orientations of all possible tiles
   // The 'tile' array will always be some element [i][j] of this array (an array of vec2)
-  vec4 allRotationsLShape[4][4] = {
+  vec4 allRotationsLShape[5][4] = {
       {vec4( 1, 0, 0, 0), vec4( 0, 0, 0, 0), vec4(-1, 0, 0, 0), vec4(-1,-1, 0, 0)},
       {vec4( 0, 1, 0, 0), vec4( 0, 0, 0, 0), vec4( 0,-1, 0, 0), vec4( 1,-1, 0, 0)},
       {vec4(-1, 0, 0, 0), vec4( 0, 0, 0, 0), vec4( 1, 0, 0, 0), vec4( 1, 1, 0, 0)},
-      {vec4( 0,-1, 0, 0), vec4( 0, 0, 0, 0), vec4( 0, 1, 0, 0), vec4(-1, 1, 0, 0)}
+      {vec4( 0,-1, 0, 0), vec4( 0, 0, 0, 0), vec4( 0, 1, 0, 0), vec4(-1, 1, 0, 0)},
+      {vec4( 0,-1, 0, 0), vec4( 0, 0, 0, 0), vec4( 0, 1, 0, 0), vec4( 0,-1, 1, 0)}
   };
   vec4 allRotationsIShape[2][4] = {
       {vec4(-2, 0, 0, 0), vec4(-1, 0, 0, 0), vec4( 0, 0, 0, 0), vec4( 1, 0, 0, 0)},
@@ -59,7 +60,13 @@ namespace GT_gameSetting {
       {vec4( 1, 0, 0, 0), vec4( 0, 0, 0, 0), vec4(-1, 0, 0, 0), vec4( 0, 1, 0, 0)},
       {vec4( 0, 1, 0, 0), vec4( 0, 0, 0, 0), vec4( 0,-1, 0, 0), vec4(-1, 0, 0, 0)}
   };
+  vec4 allRotationsNShape[3][4] = {
+      {vec4( 0, 0, 1, 0), vec4( 0, 0, 0, 0), vec4( 1, 0, 0, 0), vec4( 1, 1, 0, 0)},
+      {vec4( 0, 0, 1, 0), vec4( 0, 1, 1, 0), vec4( 0, 0, 0, 0), vec4( 1, 0, 0, 0)},
+      {vec4( 0, 0, 1, 0), vec4( 1, 0, 1, 0), vec4( 0, 0, 0, 0), vec4( 0, 1, 0, 0)}
+  };
 
+  //TODO: Pause Text
   int superPower = 1;
 
   vec4 *gridVertex = NULL;

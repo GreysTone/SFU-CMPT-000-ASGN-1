@@ -50,10 +50,11 @@ namespace GT_gameSetting {
 
   // An array storing all possible orientations of all possible tiles
   // The 'tile' array will always be some element [i][j] of this array (an array of vec2)
-  extern vec2 allRotationsLShape[4][4];
-  extern vec2 allRotationsIShape[2][4];
-  extern vec2 allRotationsSShape[2][4];
-  extern vec2 allRotationsTShape[4][4];
+  extern vec4 allRotationsLShape[5][4];
+  extern vec4 allRotationsIShape[2][4];
+  extern vec4 allRotationsSShape[2][4];
+  extern vec4 allRotationsTShape[4][4];
+  extern vec4 allRotationsNShape[3][4];
 
 extern bool CTRL;
 

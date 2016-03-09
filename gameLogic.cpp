@@ -66,7 +66,7 @@ GT_gameLogic::init() {
     DROP_SHIFT = 100;
 
 
-//  newTile();
+  newTile();
 
   }
 
@@ -75,6 +75,7 @@ GT_gameLogic::init() {
   // Called at the start of play and every time a tile is placed
   void
   GT_gameLogic::newTile() {
+    cout << "newTile\n";
     tileShape = gtShape(rand() % 4);
 
     // Update the geometry VBO of current tile
@@ -92,7 +93,7 @@ GT_gameLogic::init() {
         break;
       }
       case sL: {
-        tileModule = rand() % 4;
+        tileModule = rand() % 5;
         for (int i = 0; i < 4; i++)
           tile[i] = allRotationsLShape[tileModule][i]; // Get the 4 pieces of the new tile
         break;
@@ -103,17 +104,30 @@ GT_gameLogic::init() {
           tile[i] = allRotationsTShape[tileModule][i]; // Get the 4 pieces of the new tile
         break;
       }
+      case sN: {
+        tileModule = rand() % 3;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsNShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
+      }
     }
 
-    // calculate the range of the tile
-    GLfloat xmax = tile[0].x;
-    GLfloat ymax = tile[0].y;
-    GLfloat xmin = tile[0].x;
-    for (int i = 1; i < 4; i++) {
-      if (tile[i].x > xmax) xmax = tile[i].x;
-      if (tile[i].y > ymax) ymax = tile[i].y;
-      if (tile[i].x < xmin) xmin = tile[i].x;
-    }
+//    tileShape = sN;
+//    for (int i = 0; i < 4; i++) {
+//      tile[i] = allRotationsNShape[0][i];
+//      cout << tile[i] << endl;
+//    }
+
+
+//    // calculate the range of the tile
+//    GLfloat xmax = tile[0].x;
+//    GLfloat ymax = tile[0].y;
+//    GLfloat xmin = tile[0].x;
+//    for (int i = 1; i < 4; i++) {
+//      if (tile[i].x > xmax) xmax = tile[i].x;
+//      if (tile[i].y > ymax) ymax = tile[i].y;
+//      if (tile[i].x < xmin) xmin = tile[i].x;
+//    }
 
     // randomize the position - robot arm control position
 //    GLfloat x = (rand() % (int)(10 - xmax + xmin)) - xmin;
@@ -195,7 +209,7 @@ GT_gameLogic::shuffleColor() {
         break;
       }
       case sL: {
-        tileModule = (tileModule + 1) % 4;
+        tileModule = (tileModule + 1) % 5;
         for (int i = 0; i < 4; i++)
           tile[i] = allRotationsLShape[tileModule][i]; // Get the 4 pieces of the new tile
         break;
@@ -206,59 +220,65 @@ GT_gameLogic::shuffleColor() {
           tile[i] = allRotationsTShape[tileModule][i]; // Get the 4 pieces of the new tile
         break;
       }
-    }
-
-    // calculate the range of the tile
-    GLfloat originx = tilepos.x;
-    GLfloat originy = tilepos.y;
-    GLfloat xmax = tile[0].x;
-    GLfloat ymax = tile[0].y;
-    GLfloat xmin = tile[0].x;
-    GLfloat ymin = tile[0].y;
-    for (int i = 1; i < 4; i++) {
-      if (tile[i].x > xmax) xmax = tile[i].x;
-      if (tile[i].y > ymax) ymax = tile[i].y;
-      if (tile[i].x < xmin) xmin = tile[i].x;
-      if (tile[i].y < ymin) ymin = tile[i].y;
-    }
-
-    // adjust the position
-    while(tilepos.x + xmax >  9) tilepos.x--;
-    while(tilepos.y + ymax > 19) tilepos.y--;
-    while(tilepos.x + xmin <  0) tilepos.x++;
-    while(tilepos.y + ymin <  0) tilepos.y++;
-
-    // if some tiles prevent rotation
-    if(collisionDetect(CTN)) {
-      switch (tileShape) {
-        case sI: {
-          tileModule = (tileModule + 1) % 2;
-          for (int i = 0; i < 4; i++)
-            tile[i] = allRotationsIShape[tileModule][i]; // Get the 4 pieces of the new tile
-          break;
-        }
-        case sS: {
-          tileModule = (tileModule + 1) % 2;
-          for (int i = 0; i < 4; i++)
-            tile[i] = allRotationsSShape[tileModule][i]; // Get the 4 pieces of the new tile
-          break;
-        }
-        case sL: {
-          tileModule = (tileModule + 3) % 4;
-          for (int i = 0; i < 4; i++)
-            tile[i] = allRotationsLShape[tileModule][i]; // Get the 4 pieces of the new tile
-          break;
-        }
-        case sT: {
-          tileModule = (tileModule + 3) % 4;
-          for (int i = 0; i < 4; i++)
-            tile[i] = allRotationsTShape[tileModule][i]; // Get the 4 pieces of the new tile
-          break;
-        }
+      case sN: {
+        tileModule = (tileModule + 1) % 3;
+        for (int i = 0; i < 4; i++)
+          tile[i] = allRotationsNShape[tileModule][i]; // Get the 4 pieces of the new tile
+        break;
       }
-      tilepos.x = originx;
-      tilepos.y = originy;
     }
+
+//    // calculate the range of the tile
+//    GLfloat originx = tilepos.x;
+//    GLfloat originy = tilepos.y;
+//    GLfloat xmax = tile[0].x;
+//    GLfloat ymax = tile[0].y;
+//    GLfloat xmin = tile[0].x;
+//    GLfloat ymin = tile[0].y;
+//    for (int i = 1; i < 4; i++) {
+//      if (tile[i].x > xmax) xmax = tile[i].x;
+//      if (tile[i].y > ymax) ymax = tile[i].y;
+//      if (tile[i].x < xmin) xmin = tile[i].x;
+//      if (tile[i].y < ymin) ymin = tile[i].y;
+//    }
+//
+//    // adjust the position
+//    while(tilepos.x + xmax >  9) tilepos.x--;
+//    while(tilepos.y + ymax > 19) tilepos.y--;
+//    while(tilepos.x + xmin <  0) tilepos.x++;
+//    while(tilepos.y + ymin <  0) tilepos.y++;
+//
+//    // if some tiles prevent rotation
+//    if(collisionDetect(CTN)) {
+//      switch (tileShape) {
+//        case sI: {
+//          tileModule = (tileModule + 1) % 2;
+//          for (int i = 0; i < 4; i++)
+//            tile[i] = allRotationsIShape[tileModule][i]; // Get the 4 pieces of the new tile
+//          break;
+//        }
+//        case sS: {
+//          tileModule = (tileModule + 1) % 2;
+//          for (int i = 0; i < 4; i++)
+//            tile[i] = allRotationsSShape[tileModule][i]; // Get the 4 pieces of the new tile
+//          break;
+//        }
+//        case sL: {
+//          tileModule = (tileModule + 3) % 4;
+//          for (int i = 0; i < 4; i++)
+//            tile[i] = allRotationsLShape[tileModule][i]; // Get the 4 pieces of the new tile
+//          break;
+//        }
+//        case sT: {
+//          tileModule = (tileModule + 3) % 4;
+//          for (int i = 0; i < 4; i++)
+//            tile[i] = allRotationsTShape[tileModule][i]; // Get the 4 pieces of the new tile
+//          break;
+//        }
+//      }
+//      tilepos.x = originx;
+//      tilepos.y = originy;
+//    }
 
     updateTile();
 
@@ -351,7 +371,7 @@ GT_gameLogic::shuffleColor() {
     for(int i = 0; i < 4; i++) {
       int offsetX = (int)tilepos.x + (int)tile[i].x;
       int offsetY = (int)tilepos.y + (int)tile[i].y;
-      int offsetZ = (int)tilepos.z;
+      int offsetZ = (int)tilepos.z + (int)tile[i].z;
       cout << "[SET] " << offsetX << ":" << offsetY << ":" << offsetZ << endl;
 #ifdef GT_DEBUG_TILE_POSITION
       cout << "CUR_POS on setTile() : X:" << offsetX << " - Y:" << offsetY << endl;
@@ -404,7 +424,7 @@ GT_gameLogic::shuffleColor() {
         for(int i = 0; i < 4; i++) {
           int x = (int)GT_gameSetting::tilepos.x + (int)GT_gameSetting::tile[i].x;
           int y = (int)GT_gameSetting::tilepos.y + (int)GT_gameSetting::tile[i].y;
-          int z = (int)GT_gameSetting::tilepos.z;
+          int z = (int)GT_gameSetting::tilepos.z + (int)GT_gameSetting::tile[i].z;
           if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19 || z<0 || z>(superPower-1) || board3D[x][y][z]) {
             cout << "collision: x:" << x << " y:" << y << " z:" << z << endl;
             return true;
@@ -427,10 +447,11 @@ GT_gameLogic::shuffleColor() {
         for(int i = 0; i < 4; i++) {
           int nxtPosX = (int)tilepos.x + (int)tile[i].x;
           int nxtPosY = (int)tilepos.y + (int)tile[i].y;
+          int z = (int)GT_gameSetting::tilepos.z + (int)GT_gameSetting::tile[i].z;
 #ifdef GT_DEBUG_COLLISION
           std::cout << "detecting nxtX:" << nxtPosX << " - nxtY:" << nxtPosY << ".\n";
 #endif
-          if(board[nxtPosX][nxtPosY]) return true;
+          if(board3D[nxtPosX][nxtPosY][z]) return true;
         }
         break;
       }

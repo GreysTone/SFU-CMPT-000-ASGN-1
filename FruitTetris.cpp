@@ -70,9 +70,10 @@ int main(int argc, char **argv)
 	glutDisplayFunc(GT_gameDrawing::display);
 
 #ifndef GT_DEBUG_CLOSE_TIMER
-	glutTimerFunc((unsigned int)DROP_SPEED, GT_gameLogic::timerDrop, 0);
+//	glutTimerFunc((unsigned int)DROP_SPEED, GT_gameLogic::timerDrop, 0);
 #endif
-  glutTimerFunc(1000, GT_gameLogic::newTimer, 0);
+  //TODO: Reopen Timer
+//  glutTimerFunc(1000, GT_gameLogic::newTimer, 0);
 	glutIdleFunc(GT_gameDrawing::idle);
 
 	// Start main loop

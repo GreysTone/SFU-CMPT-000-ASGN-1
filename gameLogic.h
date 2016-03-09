@@ -36,7 +36,7 @@ namespace GT_gameLogic {
 //#define GT_DEBUG_ELIMINATION_OUTPUT
 //#define GT_DEBUG_ELIMINATION_POINT_DETAIL
 
-  enum gtShape {sI = 0, sS, sL, sT};
+  enum gtShape {sI = 0, sS, sL, sT, sN};
   extern gtShape tileShape;
   extern int tileModule;
 
