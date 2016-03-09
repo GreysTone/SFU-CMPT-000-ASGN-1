@@ -60,6 +60,9 @@ int main(int argc, char **argv)
 	GT_gameLogic::init();
   srand ((unsigned int)time(NULL)); // initialize random seed
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	// Callback functions
   glutReshapeFunc(GT_gameDrawing::reshape);
   glutSpecialFunc(GT_gameLogic::special);
