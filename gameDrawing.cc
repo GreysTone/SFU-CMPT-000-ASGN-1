@@ -480,14 +480,14 @@ GT_gameDrawing::updateTile() {
 #endif
     // Create the 4 corners of the square - these vertices are using location in pixels
     // These vertices are later converted by the vertex shader
-    vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBL
-    vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTL
-    vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FBR
-    vec4 p4 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)16.5, 1);   // FTR
-    vec4 p5 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBL
-    vec4 p6 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTL
-    vec4 p7 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BBR
-    vec4 p8 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)-16.5, 1);  // BTR
+    vec4 p1 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)0.0, 1);   // FBL
+    vec4 p2 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)0.0, 1);   // FTL
+    vec4 p3 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)0.0, 1);   // FBR
+    vec4 p4 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)0.0, 1);   // FTR
+    vec4 p5 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)33.0, 1);  // BBL
+    vec4 p6 = vec4((GLfloat)(33.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)33.0, 1);  // BTL
+    vec4 p7 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(33.0 + (y * 33.0)), (GLfloat)33.0, 1);  // BBR
+    vec4 p8 = vec4((GLfloat)(66.0 + (x * 33.0)), (GLfloat)(66.0 + (y * 33.0)), (GLfloat)33.0, 1);  // BTR
 
 
     // Two points are used by two triangles each
@@ -579,8 +579,64 @@ GT_gameDrawing::display() {
   gtPipeDraw(objGrid, GL_LINES, 0, GT_gameSetting::gridPointCount);
   gtPipeDraw(objArm, GL_TRIANGLES, 0, GT_GLOBAL_VERTEX_ARM);
 
-  char text[6] = "Test!";
-  GT_gameDrawing::setText(text);
+  char text[10] = "Timer: 00";
+  switch (GT_gameLogic::countDown) {
+    case 10:
+      text[7] = '1';
+      text[8] = '0';
+      GT_gameDrawing::setText(text);
+      break;
+    case 9:
+      text[7] = '0';
+      text[8] = '9';
+      GT_gameDrawing::setText(text);
+      break;
+    case 8:
+      text[7] = '0';
+      text[8] = '8';
+      GT_gameDrawing::setText(text);
+      break;
+    case 7:
+      text[7] = '0';
+      text[8] = '7';
+      GT_gameDrawing::setText(text);
+      break;
+    case 6:
+      text[7] = '0';
+      text[8] = '6';
+      GT_gameDrawing::setText(text);
+      break;
+    case 5:
+      text[7] = '0';
+      text[8] = '5';
+      GT_gameDrawing::setText(text);
+      break;
+    case 4:
+      text[7] = '0';
+      text[8] = '4';
+      GT_gameDrawing::setText(text);
+      break;
+    case 3:
+      text[7] = '0';
+      text[8] = '3';
+      GT_gameDrawing::setText(text);
+      break;
+    case 2:
+      text[7] = '0';
+      text[8] = '2';
+      GT_gameDrawing::setText(text);
+      break;
+    case 1:
+      text[7] = '0';
+      text[8] = '1';
+      GT_gameDrawing::setText(text);
+      break;
+    case 0:
+      text[7] = '0';
+      text[8] = '0';
+      GT_gameDrawing::setText(text);
+      break;
+  }
 
   glutSwapBuffers();
 }

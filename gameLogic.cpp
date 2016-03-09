@@ -25,6 +25,7 @@ int Phi = -45;
   bool gamePause = false;
   bool CTRL = false;
 
+  int countDown = 10;
 
 
 
@@ -385,6 +386,16 @@ GT_gameLogic::shuffleColor() {
           if(nxtPosX < 0 || board[nxtPosX][nxtPosY]) return true;
         }
         break;
+      }
+      case DL: {   // CTN+OutRange
+        for(int i = 0; i < 4; i++) {
+          int x = (int)GT_gameSetting::tilepos.x + (int)GT_gameSetting::tile[i].x;
+          int y = (int)GT_gameSetting::tilepos.y + (int)GT_gameSetting::tile[i].y;
+          if((int)x < 0 || (int)x > 9 || (int)y < 0 || (int)y > 19 || board[x][y]) {
+            return true;
+          }
+        }
+       break;
       }
       case RI: { // Movement collision detection - moving left
         for(int i = 0; i < 4; i++) {
@@ -839,8 +850,26 @@ GT_gameLogic::timerDrop(int data) {
 
 void
 GT_gameLogic::dropTile() {
-  if(!collisionDetect(CTN)) {
+  if(!collisionDetect(DL)) {
     setTile();
     newTile();
+  } else { // GameOver
+    cout << "Game Over!\n 'r' - to restart, 'q' to quit.\n";
+    char w;
+    cin >> w;
+    if(w=='r') restart();
+    else {
+      exit(EXIT_SUCCESS);
+    }
+  }
+}
+
+void GT_gameLogic::newTimer(int data) {
+  glutTimerFunc(1000, GT_gameLogic::newTimer, 0);
+
+  if(countDown > 1) countDown--;
+  else {
+    countDown = 10;
+    dropTile();
   }
 }

@@ -54,6 +54,7 @@ namespace GT_gameLogic {
   extern bool isRemovingMatrixEmpty;
 
   extern bool gamePause;
+  extern int countDown;
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -97,6 +98,7 @@ void shuffleColor();
   void keyboard(unsigned char key, int x, int y);
   void timerDrop(int data);
 void dropTile();
+  void newTimer(int data);
 } // namespace GT_gameLogic
 
 #endif //ASSIGNMENT1_GAMELOGIC_H
