@@ -290,7 +290,7 @@ GT_gameDrawing::updateArm(int Theta, int Phi, int Delta) {
       p[i] = RotateZ(GT_gameLogic::Theta) * p[i];
       p[i] = RotateY(GT_gameLogic::Delta) * p[i];
 //      cout << "rotate: Theta:" << (GT_gameLogic::Theta) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Theta) << endl;
-      p[i] = Translate(-80, 33, 0) * p[i];
+      p[i] = Translate(-80, 0, 0) * p[i];
     }
 
     vec4 cube2[36] = {
@@ -316,7 +316,7 @@ GT_gameDrawing::updateArm(int Theta, int Phi, int Delta) {
       q[i] = Translate(-8*33*sin(DegreesToRadians * GT_gameLogic::Theta),8*33*cos(DegreesToRadians * GT_gameLogic::Theta),0) * q[i];
       q[i] = RotateY(GT_gameLogic::Delta) * q[i];
 //      cout << "rotate: Phi:" << (GT_gameLogic::Phi) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Phi) << endl;
-      q[i] = Translate(-80, 33, 0) * q[i];
+      q[i] = Translate(-80, 0, 0) * q[i];
     }
 //  cout << "POSPOS0: " << q[5] << endl;
 //  cout << "POSPOS7: " << q[7] << endl;  //TODO: q[7] is the chosen one
@@ -374,7 +374,7 @@ GT_gameDrawing::initArm() {
   };
   for(int i=0; i<8; i++) {
     p[i] = Scale(5, 1, 4) * p[i];
-    p[i] = Translate(-80, 33, 0) * p[i];
+    p[i] = Translate(-80, 0, 0) * p[i];
   }
   vec4 cube1[36] = {
       p[0], p[1], p[2], p[1], p[2], p[3],     // Front
@@ -398,7 +398,7 @@ GT_gameDrawing::initArm() {
     p[i] = RotateY(GT_gameLogic::Delta) * p[i];
     p[i] = RotateZ(GT_gameLogic::Theta) * p[i];
 //      cout << "rotate: Theta:" << (GT_gameLogic::Theta) << " sin:" << sin(DegreesToRadians * GT_gameLogic::Theta) << endl;
-    p[i] = Translate(-80, 33, 0) * p[i];
+    p[i] = Translate(-80, 0, 0) * p[i];
   }
   vec4 cube2[36] = {
       p[0], p[1], p[2], p[1], p[2], p[3],     // Front
@@ -421,7 +421,7 @@ GT_gameDrawing::initArm() {
     p[i] = RotateY(GT_gameLogic::Delta) * p[i];
     p[i] = RotateZ(GT_gameLogic::Phi) * p[i];
     p[i] = Translate(-8*33*sin(DegreesToRadians * GT_gameLogic::Theta),8*33*cos(DegreesToRadians * GT_gameLogic::Theta),0) * p[i];
-    p[i] = Translate(-80, 33, 0) * p[i];
+    p[i] = Translate(-80, 0, 0) * p[i];
   }
   vec4 cube3[36] = {
       p[0], p[1], p[2], p[1], p[2], p[3],     // Front
@@ -470,9 +470,10 @@ GT_gameDrawing::initArm() {
 //  GT_gameModel::ARM::setupModel();
 //  gtPipeCreate(GT_gameSetting::objArm, GT_gameModel::ARM::vertexArray, GT_gameModel::ARM::colourArray);
 
-  GT_gameLogic::newTile();
   GT_gameSetting::tilepos.x = (int)(p[7].x/33)-1;
   GT_gameSetting::tilepos.y = (int)(p[7].y/33)-1;
+  GT_gameSetting::tilepos.z = (int)(p[7].z/33)-1;
+  GT_gameLogic::newTile();
 }
 
 // When the current tile is moved or rotated (or created), update the VBO containing its vertex position data
@@ -682,27 +683,6 @@ void
 GT_gameDrawing::idle() {
   glutPostRedisplay();
 }
-
-//void
-//GT_gameDrawing::gtPipeCreate(GT_gameSetting::gtObject object, vec4 *vertexArray, vec4 *colourArrary) {
-//  // *** set up buffer objects
-//  // Set up first VAO (representing grid lines)
-//  glBindVertexArray(vaoIDs[object]); // Bind the first VAO
-//  // TODO: [ARS] If bind error, could inspect cuboid
-//  glGenBuffers(2, &vboIDs[object * 2]); // Create two Vertex Buffer Objects for this VAO (positions, colours)
-//
-//  // Grid vertex positions
-//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[object * 2]); // Bind the first grid VBO (vertex positions)
-//  glBufferData(GL_ARRAY_BUFFER, sizeof(vertexArray), vertexArray, GL_STATIC_DRAW); // Put the grid points in the VBO
-//  glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, 0);
-//  glEnableVertexAttribArray(vPosition); // Enable the attribute
-//
-//  // Grid vertex colours
-//  glBindBuffer(GL_ARRAY_BUFFER, vboIDs[object * 2 + 1]); // Bind the second grid VBO (vertex colours)
-//  glBufferData(GL_ARRAY_BUFFER, sizeof(colourArrary), colourArrary, GL_STATIC_DRAW); // Put the grid colours in the VBO
-//  glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, 0);
-//  glEnableVertexAttribArray(vColor); // Enable the attribute
-//}
 
 void
 GT_gameDrawing::gtPipeDraw(GT_gameSetting::gtObject object, GLenum mode, GLint first, GLsizei count) {
