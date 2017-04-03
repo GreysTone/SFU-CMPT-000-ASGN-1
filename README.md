@@ -6,7 +6,7 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
 
 ***Author: Danyang Song (Arthur)***
 
-*More details on completing this project, see https://github.com/GreysTone/SFU-CMPT-000-ASGN-1.*
+*For More details, see https://github.com/GreysTone/SFU-CMPT-000-ASGN-1.*
 
 ***All steps (all functions) are implemented in the assignment, extra information are as below.***
 
@@ -26,18 +26,18 @@ Based on "Skeleton Code" (the first submit 731f2cf343bc525ebcd16e506c7dd5e652c6d
   * Dependency: XCode 7.2.1
   * Using the project file in *./FruitTetris_XCode/FruitTetris.xcodeproj*
     * add **GLEW.framework** & **OpenGL.framework** if the framework are not automatically import to the project.
-  * Some header files and functions are *deprecated* and(or) even *not supported* by OS X. See more details in source code with the MACRO **#ifdef \_\_APPLE\_\_** or **#ifndef \_\_APPLE\_\_**
+  * Some header files and functions are *deprecated* and/or even *not supported* by OS X. See more details in source code with the MACRO **#ifdef \_\_APPLE\_\_** or **#ifndef \_\_APPLE\_\_**
   * Some MACRO for debugging in *mat.h* are *commented* to make the program building successfully in OS X environment.
   * The *GL Shader Language* supported by OS X is on **version 150**, therefore the .glsl files are provided in ./FruitTetris_XCode/FruitTetris_source_XCode/\*.glsl.
 
 ## Features
 * ***Anti_Aliasing Feature***
 * ***On Mac, using SHIFT rather than CTRL to rotate 3D projection***
-* To make this game more complicated, only on the row of the block that will be eliminated will get a downward movement
+* To make the game more complicated, a player can only move downward when standing on the row of a block that will be eliminated.
 * When the game is over, there will be a prompt in CLI, to decide to continue or quit the game.
-* If the random position for new tile is not available, it will find a possible position to generate it, otherwise game is over.
-* Game could pause by 'p' pressed.
-* Could accelerate the dorp speed during game by 'a' pressed.
+* If the random position for a new tile is not available, it will find a possible position to generate it, otherwise the game is over.
+* Press 'p' to pause the game.
+* Press 'a' to accelerate the drop speed.
 * Source code style
   * according to *OpenGL Programming Guide*, namespace, multi-files
 * MACRO debug features
